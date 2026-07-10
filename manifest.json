@@ -1,10 +1,22 @@
 {
-  "name": "Swish ",
+  "name": "Swish",
   "short_name": "Swish",
+  "description": "Deine Beschreibung",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
   "theme_color": "#262626",
-  "background_color": "#262626",
-  "display": "minimal-ui",
   "orientation": "portrait",
-  "scope": "/",
-  "start_url": "/"
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
