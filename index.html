@@ -1,0 +1,3326 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swish</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root {
+      --text: #111;
+      --muted: #777;
+      --line: #dcdcdc;
+      --soft: #f2f2f2;
+      --bg: #fff;
+      --page-bg: #f4f4f4;
+      --nav-height: 54px;
+    }
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+body.dark-mode {
+  --text: #f5f5f5;
+  --muted: #a7a7a7;
+  --line: #2e2e31;
+  --soft: #1f1f22;
+  --bg: #101013;
+  --page-bg: #050506;
+}
+
+.phone {
+  width: min(100%, 375px);
+  height: min(100dvh, 812px);
+  min-height: 812px;
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.screen {
+  padding: 8px 16px calc(var(--nav-height) + 24px);
+  height: 100%;
+  overflow: hidden;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.search {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chip {
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #fff;
+  color: #151515;
+  font-size: 15px;
+  line-height: 1;
+}
+
+body.dark-mode .chip {
+  background: #2a2a2e;
+  color: var(--text);
+}
+
+.hero {
+  margin-top: 12px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+.banner-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.banner-track::-webkit-scrollbar {
+  display: none;
+}
+
+.hero img {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 136px;
+  display: block;
+  object-fit: cover;
+  scroll-snap-align: start;
+}
+
+.dots {
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  display: flex;
+  gap: 5px;
+  transform: translateX(-50%);
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .22);
+}
+
+.dot.active {
+  background: #111;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 17px;
+  margin-bottom: 20px;
+}
+
+.section-header.spaced {
+  margin-top: 44px;
+  margin-bottom: 19px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.icon-pill {
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--soft);
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  color: var(--text);
+}
+
+.icon-pill[hidden] {
+  display: none;
+}
+
+.row {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+.category {
+  flex: 0 0 70px;
+  text-align: center;
+}
+
+.player-avatar-button {
+  width: 74px;
+  height: 74px;
+  display: block;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.category img {
+  width: 74px;
+  height: 74px;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  background: #dff3ff;
+}
+
+.category-title {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, .28);
+}
+
+.role-info-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, .28);
+}
+
+.player-modal[hidden] {
+  display: none;
+}
+
+.role-info-modal[hidden] {
+  display: none;
+}
+
+.player-panel {
+  width: min(100%, 315px);
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .24);
+}
+
+.role-info-panel {
+  width: min(100%, 330px);
+  max-height: min(78dvh, 620px);
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .24);
+}
+
+.player-panel-header {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.role-info-header {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.player-panel-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.role-info-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.player-close {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--soft);
+  color: var(--text);
+  padding: 0;
+  cursor: pointer;
+}
+
+.role-info-close {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--soft);
+  color: var(--text);
+  padding: 0;
+  cursor: pointer;
+}
+
+.role-info-body {
+  max-height: calc(min(78dvh, 620px) - 56px);
+  overflow-y: auto;
+  padding: 16px 18px 18px;
+  scrollbar-width: none;
+}
+
+.role-info-body::-webkit-scrollbar {
+  display: none;
+}
+
+.role-info-description {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.38;
+  white-space: pre-line;
+}
+
+.player-form {
+  padding: 18px;
+}
+
+.player-field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.player-field-label,
+.player-avatar-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.player-name-input {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--text);
+  padding: 0 12px;
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+.player-name-input:focus {
+  border-color: var(--text);
+}
+
+.player-avatar-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.player-avatar-option {
+  width: 58px;
+  height: 58px;
+  border: 2px solid var(--text);
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.player-avatar-option img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.player-accept {
+  width: 100%;
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+body.dark-mode .player-accept {
+  background: #f5f5f5;
+  color: #111;
+}
+
+.products {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 2px 8px;
+}
+
+.products::-webkit-scrollbar {
+  display: none;
+}
+
+.product {
+  flex: 0 0 151px;
+}
+
+.product.clickable {
+  cursor: pointer;
+}
+
+.product img {
+  width: 151px;
+  height: 180px;
+  display: block;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #dff3ff;
+}
+
+.brand {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.name {
+  margin-top: 5px;
+  font-size: 15px;
+  line-height: 1.15;
+}
+
+.bottom-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(100%, 375px);
+  height: var(--nav-height);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  transform: translateX(-50%);
+  background: #fff;
+  border-top: 1px solid #eee;
+  z-index: 5;
+}
+
+body.dark-mode .bottom-nav {
+  background: var(--bg);
+  border-top-color: var(--line);
+}
+
+.nav-button {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #aaa;
+}
+
+.nav-button.active {
+  color: #000;
+}
+
+body.dark-mode .nav-button.active {
+  color: #fff;
+}
+
+.phone.detail-open .bottom-nav {
+  display: none;
+}
+
+.settings-screen {
+  background: var(--bg);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.settings-screen::-webkit-scrollbar {
+  display: none;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2px 0 18px;
+  min-height: 40px;
+}
+
+.settings-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.settings-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 116px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: #111;
+  color: #fff;
+}
+
+.settings-hero img {
+  width: 100%;
+  height: 116px;
+  display: block;
+  object-fit: cover;
+  opacity: .56;
+}
+
+.settings-hero-text {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 15px;
+}
+
+.settings-hero-kicker {
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .78);
+}
+
+.settings-hero-title {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.settings-group {
+  overflow: hidden;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: var(--soft);
+}
+
+.settings-link {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.settings-link + .settings-link {
+  border-top: 1px solid var(--line);
+}
+
+.settings-link-main {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.settings-link-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #fff;
+  color: #111;
+}
+
+body.dark-mode .settings-link-icon {
+  background: #2a2a2e;
+  color: var(--text);
+}
+
+.settings-link-title {
+  display: block;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-link-note {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-link-meta {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.settings-warning {
+  color: #f4a20b;
+}
+
+.settings-social-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.settings-social-icon.instagram {
+  background: linear-gradient(135deg, #feda75, #fa7e1e 30%, #d62976 58%, #962fbf 78%, #4f5bd5);
+}
+
+.settings-social-icon.tiktok {
+  background: #050505;
+  text-shadow: 1px 0 #25f4ee, -1px 0 #fe2c55;
+}
+
+.settings-version {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.design-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, .28);
+}
+
+.design-modal[hidden] {
+  display: none;
+}
+
+.design-panel {
+  width: min(100%, 315px);
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .24);
+}
+
+.design-panel-header {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.design-panel-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.design-close {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--soft);
+  color: var(--text);
+  padding: 0;
+  cursor: pointer;
+}
+
+.design-option {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 18px;
+}
+
+.design-option-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.design-option-note {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.game-screen {
+  background: #fff;
+  color: #111;
+  padding: 22px 18px 24px;
+  overflow: hidden;
+}
+
+body.dark-mode .game-screen,
+body.dark-mode .roles-screen {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.game-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+}
+
+.game-icon-button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: #111;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+body.dark-mode .game-icon-button {
+  color: var(--text);
+}
+
+.game-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.game-logo {
+  margin: 34px auto 34px;
+  max-width: 305px;
+  text-align: center;
+  color: #ffb11d;
+  font-size: 39px;
+  font-weight: 900;
+  line-height: .82;
+  text-transform: uppercase;
+  text-shadow: 3px 4px 0 #071b1d;
+}
+
+.game-logo span {
+  display: block;
+  margin-top: 10px;
+  color: #fff;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+.settings-card {
+  border-radius: 14px;
+  background: #f2f2f2;
+}
+
+body.dark-mode .settings-card,
+body.dark-mode .roles-card {
+  background: var(--soft);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 23px;
+}
+
+.setting-emoji {
+  width: 34px;
+  text-align: center;
+  font-size: 27px;
+}
+
+.settings-card {
+  overflow: hidden;
+  margin-bottom: 34px;
+}
+
+.setting-row {
+  height: 62px;
+  padding: 0 18px;
+  justify-content: space-between;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+}
+
+.setting-row + .setting-row {
+  border-top: 1px solid #dcdcdc;
+}
+
+.setting-main {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.setting-value {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #777;
+}
+
+.switch {
+  width: 58px;
+  height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: #cfcfcf;
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .2s ease;
+}
+
+.switch.on {
+  background: #48d966;
+}
+
+.switch.on::after {
+  transform: translateX(26px);
+}
+
+.switch:disabled {
+  opacity: .42;
+  cursor: default;
+}
+
+.game-copy {
+  max-width: 322px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.32;
+}
+
+.game-characters-frame {
+  width: 110px;
+  height: 110px;
+  margin: 28px auto 24px;
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+.game-characters {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 50% 20%;
+  transform: scale(1.12);
+}
+
+.start-game {
+  min-width: 160px;
+  height: 52px;
+  border: 0;
+  border-radius: 24px;
+  background: #1d1d20;
+  color: #fff;
+  display: block;
+  margin: 0 auto;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+body.dark-mode .start-game {
+  background: #f5f5f5;
+  color: #111;
+}
+
+.wolf-flow-screen {
+  background: var(--bg);
+  color: var(--text);
+  padding: 22px 18px 24px;
+  overflow: hidden;
+}
+
+.wolf-flow-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.wolf-flow-stage {
+  min-height: calc(100% - 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 18px 0 4px;
+  text-align: center;
+}
+
+.reveal-stack {
+  position: relative;
+  width: min(100%, 310px);
+  height: 552px;
+}
+
+.role-reveal-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 168px;
+  height: 238px;
+  display: grid;
+  place-items: center;
+  padding: 20px 18px;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.role-reveal-panel::-webkit-scrollbar {
+  display: none;
+}
+
+.role-reveal-content {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+
+.role-reveal-emoji {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.role-reveal-name {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.role-reveal-description {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.22;
+  white-space: pre-line;
+}
+
+.game-role-card {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 24px;
+  width: 100%;
+  height: 382px;
+  overflow: hidden;
+  border: 4px solid #fff;
+  border-radius: 8px;
+  background: #143b3e;
+  color: #111;
+  transform: translate(-50%, 0);
+  transition: transform .24s cubic-bezier(.2, .82, .2, 1);
+  touch-action: none;
+  user-select: none;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .18);
+  cursor: grab;
+}
+
+body.dark-mode .game-role-card {
+  border-color: #f5f5f5;
+}
+
+.game-role-card:active {
+  cursor: grabbing;
+}
+
+.game-role-card.is-dragging {
+  transition: none;
+}
+
+.game-role-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.game-role-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 28, 30, .08), rgba(10, 28, 30, .55));
+}
+
+.game-role-player {
+  position: absolute;
+  z-index: 1;
+  top: 24px;
+  left: 14px;
+  right: 14px;
+  overflow-wrap: anywhere;
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+}
+
+.game-role-hint {
+  position: absolute;
+  z-index: 1;
+  left: 18px;
+  right: 18px;
+  bottom: 34px;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.game-role-hint svg {
+  width: 34px;
+  height: 34px;
+}
+
+.flow-primary-button {
+  min-width: 156px;
+  height: 52px;
+  border: 0;
+  border-radius: 24px;
+  background: #1d1d20;
+  color: #fff;
+  padding: 0 24px;
+  font-size: 19px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+body.dark-mode .flow-primary-button {
+  background: #f5f5f5;
+  color: #111;
+}
+
+.flow-primary-button[hidden] {
+  display: none;
+}
+
+.reveal-instruction,
+.ready-copy {
+  max-width: 328px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.ready-panel {
+  position: relative;
+  width: 100%;
+  max-width: 336px;
+  min-height: 106px;
+  display: grid;
+  place-items: center;
+  padding: 22px 28px;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.ready-panel::after {
+  content: "";
+  position: absolute;
+  right: 34px;
+  top: -18px;
+  width: 38px;
+  height: 38px;
+  background: var(--soft);
+  transform: rotate(45deg);
+  box-shadow: -1px -1px 0 var(--line);
+}
+
+.ready-copy {
+  position: relative;
+  z-index: 1;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.app-alert {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, .32);
+}
+
+.app-alert[hidden] {
+  display: none;
+}
+
+.app-alert-panel {
+  width: min(100%, 318px);
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .26);
+}
+
+.app-alert-body {
+  padding: 22px 20px 18px;
+  text-align: center;
+}
+
+.app-alert-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.app-alert-message {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.app-alert-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+
+.app-alert-actions.single {
+  grid-template-columns: 1fr;
+}
+
+.app-alert-button {
+  min-height: 48px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.app-alert-button + .app-alert-button {
+  border-left: 1px solid var(--line);
+}
+
+.app-alert-actions.single .app-alert-button + .app-alert-button {
+  border-left: 0;
+}
+
+.app-alert-button.primary {
+  color: #1473e6;
+}
+
+.roles-screen {
+  background: #fff;
+  color: #111;
+  padding: 24px 18px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.roles-screen::-webkit-scrollbar {
+  display: none;
+}
+
+.roles-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 48px;
+  margin-bottom: 28px;
+}
+
+.roles-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.roles-card {
+  background: #f2f2f2;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.roles-player-row {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  margin-bottom: 44px;
+}
+
+.roles-row-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 22px;
+}
+
+.roles-emoji {
+  width: 30px;
+  text-align: center;
+  font-size: 28px;
+}
+
+.roles-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 0 26px;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.reset-button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #111;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.reset-button:active {
+  background: #f2f2f2;
+}
+
+.reset-button svg {
+  width: 28px;
+  height: 28px;
+}
+
+.active-roles {
+  margin-bottom: 38px;
+}
+
+.role-control-row {
+  min-height: 102px;
+  display: grid;
+  grid-template-columns: 72px 1fr 64px;
+  align-items: center;
+  padding: 0 18px;
+}
+
+.role-control-row + .role-control-row,
+.role-list-row + .role-list-row {
+  border-top: 1px solid #dcdcdc;
+}
+
+.role-name {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.role-control-row.fixed-role .role-name {
+  margin-bottom: 0;
+}
+
+.role-controls {
+  display: flex;
+  gap: 36px;
+  color: #777;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.role-button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.role-button.decrease {
+  color: var(--text);
+}
+
+.role-button.increase {
+  color: var(--text);
+}
+
+.role-button:disabled {
+  color: #b8b8b8;
+  cursor: default;
+}
+
+.role-count {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #dedede;
+  color: #111;
+  font-size: 22px;
+  justify-self: end;
+}
+
+body.dark-mode .role-count {
+  background: #2a2a2e;
+  color: var(--text);
+}
+
+.other-roles-title {
+  margin: 0 0 24px;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.role-list-row {
+  height: 66px;
+  display: grid;
+  grid-template-columns: 72px 1fr 36px;
+  align-items: center;
+  padding: 0 18px;
+}
+
+.role-list-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+}
+
+.info-mark {
+  width: 16px;
+  height: 16px;
+  border: 1.8px solid currentColor;
+  background: transparent;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  transform: translateY(1px);
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.role-action {
+  justify-self: end;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.role-action.role-button {
+  color: var(--text);
+}
+
+.role-action.role-button:disabled {
+  color: #b8b8b8;
+}
+
+svg {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.night-title {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.night-subtitle {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.night-progress-container {
+  width: min(100%, 280px);
+  height: 12px;
+  border-radius: 6px;
+  background: var(--soft);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.night-progress-bar {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  background: #1d1d20;
+  transform-origin: left center;
+  transform: scaleX(1);
+  transition: transform 5s linear;
+}
+
+body.dark-mode .night-progress-bar {
+  background: #f5f5f5;
+}
+
+  </style>
+</head>
+<body>
+  <main class="phone" id="phone">
+    <section class="screen view active" id="homeScreen">
+      <div class="search" role="search">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+          <path d="m16.2 16.2 4.1 4.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Search</span>
+      </div>
+
+  <div class="actions">
+    <button class="chip" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M20.4 5.6a5 5 0 0 0-7.1 0L12 6.9l-1.3-1.3a5 5 0 0 0-7.1 7.1L12 21l8.4-8.3a5 5 0 0 0 0-7.1Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+      Favorites
+    </button>
+    <button class="chip" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 3-6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M3 5v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      History
+    </button>
+  </div>
+
+  <div class="hero">
+    <div class="banner-track" id="bannerTrack" aria-label="Banner Bilder">
+      <img src="img/banner/container-banner.png" alt="Landschaft Platzhalter 1">
+      <img src="img/banner/container-banner.png" alt="Landschaft Platzhalter 2">
+      <img src="img/banner/container-banner.png" alt="Landschaft Platzhalter 3">
+      <img src="img/banner/container-banner.png" alt="Landschaft Platzhalter 4">
+      <img src="img/banner/container-banner.png" alt="Landschaft Platzhalter 5">
+    </div>
+    <div class="dots" aria-hidden="true">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h2>Spieler</h2>
+    <button class="icon-pill" id="addCategory" type="button" aria-label="Hinzufuegen">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <button class="icon-pill" id="removeCategory" type="button" aria-label="Entfernen" hidden>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="row" id="categoryRow" aria-label="Kategorien">
+    <article class="category">
+      <img src="img/player/container-player.png" alt="Landschaft Platzhalter">
+      <div class="category-title">Name</div>
+    </article>
+  </div>
+
+  <div class="section-header spaced">
+    <h2>Spiele</h2>
+    <button class="icon-pill" type="button" aria-label="Weiter">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="m5 3 4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="products" aria-label="Produkte">
+    <article class="product clickable" id="werwolfGame" tabindex="0" role="button" aria-label="Werwolf das Spiel oeffnen">
+      <img src="img/card/werwolf/werwolf-card.png" alt="Werwolf das Spiel">
+      <div class="brand">6+ Spieler</div>
+      <div class="name">Werwolf das Spiel</div>
+    </article>
+    <article class="product">
+      <img src="img/card/container-card.png" alt="Landschaft Platzhalter">
+      <div class="brand">Spielerzahl
+      <div class="name">Product name</div>
+    </article>
+    <article class="product">
+      <img src="img/card/container-card.png" alt="Landschaft Platzhalter">
+      <div class="brand">Spielerzahl
+      <div class="name">Product name</div>
+    </article>
+  </div>
+</section>
+
+<section class="screen view" id="profileScreen" aria-label="Profil">
+</section>
+
+<section class="screen view settings-screen" id="settingsScreen" aria-label="Einstellungen">
+  <div class="settings-header">
+    <h1 class="settings-title">Einstellungen</h1>
+  </div>
+
+  <div class="settings-hero">
+    <img src="img/banner/container-banner.png" alt="Swish Einstellungen">
+    <div class="settings-hero-text">
+      <div class="settings-hero-kicker">Swish</div>
+      <h2 class="settings-hero-title">Alles bereit fuer die naechste Runde</h2>
+    </div>
+  </div>
+
+  <div class="settings-group">
+    <button class="settings-link" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 11h16v9H4v-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M12 11v9M4 15h16M7.5 8.5C5.8 8.5 5 7.6 5 6.4 5 5.3 5.8 4.5 6.9 4.5c1.8 0 3.1 2.3 5.1 6.5M16.5 8.5c1.7 0 2.5-.9 2.5-2.1 0-1.1-.8-1.9-1.9-1.9-1.8 0-3.1 2.3-5.1 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">Belohnungen & Erfolge</span>
+          <span class="settings-link-note">Fortschritt und Abzeichen</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+    <button class="settings-link" id="openAppDesign" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 4h14v11H5V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 15v5M15 15v5M8 20h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 8h3M14 8h2M8 11h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">App-Design</span>
+          <span class="settings-link-note">App farbeinstellungen</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  <div class="settings-group">
+    <button class="settings-link" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" fill="currentColor"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">App bewerten</span>
+          <span class="settings-link-note">Sag uns, wie dir Swish gefaellt</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+    <button class="settings-link" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="18" cy="5" r="3" fill="currentColor"/>
+            <circle cx="6" cy="12" r="3" fill="currentColor"/>
+            <circle cx="18" cy="19" r="3" fill="currentColor"/>
+            <path d="m8.6 10.6 6.8-4.2M8.6 13.4l6.8 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">Freunde einladen</span>
+          <span class="settings-link-note">Teile Swish mit deiner Gruppe</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  <div class="settings-group">
+    <button class="settings-link" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 0 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L4.2 7A2 2 0 0 1 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 0 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.1a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">Sprache</span>
+          <span class="settings-link-note">Deutsch</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">DE</span>
+    </button>
+    <button class="settings-link" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 9a6 6 0 1 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M10 20a2.2 2.2 0 0 0 4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">Benachrichtigungen</span>
+          <span class="settings-link-note">Erinnerungen und Hinweise</span>
+        </span>
+      </span>
+      <span class="settings-link-meta settings-warning">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3 22 20H2L12 3Z" fill="currentColor"/>
+          <path d="M12 9v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 17.5h.01" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+    <button class="settings-link" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">Datenschutz</span>
+          <span class="settings-link-note">Daten und Privatsphaere</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+    <button class="settings-link" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 3h12v18H6V3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">Bedingungen</span>
+          <span class="settings-link-note">Regeln und Nutzung</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+    <button class="settings-link" type="button">
+      <span class="settings-link-main">
+        <span class="settings-link-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 6h16v12H4V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="settings-link-title">Feedback</span>
+          <span class="settings-link-note">Ideen, Fragen und Probleme</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  <div class="settings-group">
+    <a class="settings-link" href="https://www.instagram.com/_filip_k_k/" target="_blank" rel="noopener noreferrer" aria-label="Instagram Profil von Filip oeffnen">
+      <span class="settings-link-main">
+        <span class="settings-social-icon instagram">IG</span>
+        <span>
+          <span class="settings-link-title">@_filip_k_k</span>
+          <span class="settings-link-note">Instagram</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+    <a class="settings-link" href="https://www.tiktok.com/@filip.k.k" target="_blank" rel="noopener noreferrer" aria-label="TikTok Profil von Filip oeffnen">
+      <span class="settings-link-main">
+        <span class="settings-social-icon tiktok">TT</span>
+        <span>
+          <span class="settings-link-title">@filip.k.k</span>
+          <span class="settings-link-note">TikTok</span>
+        </span>
+      </span>
+      <span class="settings-link-meta">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+  </div>
+
+  <p class="settings-version">Swish Testversion 1.0.0</p>
+</section>
+
+<div class="design-modal" id="appDesignModal" hidden>
+  <div class="design-panel" role="dialog" aria-modal="true" aria-labelledby="appDesignTitle">
+    <div class="design-panel-header">
+      <h2 class="design-panel-title" id="appDesignTitle">App-Design</h2>
+      <button class="design-close" id="closeAppDesign" type="button" aria-label="Schliessen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="design-option">
+      <span>
+        <span class="design-option-title">Darkmode</span>
+        <span class="design-option-note">Aus / An</span>
+      </span>
+      <button class="switch" id="darkModeSwitch" type="button" aria-label="Darkmode einschalten" aria-pressed="false"></button>
+    </div>
+  </div>
+</div>
+
+<div class="player-modal" id="playerModal" hidden>
+  <div class="player-panel" role="dialog" aria-modal="true" aria-labelledby="playerModalTitle">
+    <div class="player-panel-header">
+      <h2 class="player-panel-title" id="playerModalTitle">Spieler hinzufuegen</h2>
+      <button class="player-close" id="closePlayerModal" type="button" aria-label="Schliessen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <form class="player-form" id="playerForm">
+      <label class="player-field" for="playerNameInput">
+        <span class="player-field-label">Name</span>
+        <input class="player-name-input" id="playerNameInput" type="text" maxlength="18" autocomplete="off" required>
+      </label>
+      <span class="player-avatar-label">Spieler</span>
+      <div class="player-avatar-options" aria-label="Spieler auswaehlen">
+        <button class="player-avatar-option" type="button" aria-label="Standard Spieler ausgewaehlt" aria-pressed="true">
+          <img src="img/player/container-player.png" alt="">
+        </button>
+      </div>
+      <button class="player-accept" type="submit">Akzeptieren</button>
+    </form>
+  </div>
+</div>
+
+<div class="role-info-modal" id="roleInfoModal" hidden>
+  <div class="role-info-panel" role="dialog" aria-modal="true" aria-labelledby="roleInfoTitle">
+    <div class="role-info-header">
+      <h2 class="role-info-title" id="roleInfoTitle">Rolle</h2>
+      <button class="role-info-close" id="closeRoleInfo" type="button" aria-label="Schliessen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  <div class="role-info-body">
+      <p class="role-info-description" id="roleInfoDescription"></p>
+    </div>
+  </div>
+</div>
+
+<div class="app-alert" id="gameAlert" hidden>
+  <div class="app-alert-panel" role="dialog" aria-modal="true" aria-labelledby="gameAlertTitle" aria-describedby="gameAlertMessage">
+    <div class="app-alert-body">
+      <h2 class="app-alert-title" id="gameAlertTitle">Hinweis</h2>
+      <p class="app-alert-message" id="gameAlertMessage"></p>
+    </div>
+    <div class="app-alert-actions" id="gameAlertActions">
+      <button class="app-alert-button" id="gameAlertCancel" type="button">Abbrechen</button>
+      <button class="app-alert-button primary" id="gameAlertConfirm" type="button">OK</button>
+    </div>
+  </div>
+</div>
+
+<section class="screen view game-screen" id="gameScreen" aria-label="Werwolf das Spiel">
+  <div class="game-topbar">
+    <button class="game-icon-button" id="backToHome" type="button" aria-label="Zurueck">
+      <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="game-actions">
+      <button class="game-icon-button" type="button" aria-label="Favorit">
+        <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20.4 5.6a5 5 0 0 0-7.1 0L12 6.9l-1.3-1.3a5 5 0 0 0-7.1 7.1L12 21l8.4-8.3a5 5 0 0 0 0-7.1Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="game-icon-button" type="button" aria-label="Hilfe">
+        <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/>
+          <path d="M9.8 9a2.4 2.4 0 0 1 4.6 1c0 1.8-2.4 2-2.4 3.7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M12 17.2h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="game-logo">Werwolf<span>Das Spiel</span></div>
+
+  <div class="settings-card">
+    <button class="setting-row" id="openRoles" type="button">
+      <div class="setting-main">
+        <span class="setting-emoji">☝️</span>
+        <span>Rollen</span>
+      </div>
+      <div class="setting-value">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </button>
+    <div class="setting-row">
+      <div class="setting-main">
+        <span class="setting-emoji">🎙️</span>
+        <span>Erzähler</span>
+      </div>
+      <button class="switch" id="narratorSwitch" type="button" aria-label="Erzaehler einschalten" aria-pressed="false"></button>
+    </div>
+    <button class="setting-row" id="openAdvanced" type="button">
+      <div class="setting-main">
+        <span class="setting-emoji">⚙️</span>
+        <span>Erweitert</span>
+      </div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <p class="game-copy">Wählt eure Rollen. Trefft eure Vorbereitungen. Gleich wird's düster.</p>
+  <div class="game-characters-frame">
+    <img class="game-characters" src="img/card/werwolf/werwolf-card.png" alt="Werwolf Illustration">
+  </div>
+  <button class="start-game" id="startGameButton" type="button">Spiel starten</button>
+</section>
+
+<section class="screen view roles-screen" id="rolesScreen" aria-label="Rollen">
+  <div class="roles-header">
+    <button class="game-icon-button" id="backToGame" type="button" aria-label="Zurueck">
+      <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="roles-section-title">
+    <span>Aktive Rollen</span>
+    <button class="reset-button" id="resetRoles" type="button" aria-label="Zuruecksetzen">
+      <svg width="31" height="31" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M26.2 18.5a10.5 10.5 0 0 1-16.9 5.7" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M21.9 19.4 26.2 18.5l.9 4.4" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M5.8 13.5a10.5 10.5 0 0 1 16.9-5.7" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M10.1 12.6 5.8 13.5l-.9-4.4" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="roles-card active-roles" id="activeRoles">
+    <div class="role-control-row">
+      <span class="roles-emoji">🏘️</span>
+      <div>
+        <div class="role-name">Dorfbewohner <span class="info-mark">i</span></div>
+        <div class="role-controls"><span>−</span><span>+</span></div>
+      </div>
+      <span class="role-count">5</span>
+    </div>
+    <div class="role-control-row">
+      <span class="roles-emoji">🐺</span>
+      <div>
+        <div class="role-name">Werwolf <span class="info-mark">i</span></div>
+        <div class="role-controls"><span>−</span><span>+</span></div>
+      </div>
+      <span class="role-count">2</span>
+    </div>
+  </div>
+
+  <h2 class="other-roles-title">Andere Rollen</h2>
+  <div class="roles-card" id="otherRoles">
+    <div class="role-list-row">
+      <span class="roles-emoji">🔮</span>
+      <div class="role-list-name">Seherin <span class="info-mark">i</span></div>
+      <span class="role-action">+</span>
+    </div>
+    <div class="role-list-row">
+      <span class="roles-emoji">💘</span>
+      <div class="role-list-name">Amor <span class="info-mark">i</span></div>
+      <span class="role-action">+</span>
+    </div>
+    <div class="role-list-row">
+      <span class="roles-emoji">🧙</span>
+      <div class="role-list-name">Hexe <span class="info-mark">i</span></div>
+      <span class="role-action">+</span>
+    </div>
+    <div class="role-list-row">
+      <span class="roles-emoji">👧</span>
+      <div class="role-list-name">Blinzel Mädchen <span class="info-mark">i</span></div>
+      <span class="role-action">+</span>
+    </div>
+    <div class="role-list-row">
+      <span class="roles-emoji">🪓</span>
+      <div class="role-list-name">Jäger <span class="info-mark">i</span></div>
+      <span class="role-action">+</span>
+    </div>
+    <div class="role-list-row">
+      <span class="roles-emoji">🦊</span>
+      <div class="role-list-name">Fuchs <span class="info-mark">i</span></div>
+      <span class="role-action">+</span>
+    </div>
+  </div>
+</section>
+
+<section class="screen view roles-screen" id="advancedScreen" aria-label="Erweitert">
+  <div class="roles-header">
+    <button class="game-icon-button" id="backFromAdvanced" type="button" aria-label="Zurueck">
+      <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="roles-section-title">
+    <span>Extra Rollen</span>
+  </div>
+
+  <div class="roles-card">
+    <div class="setting-row">
+      <div class="setting-main">
+        <span class="setting-emoji">🏛️</span>
+        <span>Bürgermeister</span>
+      </div>
+      <button class="switch" id="mayorSwitch" type="button" aria-label="Buergermeister einschalten" aria-pressed="false"></button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-main">
+        <span class="setting-emoji">2&#65039;&#8419;</span>
+        <span>Zwillinge</span>
+      </div>
+      <button class="switch" id="twinsSwitch" type="button" aria-label="Zwillinge einschalten" aria-pressed="false"></button>
+    </div>
+    <div class="setting-row">
+      <div class="setting-main">
+        <span class="setting-emoji">3&#65039;&#8419;</span>
+        <span>Drillinge</span>
+      </div>
+      <button class="switch" id="tripletsSwitch" type="button" aria-label="Drillinge einschalten" aria-pressed="false"></button>
+    </div>
+  </div>
+
+  <div class="roles-section-title">
+    <span>Extra Regeln</span>
+  </div>
+</section>
+
+<section class="screen view wolf-flow-screen" id="roleRevealScreen" aria-label="Rollen aufdecken">
+  <div class="game-topbar">
+    <h1 class="wolf-flow-title">Werwolf</h1>
+    <button class="game-icon-button" id="closeRevealFlow" type="button" aria-label="Spiel verlassen">
+      <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="wolf-flow-stage">
+    <div class="reveal-stack">
+      <div class="role-reveal-panel" aria-live="polite">
+        <div class="role-reveal-content">
+          <div class="role-reveal-emoji" id="revealedRoleEmoji"></div>
+          <h2 class="role-reveal-name" id="revealedRoleName"></h2>
+          <p class="role-reveal-description" id="revealedRoleDescription"></p>
+        </div>
+      </div>
+
+      <div class="game-role-card" id="roleCard" role="button" tabindex="0" aria-label="Karte nach oben ziehen">
+        <img src="img/card/container-game-player.png" alt="">
+        <div class="game-role-player" id="revealPlayerName"></div>
+        <div class="game-role-hint">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 20V4M5 11l7-7 7 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Karte aufdecken</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="flow-primary-button" id="nextRevealButton" type="button" hidden>Weitergeben</button>
+    <p class="reveal-instruction" id="revealInstruction">Ziehe deine Karte nach oben, um deine Rolle zu sehen. Achte darauf, dass niemand sonst sie sieht.</p>
+  </div>
+</section>
+
+<section class="screen view wolf-flow-screen" id="gameReadyScreen" aria-label="Spielbereit">
+  <div class="game-topbar">
+    <h1 class="wolf-flow-title">Werwolf</h1>
+    <button class="game-icon-button" id="closeReadyFlow" type="button" aria-label="Spiel verlassen">
+      <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="wolf-flow-stage">
+    <div class="ready-panel">
+      <p class="ready-copy">Alle bereit? Das Spiel beginnt gleich.</p>
+    </div>
+    <button class="flow-primary-button" id="startNightButton" type="button">Start</button>
+  </div>
+</section>
+
+<section class="screen view wolf-flow-screen" id="nightScreen" aria-label="Nacht">
+  <div class="game-topbar">
+    <h1 class="wolf-flow-title">Werwolf</h1>
+    <button class="game-icon-button" id="closeNightFlow" type="button" aria-label="Spiel verlassen">
+      <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="wolf-flow-stage">
+    <h2 class="night-title">Das Dorf schläft ein</h2>
+    <p class="night-subtitle">Alle Spieler schließen ihre Augen</p>
+    <div class="night-progress-container">
+      <div class="night-progress-bar" id="nightProgressBar"></div>
+    </div>
+  </div>
+</section>
+
+<nav class="bottom-nav" aria-label="Hauptnavigation">
+  <a class="nav-button" href="#profile" aria-label="Profil" data-target="profileScreen">
+    <svg width="27" height="27" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="2"/>
+      <path d="M5 21a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </a>
+  <a class="nav-button active" href="#home" aria-label="Home" data-target="homeScreen">
+    <svg width="27" height="27" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3 10.5 12 3l9 7.5v9A1.5 1.5 0 0 1 19.5 21H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5v-9Z" fill="currentColor"/>
+    </svg>
+  </a>
+  <a class="nav-button" href="#settings" aria-label="Einstellungen" data-target="settingsScreen">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="currentColor" stroke-width="2"/>
+      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 0 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L4.2 7A2 2 0 0 1 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 0 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.1a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </svg>
+  </a>
+</nav>
+
+  </main>
+
+  <script>
+    const addCategoryButton = document.getElementById('addCategory');
+    const removeCategoryButton = document.getElementById('removeCategory');
+    const categoryRow = document.getElementById('categoryRow');
+    const phone = document.getElementById('phone');
+    const werwolfGame = document.getElementById('werwolfGame');
+    const backToHomeButton = document.getElementById('backToHome');
+    const openRolesButton = document.getElementById('openRoles');
+    const openAdvancedButton = document.getElementById('openAdvanced');
+    const backToGameButton = document.getElementById('backToGame');
+    const backFromAdvancedButton = document.getElementById('backFromAdvanced');
+    const startGameButton = document.getElementById('startGameButton');
+    const gameAlert = document.getElementById('gameAlert');
+    const gameAlertTitle = document.getElementById('gameAlertTitle');
+    const gameAlertMessage = document.getElementById('gameAlertMessage');
+    const gameAlertActions = document.getElementById('gameAlertActions');
+    const gameAlertCancel = document.getElementById('gameAlertCancel');
+    const gameAlertConfirm = document.getElementById('gameAlertConfirm');
+    const closeRevealFlowButton = document.getElementById('closeRevealFlow');
+    const closeReadyFlowButton = document.getElementById('closeReadyFlow');
+    const startNightButton = document.getElementById('startNightButton');
+    const closeNightFlowButton = document.getElementById('closeNightFlow');
+    const nightProgressBar = document.getElementById('nightProgressBar');
+    const roleCard = document.getElementById('roleCard');
+    const revealPlayerName = document.getElementById('revealPlayerName');
+    const revealedRoleEmoji = document.getElementById('revealedRoleEmoji');
+    const revealedRoleName = document.getElementById('revealedRoleName');
+    const revealedRoleDescription = document.getElementById('revealedRoleDescription');
+    const nextRevealButton = document.getElementById('nextRevealButton');
+    const revealInstruction = document.getElementById('revealInstruction');
+    const narratorSwitch = document.getElementById('narratorSwitch');
+    const mayorSwitch = document.getElementById('mayorSwitch');
+    const twinsSwitch = document.getElementById('twinsSwitch');
+    const tripletsSwitch = document.getElementById('tripletsSwitch');
+    const openAppDesignButton = document.getElementById('openAppDesign');
+    const appDesignModal = document.getElementById('appDesignModal');
+    const closeAppDesignButton = document.getElementById('closeAppDesign');
+    const darkModeSwitch = document.getElementById('darkModeSwitch');
+    const playerModal = document.getElementById('playerModal');
+    const playerModalTitle = document.getElementById('playerModalTitle');
+    const closePlayerModalButton = document.getElementById('closePlayerModal');
+    const playerForm = document.getElementById('playerForm');
+    const playerNameInput = document.getElementById('playerNameInput');
+    const roleInfoModal = document.getElementById('roleInfoModal');
+    const roleInfoTitle = document.getElementById('roleInfoTitle');
+    const roleInfoDescription = document.getElementById('roleInfoDescription');
+    const closeRoleInfoButton = document.getElementById('closeRoleInfo');
+    const mayorEmoji = mayorSwitch.closest('.setting-row').querySelector('.setting-emoji');
+    const resetRolesButton = document.getElementById('resetRoles');
+    const activeRolesContainer = document.getElementById('activeRoles');
+    const otherRolesContainer = document.getElementById('otherRoles');
+    const navButtons = document.querySelectorAll('.nav-button[data-target]');
+    const views = document.querySelectorAll('.view');
+    const bannerTrack = document.getElementById('bannerTrack');
+    const bannerDots = document.querySelectorAll('.hero .dot');
+    const playersStorageKey = 'swishPlayerCount';
+    const rolesStorageKey = 'swishRoles';
+    const mayorStorageKey = 'swishMayorEnabled';
+    const extraRolesStorageKey = 'swishExtraRoles';
+    const darkModeStorageKey = 'swishDarkModeEnabled';
+    const playerAvatarSrc = 'img/player/container-player.png';
+    mayorEmoji.textContent = '\u{1F396}\uFE0F';
+    const roleTemplates = [
+      { id: 'villager', emoji: '\u{1F3E0}', name: 'Dorfbewohner', description: 'Fraktion: Der Dorfbewohner spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: Keine.' },
+      { id: 'werewolf', emoji: '\u{1F43A}', name: 'Werwolf', description: 'Fraktion: Die Werw\u00f6lfe spielen f\u00fcr das Rudel.\nF\u00e4higkeiten: In der Nacht bestimmen die Werw\u00f6lfe gemeinsam mit den anderen Werw\u00f6lfen durch einfache Mehrheitsentscheidung einen anderen Spieler, den sie angreifen und fressen.' },
+      { id: 'seer', emoji: '\u{1F52E}', name: 'Seherin', description: 'Fraktion: Die Seherin spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In der Nacht bestimmt die Seherin einen Spieler, dessen Rolle sie sieht.' },
+      { id: 'cupid', emoji: '\u{1F498}', name: 'Amor', description: 'Fraktion: Amor spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In der ersten Nacht bestimmt Amor zwei Spieler, die er ineinander verliebt. Diese beiden verliebten Spieler spielen fortan f\u00fcr das Liebespaar. Die Verliebten d\u00fcrfen sich dann einmal angucken.\nDie Verliebten d\u00fcrfen niemals gegeneinander stimmen.\nVerstirbt ein Verliebter, so bringt sich der andere Verliebte um.\nAmor kann sich auch selbst verlieben.\nAmor darf die Identit\u00e4ten der Verliebten niemals offenbaren.' },
+      { id: 'witch', emoji: '\u{1F9D9}\u200D\u2642\uFE0F', name: 'Hexe', description: 'Fraktion: Die Hexe spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: Die Hexe besitzt einen Heiltrank und einen Gifttrank.\nIn der Nacht teilt die Spielleitung der Hexe mit, welche Spieler in dieser Nacht erfolgreich angegriffen worden sind. Die Hexe kann nun ihren Heiltrank verbrauchen, um einen dieser Spieler zu heilen und die Hexe kann ihren Gifttrank verbrauchen, um einen anderen Spieler zu vergiften.\nDie Hexe kann jeden Trank nur einmal verbrauchen.\nDie Hexe kann beide Tr\u00e4nke auch in derselben Nacht verbrauchen.\nDie Hexe kann auch sich selbst heilen.\nDie Hexe kann sich nicht selbst vergiften.\nDie Hexe kann ihren Gifttrank auch in einer Nacht verbrauchen, in der sie angegriffen wird und ihren Heiltrank schon verbraucht hat.\nWenn die Hexe ihren Heiltrank verbraucht hat, so wird der Hexe nicht mehr mitgeteilt, welche Spieler in der Nacht erfolgreich angegriffen worden sind.' },
+      { id: 'doppelganger', emoji: '\u{1F465}', name: 'Doppelg\u00e4nger', description: 'Fraktion: Der Doppelg\u00e4nger spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In der ersten Nacht bestimmt der Doppelg\u00e4nger einen Spieler, dessen Rolle er kopiert. Der Doppelg\u00e4nger spielt fortan die selbe Rolle und f\u00fcr dieselbe Fraktion wie dieser Spieler.' },
+      { id: 'hunter', emoji: '\u{1FA93}', name: 'J\u00e4ger', description: 'Fraktion: Der J\u00e4ger spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: Wenn der J\u00e4ger stirbt, darf er einen anderen Spieler mit in den Tod reissen.' },
+      { id: 'fox', emoji: '\u{1F98A}', name: 'Fuchs', description: 'Fraktion: Der Fuchs spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In der ersten Nacht bestimmt der Fuchs einen Spieler, an dem er riecht. Dem Fuchs wird mitgeteilt, ob dieser Spieler oder einer seiner Nachbarn ein Werwolf ist. Die Spielleitung teilt dem Fuchs nicht mit, welcher Spieler der Werwolf ist.\nWenn der Fuchs in einer Nacht einen Werwolf gerochen hat, so kann er in der darauffolgenden Nacht erneut an einem Spieler riechen.' },
+      { id: 'angel', emoji: '\u{1F47C}', name: 'Engel', description: 'Fraktion: Der Engel ist ein Einzelg\u00e4nger.\nSiegbedingungen: Der Engel gewinnt, wenn er am ersten Tag durch den Wolf oder die erste Abstimmung get\u00f6tet wird.\nF\u00e4higkeiten: Keine.' },
+      { id: 'healer', emoji: '\u{1F48A}', name: 'Heiler', description: 'Fraktion: Der Heiler spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In der Nacht kann der Heiler einen Spieler bestimmen, den er heilt.\nDer Heiler kann auch sich selbst heilen.\nWenn der Heiler einen Spieler geheilt hat, kann dieser in dieser Runde nicht mehr durch den Wolf oder Trank sterben. Der Heiler kann nicht 2 N\u00e4chte hintereinander dieselbe Person heilen.' },
+      { id: 'tree', emoji: '\u{1F333}', name: 'Baum', description: 'Fraktion: Der Baum ist ein Dorfbewohner.\nF\u00e4higkeiten: Er besitzt 2 Leben.' },
+      { id: 'wild-child', emoji: '\u{1F9EC}', name: 'Wildes Kind', description: 'Fraktion: Das Wilde Kind ist ein Zweideutiger.\nF\u00e4higkeiten: In der Nacht vor der B\u00fcrgermeisterwahl bestimmt das Wilde Kind einen anderen Spieler zu seinem Vorbild. Wenn das Vorbild verstirbt, verwandelt sich das Wilde Kind in einen Werwolf und spielt fortan f\u00fcr das Rudel.' },
+      { id: 'kamikaze', emoji: '\u{2620}\uFE0F', name: 'Kamikaze', description: 'Fraktion: Der Kamikaze spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: Der Kamikaze kann einmalig einen Spieler t\u00f6ten, reisst sich dabei aber mit in den Tod.' },
+      { id: 'escort', emoji: '\u{1F351}', name: 'Dorfnutte', description: 'Fraktion: Die Dorfnutte spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In der Nacht bestimmt die Dorfnutte gegen\u00fcber der Spielleitung einen Dorfbewohner, bei dem sie \u00fcbernachtet (!\u00dcbernachten [Spielername]).\nWenn die Werw\u00f6lfe die Dorfnutte angreifen, so schl\u00e4gt der Angriff fehl.\nWenn die Werw\u00f6lfe den One-Night-Stand der Dorfnutte angreifen, so wird auch die Dorfnutte angegriffen.\nDie Dorfnutte kann nicht bei demselben Spieler in zwei aufeinanderfolgenden N\u00e4chten \u00fcbernachten.' },
+      { id: 'snowman', emoji: '\u{26C4}', name: 'Schneemann', description: 'Fraktion: Der Schneemann spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: Der Schneemann schmilzt, wodurch er in der 2. Runde nicht mehr sprechen kann und in der 3. Runde stirbt.' },
+      { id: 'cook', emoji: '\u{1F373}', name: 'Koch', description: 'Fraktion: Der Koch spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In einer Nacht kann der Koch einen Spieler bestimmen, dessen Essen er am Vorabend verkocht. Dieser Spieler kann in dieser Nacht seine F\u00e4higkeiten nicht nutzen, sofern er welche besitzt. Die Spielleitung teilt diesem Spieler mit, dass sein Essen vom Koch verkocht wurde.' },
+      { id: 'narrator', emoji: '\u{1F399}\uFE0F', name: 'Erz\u00e4hler', fixed: true, hiddenWhenInactive: true, description: 'Die Spielleitung f\u00fchrt durch die Nacht und moderiert die Runde.' }
+    ];
+    const extraRoleTemplates = {
+      twins: { id: 'twins', emoji: '\u{1F46F}', name: 'Zwillinge', description: 'Extra Rolle: Zwei zufaellige Spieler sind Zwillinge. Sie behalten ihre normale Rolle und bekommen diese Extra Rolle dazu.', count: 2 },
+      triplets: { id: 'triplets', emoji: '\u{1F46A}', name: 'Drillinge', description: 'Extra Rolle: Drei zufaellige Spieler sind Drillinge. Sie behalten ihre normale Rolle und bekommen diese Extra Rolle dazu.', count: 3 }
+    };
+    let roles = [];
+    let bannerTimer;
+    let players = [];
+    let editingPlayerIndex = null;
+    let revealQueue = [];
+    let revealIndex = 0;
+    let alertConfirmAction = null;
+    let alertCancelAction = null;
+    let dragStartY = null;
+    const revealCardLift = 238;
+    const revealSwipeThreshold = 88;
+
+    function updateRemoveButton() {
+      removeCategoryButton.hidden = categoryRow.children.length < 2;
+    }
+
+    function createPlayer(name) {
+      return {
+        name: name,
+        avatar: playerAvatarSrc
+      };
+    }
+
+    function createPlayerElement(player, index) {
+      const item = document.createElement('article');
+      item.className = 'category';
+      item.dataset.playerIndex = String(index);
+
+      const avatarButton = document.createElement('button');
+      avatarButton.className = 'player-avatar-button';
+      avatarButton.type = 'button';
+      avatarButton.setAttribute('aria-label', player.name + ' bearbeiten');
+
+      const avatar = document.createElement('img');
+      avatar.src = player.avatar;
+      avatar.alt = player.name;
+
+      const title = document.createElement('div');
+      title.className = 'category-title';
+      title.textContent = player.name;
+
+      avatarButton.appendChild(avatar);
+      item.append(avatarButton, title);
+
+      return item;
+    }
+
+    function savePlayers() {
+      localStorage.setItem(playersStorageKey, JSON.stringify(players));
+    }
+
+    function renderPlayers() {
+      categoryRow.innerHTML = '';
+
+      players.forEach(function (player, index) {
+        categoryRow.appendChild(createPlayerElement(player, index));
+      });
+
+      updateRemoveButton();
+      updateExtraRoleAvailability();
+    }
+
+    function loadSavedPlayers() {
+      const savedPlayers = localStorage.getItem(playersStorageKey);
+      const savedCount = Number(savedPlayers);
+
+      if (Number.isInteger(savedCount) && savedCount > 0) {
+        players = Array.from({ length: savedCount }, function (_, index) {
+          return createPlayer('Spieler ' + (index + 1));
+        });
+        savePlayers();
+        renderPlayers();
+        return;
+      }
+
+      try {
+        const parsedPlayers = JSON.parse(savedPlayers);
+
+        if (Array.isArray(parsedPlayers) && parsedPlayers.length > 0) {
+          players = parsedPlayers.map(function (player, index) {
+            const name = typeof player.name === 'string' && player.name.trim() ? player.name.trim() : 'Spieler ' + (index + 1);
+            const savedAvatar = typeof player.avatar === 'string' && player.avatar ? player.avatar : playerAvatarSrc;
+            const avatar = savedAvatar === 'img/container-player.png' ? playerAvatarSrc : savedAvatar;
+
+            return {
+              name: name,
+              avatar: avatar
+            };
+          });
+        } else {
+          players = [createPlayer('Spieler 1')];
+        }
+      } catch (error) {
+        players = [createPlayer('Spieler 1')];
+      }
+
+      savePlayers();
+      renderPlayers();
+    }
+
+    function getPlayerCount() {
+      return Math.max(1, players.length);
+    }
+
+    function openPlayerModal(index) {
+      editingPlayerIndex = Number.isInteger(index) ? index : null;
+      playerModalTitle.textContent = editingPlayerIndex === null ? 'Spieler hinzufuegen' : 'Spieler bearbeiten';
+      playerNameInput.value = editingPlayerIndex === null ? '' : players[editingPlayerIndex].name;
+      playerModal.hidden = false;
+      playerNameInput.focus();
+    }
+
+    function closePlayerModal() {
+      playerModal.hidden = true;
+      editingPlayerIndex = null;
+      playerForm.reset();
+      addCategoryButton.focus();
+    }
+
+    function acceptPlayerForm() {
+      const name = playerNameInput.value.trim();
+
+      if (!name) {
+        playerNameInput.focus();
+        return;
+      }
+
+      if (editingPlayerIndex === null) {
+        players.push(createPlayer(name));
+        savePlayers();
+        renderPlayers();
+        resetRoles();
+        categoryRow.lastElementChild.scrollIntoView({ behavior: 'smooth', inline: 'end', block: 'nearest' });
+      } else {
+        players[editingPlayerIndex] = {
+          name: name,
+          avatar: playerAvatarSrc
+        };
+        savePlayers();
+        renderPlayers();
+      }
+
+      closePlayerModal();
+    }
+
+    function getActiveRoleTotal(roleList) {
+      return roleList.reduce(function (total, role) {
+        return total + role.count;
+      }, 0);
+    }
+
+    function isRoleLimitReached() {
+      return getActiveRoleTotal(roles) >= getPlayerCount();
+    }
+
+    function isNarratorEnabled() {
+      return narratorSwitch.classList.contains('on');
+    }
+
+    function updateNarratorSwitch(isOn) {
+      narratorSwitch.classList.toggle('on', isOn);
+      narratorSwitch.setAttribute('aria-pressed', String(isOn));
+      narratorSwitch.setAttribute('aria-label', isOn ? 'Erzaehler ausschalten' : 'Erzaehler einschalten');
+    }
+
+    function updateMayorSwitch(isOn) {
+      mayorSwitch.classList.toggle('on', isOn);
+      mayorSwitch.setAttribute('aria-pressed', String(isOn));
+      mayorSwitch.setAttribute('aria-label', isOn ? 'Buergermeister ausschalten' : 'Buergermeister einschalten');
+    }
+
+    function getExtraRoleSettings() {
+      try {
+        return JSON.parse(localStorage.getItem(extraRolesStorageKey)) || {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveExtraRoleSettings(settings) {
+      localStorage.setItem(extraRolesStorageKey, JSON.stringify(settings));
+    }
+
+    function updateExtraSwitch(button, isOn, minPlayers, label) {
+      const isAvailable = getPlayerCount() >= minPlayers;
+
+      button.disabled = !isAvailable;
+      button.classList.toggle('on', isOn && isAvailable);
+      button.setAttribute('aria-pressed', String(isOn && isAvailable));
+      button.setAttribute('aria-label', isAvailable
+        ? label + (isOn ? ' ausschalten' : ' einschalten')
+        : label + ' ab ' + minPlayers + ' Spielern verfuegbar');
+    }
+
+    function setMayorEnabled(isOn) {
+      updateMayorSwitch(isOn);
+      localStorage.setItem(mayorStorageKey, String(isOn));
+    }
+
+    function loadMayorSetting() {
+      setMayorEnabled(localStorage.getItem(mayorStorageKey) === 'true');
+    }
+
+    function getNarratorRoleCount() {
+      const narratorRole = getRole('narrator');
+
+      return narratorRole ? narratorRole.count : 0;
+    }
+
+    function getExtraRoleEligiblePlayerCount() {
+      return Math.max(0, getPlayerCount() - getNarratorRoleCount());
+    }
+
+    function getSelectedExtraRoleCount(settings) {
+      return (settings.twins ? extraRoleTemplates.twins.count : 0)
+        + (settings.triplets ? extraRoleTemplates.triplets.count : 0);
+    }
+
+    function updateExtraRoleAvailability() {
+      const settings = getExtraRoleSettings();
+      const eligiblePlayerCount = getExtraRoleEligiblePlayerCount();
+
+      if (getPlayerCount() < 3 || eligiblePlayerCount < extraRoleTemplates.twins.count) {
+        settings.twins = false;
+      }
+
+      if (getPlayerCount() < 4 || eligiblePlayerCount < extraRoleTemplates.triplets.count) {
+        settings.triplets = false;
+      }
+
+      if (getSelectedExtraRoleCount(settings) > eligiblePlayerCount && settings.triplets) {
+        settings.triplets = false;
+      }
+
+      if (getSelectedExtraRoleCount(settings) > eligiblePlayerCount && settings.twins) {
+        settings.twins = false;
+      }
+
+      saveExtraRoleSettings(settings);
+      updateExtraSwitch(twinsSwitch, Boolean(settings.twins), 3, 'Zwillinge');
+      updateExtraSwitch(tripletsSwitch, Boolean(settings.triplets), 4, 'Drillinge');
+    }
+
+    function setExtraRoleEnabled(roleId, isOn) {
+      const minPlayers = roleId === 'triplets' ? 4 : 3;
+
+      if (getPlayerCount() < minPlayers) return;
+
+      const settings = getExtraRoleSettings();
+      const otherRoleId = roleId === 'twins' ? 'triplets' : 'twins';
+      const selectedExtraRoleCount = (isOn ? extraRoleTemplates[roleId].count : 0)
+        + (settings[otherRoleId] ? extraRoleTemplates[otherRoleId].count : 0);
+
+      if (isOn && selectedExtraRoleCount > getExtraRoleEligiblePlayerCount()) {
+        showGameAlert({
+          title: 'Extra Rollen pruefen',
+          message: 'Fuer diese Extra Rollen gibt es nicht genug Spieler. Der Erzaehler kann keine Extra Rolle bekommen.',
+          confirmText: 'OK',
+          hideCancel: true
+        });
+        return;
+      }
+
+      settings[roleId] = isOn;
+      saveExtraRoleSettings(settings);
+      updateExtraRoleAvailability();
+    }
+
+    function loadExtraRoleSettings() {
+      updateExtraRoleAvailability();
+    }
+
+    function updateDarkModeSwitch(isOn) {
+      document.body.classList.toggle('dark-mode', isOn);
+      darkModeSwitch.classList.toggle('on', isOn);
+      darkModeSwitch.setAttribute('aria-pressed', String(isOn));
+      darkModeSwitch.setAttribute('aria-label', isOn ? 'Darkmode ausschalten' : 'Darkmode einschalten');
+    }
+
+    function setDarkModeEnabled(isOn) {
+      updateDarkModeSwitch(isOn);
+      localStorage.setItem(darkModeStorageKey, String(isOn));
+    }
+
+    function loadDarkModeSetting() {
+      updateDarkModeSwitch(localStorage.getItem(darkModeStorageKey) === 'true');
+    }
+
+    function openAppDesignModal() {
+      appDesignModal.hidden = false;
+      darkModeSwitch.focus();
+    }
+
+    function closeAppDesignModal() {
+      appDesignModal.hidden = true;
+      openAppDesignButton.focus();
+    }
+
+    function trimRolesToPlayerCount() {
+      let overflow = getActiveRoleTotal(roles) - getPlayerCount();
+
+      if (overflow <= 0) return;
+
+      roles.forEach(function (role) {
+        if (overflow <= 0 || role.fixed || role.count <= 0) return;
+
+        const decreaseBy = Math.min(role.count, overflow);
+        role.count -= decreaseBy;
+        overflow -= decreaseBy;
+      });
+    }
+
+    function createDefaultRoles() {
+      const playerCount = getPlayerCount();
+      const narratorCount = isNarratorEnabled() ? 1 : 0;
+      const playableRoleCount = playerCount - narratorCount;
+      const werewolfCount = Math.ceil(playableRoleCount * 0.2);
+
+      return roleTemplates.map(function (role) {
+        const roleCopy = Object.assign({ count: 0 }, role);
+
+        if (roleCopy.id === 'narrator') {
+          roleCopy.count = narratorCount;
+        }
+
+        if (roleCopy.id === 'werewolf') {
+          roleCopy.count = werewolfCount;
+        }
+
+        if (roleCopy.id === 'villager') {
+          roleCopy.count = playableRoleCount - werewolfCount;
+        }
+
+        return roleCopy;
+      });
+    }
+
+    function createRolesFromSavedCounts(counts) {
+      return roleTemplates.map(function (role) {
+        const roleCopy = Object.assign({ count: 0 }, role);
+        const savedCount = Number(counts[role.id]);
+
+        if (Number.isInteger(savedCount) && savedCount >= 0) {
+          roleCopy.count = savedCount;
+        }
+
+        return roleCopy;
+      });
+    }
+
+    function saveRoles() {
+      const counts = {};
+
+      roles.forEach(function (role) {
+        counts[role.id] = role.count;
+      });
+
+      localStorage.setItem(rolesStorageKey, JSON.stringify({
+        playerCount: getPlayerCount(),
+        narratorEnabled: isNarratorEnabled(),
+        counts: counts
+      }));
+    }
+
+    function loadSavedRoles() {
+      const savedRoles = localStorage.getItem(rolesStorageKey);
+
+      if (!savedRoles) {
+        resetRoles();
+        return;
+      }
+
+      try {
+        const parsedRoles = JSON.parse(savedRoles);
+
+        if (parsedRoles.playerCount !== getPlayerCount() || !parsedRoles.counts) {
+          resetRoles();
+          return;
+        }
+
+        const loadedRoles = createRolesFromSavedCounts(parsedRoles.counts);
+
+        if (getActiveRoleTotal(loadedRoles) !== getPlayerCount()) {
+          resetRoles();
+          return;
+        }
+
+        roles = loadedRoles;
+        updateNarratorSwitch(Boolean(getRole('narrator') && getRole('narrator').count > 0));
+        renderRoles();
+      } catch (error) {
+        resetRoles();
+      }
+    }
+
+    function getRole(roleId) {
+      return roles.find(function (role) {
+        return role.id === roleId;
+      });
+    }
+
+    function openRoleInfo(role) {
+      if (!role) return;
+
+      roleInfoTitle.textContent = role.emoji + ' ' + role.name;
+      roleInfoDescription.textContent = role.description || 'Beschreibung folgt.';
+      roleInfoModal.hidden = false;
+      closeRoleInfoButton.focus();
+    }
+
+    function closeRoleInfo() {
+      roleInfoModal.hidden = true;
+      roleInfoTitle.textContent = 'Rolle';
+      roleInfoDescription.textContent = '';
+    }
+
+    function createInfoMark(role) {
+      const infoMark = document.createElement('button');
+      infoMark.className = 'info-mark';
+      infoMark.type = 'button';
+      infoMark.dataset.roleInfo = role.id;
+      infoMark.setAttribute('aria-label', 'Info zu ' + role.name);
+      infoMark.textContent = 'i';
+      return infoMark;
+    }
+
+    function createActiveRoleElement(role) {
+      const row = document.createElement('div');
+      row.className = 'role-control-row';
+
+      if (role.fixed) {
+        row.classList.add('fixed-role');
+      }
+
+      const emoji = document.createElement('span');
+      emoji.className = 'roles-emoji';
+      emoji.textContent = role.emoji;
+
+      const content = document.createElement('div');
+      const name = document.createElement('div');
+      name.className = 'role-name';
+      name.append(role.name, ' ', createInfoMark(role));
+
+      const controls = document.createElement('div');
+      controls.className = 'role-controls';
+
+      if (role.fixed) {
+        content.append(name);
+
+        const count = document.createElement('span');
+        count.className = 'role-count';
+        count.textContent = role.count;
+
+        row.append(emoji, content, count);
+        return row;
+      }
+
+      const minusButton = document.createElement('button');
+      minusButton.className = 'role-button decrease';
+      minusButton.type = 'button';
+      minusButton.dataset.role = role.id;
+      minusButton.dataset.action = 'decrease';
+      minusButton.setAttribute('aria-label', role.name + ' verringern');
+      minusButton.textContent = '-';
+
+      const plusButton = document.createElement('button');
+      plusButton.className = 'role-button increase';
+      plusButton.type = 'button';
+      plusButton.dataset.role = role.id;
+      plusButton.dataset.action = 'increase';
+      plusButton.setAttribute('aria-label', role.name + ' erhoehen');
+      plusButton.disabled = isRoleLimitReached();
+      plusButton.textContent = '+';
+
+      controls.append(minusButton, plusButton);
+      content.append(name, controls);
+
+      const count = document.createElement('span');
+      count.className = 'role-count';
+      count.textContent = role.count;
+
+      row.append(emoji, content, count);
+      return row;
+    }
+
+    function createOtherRoleElement(role) {
+      if (role.hiddenWhenInactive) return null;
+
+      const row = document.createElement('div');
+      row.className = 'role-list-row';
+
+      const emoji = document.createElement('span');
+      emoji.className = 'roles-emoji';
+      emoji.textContent = role.emoji;
+
+      const name = document.createElement('div');
+      name.className = 'role-list-name';
+      name.append(role.name, ' ', createInfoMark(role));
+
+      const plusButton = document.createElement('button');
+      plusButton.className = 'role-action role-button increase';
+      plusButton.type = 'button';
+      plusButton.dataset.role = role.id;
+      plusButton.dataset.action = 'increase';
+      plusButton.setAttribute('aria-label', role.name + ' hinzufuegen');
+      plusButton.disabled = isRoleLimitReached();
+      plusButton.textContent = '+';
+
+      row.append(emoji, name, plusButton);
+      return row;
+    }
+
+    function renderRoles() {
+      activeRolesContainer.innerHTML = '';
+      otherRolesContainer.innerHTML = '';
+
+      roles.forEach(function (role) {
+        if (role.count > 0) {
+          activeRolesContainer.appendChild(createActiveRoleElement(role));
+        } else {
+          const otherRoleElement = createOtherRoleElement(role);
+
+          if (otherRoleElement) {
+            otherRolesContainer.appendChild(otherRoleElement);
+          }
+        }
+      });
+    }
+
+    function changeRoleCount(roleId, amount) {
+      const role = getRole(roleId);
+
+      if (!role) return;
+
+      if (amount > 0 && isRoleLimitReached()) return;
+
+      role.count = Math.max(0, role.count + amount);
+      renderRoles();
+      saveRoles();
+    }
+
+    function handleRoleClick(event) {
+      const button = event.target.closest('.role-button[data-role][data-action]');
+
+      if (!button) return;
+
+      changeRoleCount(button.dataset.role, button.dataset.action === 'increase' ? 1 : -1);
+    }
+
+    function handleRoleInfoClick(event) {
+      const button = event.target.closest('.info-mark[data-role-info]');
+
+      if (!button) return;
+
+      openRoleInfo(getRole(button.dataset.roleInfo));
+    }
+
+    function resetRoles() {
+      roles = createDefaultRoles();
+      renderRoles();
+      saveRoles();
+      updateExtraRoleAvailability();
+    }
+
+    function setNarratorEnabled(isOn) {
+      updateNarratorSwitch(isOn);
+
+      if (!roles.length) {
+        resetRoles();
+        return;
+      }
+
+      const narratorRole = getRole('narrator');
+
+      if (!narratorRole) return;
+
+      narratorRole.count = isOn ? 1 : 0;
+      trimRolesToPlayerCount();
+      renderRoles();
+      saveRoles();
+      updateExtraRoleAvailability();
+    }
+
+    function shuffleItems(items) {
+      const shuffled = items.slice();
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        const currentItem = shuffled[index];
+        shuffled[index] = shuffled[swapIndex];
+        shuffled[swapIndex] = currentItem;
+      }
+
+      return shuffled;
+    }
+
+    function getActiveRoleCards() {
+      return roles.reduce(function (roleCards, role) {
+        for (let count = 0; count < role.count; count += 1) {
+          roleCards.push(role);
+        }
+
+        return roleCards;
+      }, []);
+    }
+
+    function getEnabledExtraRoleCards() {
+      const settings = getExtraRoleSettings();
+      const extraRoleCards = [];
+
+      ['twins', 'triplets'].forEach(function (roleId) {
+        const extraRole = extraRoleTemplates[roleId];
+
+        if (!settings[roleId] || !extraRole) return;
+
+        for (let count = 0; count < extraRole.count; count += 1) {
+          extraRoleCards.push(extraRole);
+        }
+      });
+
+      return extraRoleCards;
+    }
+
+    function assignExtraRoles(assignments) {
+      const eligibleIndexes = assignments.reduce(function (indexes, assignment, index) {
+        if (assignment.role.id !== 'narrator') {
+          indexes.push(index);
+        }
+
+        return indexes;
+      }, []);
+      const shuffledIndexes = shuffleItems(eligibleIndexes);
+      const extraRoleCards = getEnabledExtraRoleCards();
+
+      extraRoleCards.forEach(function (extraRole, index) {
+        const assignment = assignments[shuffledIndexes[index]];
+
+        if (!assignment) return;
+
+        assignment.extraRole = extraRole;
+      });
+    }
+
+    function showGameAlert(options) {
+      alertConfirmAction = typeof options.onConfirm === 'function' ? options.onConfirm : null;
+      alertCancelAction = typeof options.onCancel === 'function' ? options.onCancel : null;
+      gameAlertTitle.textContent = options.title || 'Hinweis';
+      gameAlertMessage.textContent = options.message || '';
+      gameAlertCancel.textContent = options.cancelText || 'Abbrechen';
+      gameAlertConfirm.textContent = options.confirmText || 'OK';
+      gameAlertCancel.hidden = Boolean(options.hideCancel);
+      gameAlertActions.classList.toggle('single', Boolean(options.hideCancel));
+      gameAlert.hidden = false;
+      gameAlertConfirm.focus();
+    }
+
+    function closeGameAlert(runCancelAction) {
+      gameAlert.hidden = true;
+
+      const cancelAction = alertCancelAction;
+      alertConfirmAction = null;
+      alertCancelAction = null;
+
+      if (runCancelAction && cancelAction) {
+        cancelAction();
+      }
+    }
+
+    function revealCurrentRole() {
+      roleCard.classList.remove('is-revealed');
+      nextRevealButton.hidden = false;
+      revealInstruction.textContent = revealIndex === revealQueue.length - 1
+        ? 'Alle Rollen wurden angesehen. Starte das Spiel, wenn ihr bereit seid.'
+        : 'Geraet an den naechsten Spieler weitergeben.';
+    }
+
+    function renderRevealStep() {
+      const currentAssignment = revealQueue[revealIndex];
+
+      if (!currentAssignment) return;
+
+      revealPlayerName.textContent = currentAssignment.player.name;
+      revealedRoleEmoji.textContent = currentAssignment.role.emoji + (currentAssignment.extraRole ? ' ' + currentAssignment.extraRole.emoji : '');
+      revealedRoleName.textContent = currentAssignment.role.name + (currentAssignment.extraRole ? ' + ' + currentAssignment.extraRole.name : '');
+      revealedRoleDescription.textContent = (currentAssignment.role.description || 'Beschreibung folgt.')
+        + (currentAssignment.extraRole ? '\n\n' + currentAssignment.extraRole.description : '');
+      roleCard.classList.remove('is-revealed');
+      nextRevealButton.hidden = true;
+      nextRevealButton.textContent = revealIndex === revealQueue.length - 1 ? 'Spiel Starten' : 'Weitergeben';
+      revealInstruction.textContent = 'Ziehe deine Karte nach oben, um deine Rolle zu sehen. Achte darauf, dass niemand sonst sie sieht.';
+    }
+
+    function startRoleRevealFlow() {
+      const shuffledPlayers = shuffleItems(players);
+      const shuffledRoles = shuffleItems(getActiveRoleCards());
+
+      revealQueue = shuffledPlayers.map(function (player, index) {
+        return {
+          player: player,
+          role: shuffledRoles[index]
+        };
+      });
+      assignExtraRoles(revealQueue);
+      revealIndex = 0;
+      renderRevealStep();
+      showView('roleRevealScreen');
+    }
+
+    function requestGameStart() {
+      updateExtraRoleAvailability();
+
+      const roleCount = getActiveRoleTotal(roles);
+      const playerCount = getPlayerCount();
+
+      if (roleCount !== playerCount) {
+        showGameAlert({
+          title: 'Rollen pruefen',
+          message: 'Bitte waehle eine gueltige Anzahl an Rollen.',
+          confirmText: 'OK',
+          hideCancel: true
+        });
+        return;
+      }
+
+      if (playerCount < 6) {
+        showGameAlert({
+          title: 'Weniger als 6 Spieler',
+          message: 'Empfehlung: Spielt Werwolf mindestens mit 6 Spielern.',
+          cancelText: 'Abbrechen',
+          confirmText: 'Trotzdem starten',
+          onConfirm: startRoleRevealFlow
+        });
+        return;
+      }
+
+      startRoleRevealFlow();
+    }
+
+    function requestLeaveGame() {
+      showGameAlert({
+        title: 'Spiel verlassen?',
+        message: 'Wenn du das Spiel verlaesst, kommst du zurueck ins Werwolf-Menue.',
+        cancelText: 'Abbrechen',
+        confirmText: 'Verlassen',
+        onConfirm: function () {
+          revealQueue = [];
+          revealIndex = 0;
+          showView('gameScreen');
+        }
+      });
+    }
+
+    function startNightTimer() {
+      nightProgressBar.style.transform = 'scaleX(1)';
+      nightProgressBar.style.transition = 'none';
+      
+      // Force reflow
+      nightProgressBar.offsetHeight;
+      
+      nightProgressBar.style.transition = 'transform 5s linear';
+      nightProgressBar.style.transform = 'scaleX(0)';
+      
+      showView('nightScreen');
+    }
+
+    function showView(targetId) {
+      views.forEach(function (view) {
+        view.classList.toggle('active', view.id === targetId);
+      });
+
+      phone.classList.toggle('detail-open', targetId === 'gameScreen' || targetId === 'rolesScreen' || targetId === 'advancedScreen' || targetId === 'roleRevealScreen' || targetId === 'gameReadyScreen' || targetId === 'nightScreen');
+
+      navButtons.forEach(function (navButton) {
+        navButton.classList.toggle('active', navButton.dataset.target === targetId);
+      });
+    }
+
+    addCategoryButton.addEventListener('click', function () {
+      openPlayerModal();
+    });
+
+    removeCategoryButton.addEventListener('click', function () {
+      if (players.length < 2) return;
+
+      players.pop();
+      savePlayers();
+      renderPlayers();
+      resetRoles();
+    });
+
+    categoryRow.addEventListener('click', function (event) {
+      const avatarButton = event.target.closest('.player-avatar-button');
+
+      if (!avatarButton) return;
+
+      const playerItem = avatarButton.closest('.category');
+      const playerIndex = Number(playerItem.dataset.playerIndex);
+
+      if (Number.isInteger(playerIndex)) {
+        openPlayerModal(playerIndex);
+      }
+    });
+
+    navButtons.forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        showView(button.dataset.target);
+      });
+    });
+
+    werwolfGame.addEventListener('click', function () {
+      showView('gameScreen');
+    });
+
+    werwolfGame.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showView('gameScreen');
+      }
+    });
+
+    backToHomeButton.addEventListener('click', function () {
+      showView('homeScreen');
+    });
+
+    openRolesButton.addEventListener('click', function () {
+      showView('rolesScreen');
+    });
+
+    openAdvancedButton.addEventListener('click', function () {
+      showView('advancedScreen');
+    });
+
+    backToGameButton.addEventListener('click', function () {
+      showView('gameScreen');
+    });
+
+    backFromAdvancedButton.addEventListener('click', function () {
+      showView('gameScreen');
+    });
+
+    startGameButton.addEventListener('click', requestGameStart);
+
+    closeRevealFlowButton.addEventListener('click', requestLeaveGame);
+
+    closeReadyFlowButton.addEventListener('click', requestLeaveGame);
+
+    startNightButton.addEventListener('click', startNightTimer);
+
+    closeNightFlowButton.addEventListener('click', function () {
+      showView('gameScreen');
+    });
+
+    gameAlertCancel.addEventListener('click', function () {
+      closeGameAlert(true);
+    });
+
+    gameAlertConfirm.addEventListener('click', function () {
+      const confirmAction = alertConfirmAction;
+      closeGameAlert(false);
+
+      if (confirmAction) {
+        confirmAction();
+      }
+    });
+
+    gameAlert.addEventListener('click', function (event) {
+      if (event.target === gameAlert) {
+        closeGameAlert(true);
+      }
+    });
+
+    roleCard.addEventListener('pointerdown', function (event) {
+      if (roleCard.classList.contains('is-revealed')) return;
+
+      dragStartY = event.clientY;
+      roleCard.classList.add('is-dragging');
+      roleCard.setPointerCapture(event.pointerId);
+    });
+
+    roleCard.addEventListener('pointermove', function (event) {
+      if (dragStartY === null || roleCard.classList.contains('is-revealed')) return;
+
+      const lift = Math.max(-revealCardLift, Math.min(0, event.clientY - dragStartY));
+      roleCard.style.transform = 'translate(-50%, ' + lift + 'px)';
+    });
+
+    roleCard.addEventListener('pointerup', function (event) {
+      if (dragStartY === null) return;
+
+      const liftDistance = dragStartY - event.clientY;
+      dragStartY = null;
+      roleCard.classList.remove('is-dragging');
+      roleCard.style.transform = '';
+
+      if (liftDistance >= revealSwipeThreshold) {
+        revealCurrentRole();
+      }
+    });
+
+    roleCard.addEventListener('pointercancel', function () {
+      dragStartY = null;
+      roleCard.classList.remove('is-dragging');
+      roleCard.style.transform = '';
+    });
+
+    roleCard.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        revealCurrentRole();
+      }
+    });
+
+    nextRevealButton.addEventListener('click', function () {
+      if (revealIndex >= revealQueue.length - 1) {
+        showView('gameReadyScreen');
+        return;
+      }
+
+      revealIndex += 1;
+      renderRevealStep();
+    });
+
+    narratorSwitch.addEventListener('click', function () {
+      setNarratorEnabled(!isNarratorEnabled());
+    });
+
+    mayorSwitch.addEventListener('click', function () {
+      setMayorEnabled(!mayorSwitch.classList.contains('on'));
+    });
+
+    twinsSwitch.addEventListener('click', function () {
+      setExtraRoleEnabled('twins', !twinsSwitch.classList.contains('on'));
+    });
+
+    tripletsSwitch.addEventListener('click', function () {
+      setExtraRoleEnabled('triplets', !tripletsSwitch.classList.contains('on'));
+    });
+
+    openAppDesignButton.addEventListener('click', openAppDesignModal);
+
+    closeAppDesignButton.addEventListener('click', closeAppDesignModal);
+
+    appDesignModal.addEventListener('click', function (event) {
+      if (event.target === appDesignModal) {
+        closeAppDesignModal();
+      }
+    });
+
+    closePlayerModalButton.addEventListener('click', closePlayerModal);
+
+    playerModal.addEventListener('click', function (event) {
+      if (event.target === playerModal) {
+        closePlayerModal();
+      }
+    });
+
+    closeRoleInfoButton.addEventListener('click', closeRoleInfo);
+
+    roleInfoModal.addEventListener('click', function (event) {
+      if (event.target === roleInfoModal) {
+        closeRoleInfo();
+      }
+    });
+
+    playerForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      acceptPlayerForm();
+    });
+
+    darkModeSwitch.addEventListener('click', function () {
+      setDarkModeEnabled(!darkModeSwitch.classList.contains('on'));
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !appDesignModal.hidden) {
+        closeAppDesignModal();
+      }
+
+      if (event.key === 'Escape' && !playerModal.hidden) {
+        closePlayerModal();
+      }
+
+      if (event.key === 'Escape' && !roleInfoModal.hidden) {
+        closeRoleInfo();
+      }
+
+      if (event.key === 'Escape' && !gameAlert.hidden) {
+        closeGameAlert(true);
+      }
+    });
+
+    activeRolesContainer.addEventListener('click', handleRoleInfoClick);
+    otherRolesContainer.addEventListener('click', handleRoleInfoClick);
+    activeRolesContainer.addEventListener('click', handleRoleClick);
+    otherRolesContainer.addEventListener('click', handleRoleClick);
+    resetRolesButton.addEventListener('click', resetRoles);
+
+    function getCurrentBannerIndex() {
+      return Math.round(bannerTrack.scrollLeft / bannerTrack.clientWidth);
+    }
+
+    function updateBannerDots(index) {
+      bannerDots.forEach(function (dot, dotIndex) {
+        dot.classList.toggle('active', dotIndex === index);
+      });
+    }
+
+    function goToBanner(index) {
+      bannerTrack.scrollTo({
+        left: index * bannerTrack.clientWidth,
+        behavior: 'smooth'
+      });
+      updateBannerDots(index);
+    }
+
+    function startBannerTimer() {
+      clearInterval(bannerTimer);
+      bannerTimer = setInterval(function () {
+        const nextIndex = (getCurrentBannerIndex() + 1) % bannerDots.length;
+        goToBanner(nextIndex);
+      }, 6000);
+    }
+
+    bannerTrack.addEventListener('scroll', function () {
+      window.clearTimeout(bannerTrack.scrollEndTimer);
+      bannerTrack.scrollEndTimer = window.setTimeout(function () {
+        updateBannerDots(getCurrentBannerIndex());
+      }, 80);
+    });
+
+    bannerTrack.addEventListener('pointerdown', startBannerTimer);
+
+    loadSavedPlayers();
+    loadMayorSetting();
+    loadExtraRoleSettings();
+    loadDarkModeSetting();
+    loadSavedRoles();
+    updateExtraRoleAvailability();
+    startBannerTimer();
+  </script>
+
+</body>
+</html>
