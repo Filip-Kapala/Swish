@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Swish</title>
   <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#262626">
+  <meta name="theme-color" content="#262626">
   <style>
     :root {
       --text: #111;
@@ -21,7 +21,6 @@
 * {
   box-sizing: border-box;
 }
-
 body {
   margin: 0;
   min-height: 100vh;
@@ -1520,6 +1519,34 @@ body.dark-mode .night-progress-bar {
   background: #f5f5f5;
 }
 
+.play-screen { background: var(--bg); color: var(--text); padding: 22px 18px 24px; overflow-y: auto; }
+.play-stage { min-height: calc(100% - 64px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
+.play-kicker { margin: 0; color: var(--muted); font-size: 14px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.play-title { margin: 0; font-size: 30px; line-height: 1.12; }
+.play-copy { max-width: 330px; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.4; white-space: pre-line; }
+.play-timer { width: min(100%, 300px); height: 12px; overflow: hidden; border-radius: 99px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
+.play-timer-fill { width: 100%; height: 100%; transform-origin: left; background: #1d1d20; }
+body.dark-mode .play-timer-fill { background: #f5f5f5; }
+.choice-list, .vote-list, .result-list { width: min(100%, 352px); display: grid; gap: 9px; max-height: 310px; overflow-y: auto; text-align: left; }
+.choice-player, .vote-row, .result-row { display: flex; align-items: center; gap: 12px; min-height: 55px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); color: var(--text); font: inherit; }
+button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
+.choice-player.selected { outline: 3px solid #1473e6; border-color: #1473e6; }
+.choice-emoji { font-size: 25px; }
+.choice-name { flex: 1; }
+.choice-note { color: var(--muted); font-size: 13px; }
+.action-options { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.action-options button, .vote-adjust { border: 0; border-radius: 20px; background: var(--soft); color: var(--text); padding: 9px 14px; font: inherit; font-weight: 750; cursor: pointer; box-shadow: inset 0 0 0 1px var(--line); }
+.action-options button.selected { background: #1473e6; color: #fff; box-shadow: none; }
+.vote-row { gap: 10px; }
+.vote-name { flex: 1; font-weight: 750; }
+.vote-adjust { width: 34px; height: 34px; padding: 0; font-size: 22px; line-height: 1; }
+.vote-count { min-width: 22px; text-align: center; font-weight: 800; }
+.vote-summary { margin: 0; color: var(--muted); font-weight: 700; }
+.result-row { justify-content: space-between; }
+.result-role { color: var(--muted); font-size: 14px; }
+.result-status { font-weight: 850; }
+.result-status.win { color: #16803c; }.result-status.lose { color: #bb3434; }
+
   </style>
 </head>
 <body>
@@ -2174,6 +2201,23 @@ body.dark-mode .night-progress-bar {
   </div>
 </section>
 
+<section class="screen view play-screen" id="playScreen" aria-label="Werwolf Spielrunde">
+  <div class="game-topbar">
+    <h1 class="wolf-flow-title">Werwolf</h1>
+    <button class="game-icon-button" id="closePlayFlow" type="button" aria-label="Spiel verlassen">✕</button>
+  </div>
+  <div class="play-stage">
+    <p class="play-kicker" id="playKicker">Nacht 1</p>
+    <h2 class="play-title" id="playTitle">Das Dorf schläft ein</h2>
+    <p class="play-copy" id="playCopy">Alle Spieler schließen ihre Augen.</p>
+    <div class="play-timer" id="playTimer"><div class="play-timer-fill" id="playTimerFill"></div></div>
+    <div class="action-options" id="playOptions"></div>
+    <div class="choice-list" id="playChoices"></div>
+    <p class="vote-summary" id="playSummary"></p>
+    <button class="flow-primary-button" id="playConfirm" type="button" hidden>Akzeptieren</button>
+  </div>
+</section>
+
 <nav class="bottom-nav" aria-label="Hauptnavigation">
   <a class="nav-button" href="#profile" aria-label="Profil" data-target="profileScreen">
     <svg width="27" height="27" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -2219,6 +2263,17 @@ body.dark-mode .night-progress-bar {
     const startNightButton = document.getElementById('startNightButton');
     const closeNightFlowButton = document.getElementById('closeNightFlow');
     const nightProgressBar = document.getElementById('nightProgressBar');
+    const playScreen = document.getElementById('playScreen');
+    const closePlayFlowButton = document.getElementById('closePlayFlow');
+    const playKicker = document.getElementById('playKicker');
+    const playTitle = document.getElementById('playTitle');
+    const playCopy = document.getElementById('playCopy');
+    const playTimer = document.getElementById('playTimer');
+    const playTimerFill = document.getElementById('playTimerFill');
+    const playOptions = document.getElementById('playOptions');
+    const playChoices = document.getElementById('playChoices');
+    const playSummary = document.getElementById('playSummary');
+    const playConfirm = document.getElementById('playConfirm');
     const roleCard = document.getElementById('roleCard');
     const revealPlayerName = document.getElementById('revealPlayerName');
     const revealedRoleEmoji = document.getElementById('revealedRoleEmoji');
@@ -2290,6 +2345,13 @@ body.dark-mode .night-progress-bar {
     let alertConfirmAction = null;
     let alertCancelAction = null;
     let dragStartY = null;
+    let gameState = null;
+    let playTimerId = null;
+    playOptions.addEventListener('click', function () {
+      if (gameState && gameState.phase === 'witch' && gameState.option === 'Ueberspringen') {
+        playConfirm.disabled = false;
+      }
+    });
     const revealCardLift = 238;
     const revealSwipeThreshold = 88;
 
@@ -2906,7 +2968,7 @@ body.dark-mode .night-progress-bar {
 
     function assignExtraRoles(assignments) {
       const eligibleIndexes = assignments.reduce(function (indexes, assignment, index) {
-        if (assignment.role.id !== 'narrator') {
+        if (assignment.role.id !== 'narrator' && assignment.role.id !== 'werewolf') {
           indexes.push(index);
         }
 
@@ -3028,30 +3090,243 @@ body.dark-mode .night-progress-bar {
         onConfirm: function () {
           revealQueue = [];
           revealIndex = 0;
+          gameState = null;
+          clearPlayTimer();
           showView('gameScreen');
         }
       });
     }
 
     function startNightTimer() {
-      nightProgressBar.style.transform = 'scaleX(1)';
-      nightProgressBar.style.transition = 'none';
-      
-      // Force reflow
-      nightProgressBar.offsetHeight;
-      
-      nightProgressBar.style.transition = 'transform 5s linear';
-      nightProgressBar.style.transform = 'scaleX(0)';
-      
-      showView('nightScreen');
+      gameState = {
+        round: 1, players: revealQueue.map(function (assignment, index) {
+          return { id: index, name: assignment.player.name, role: assignment.role.id, roleName: assignment.role.name,
+            emoji: assignment.role.emoji, alive: assignment.role.id !== 'narrator', lives: assignment.role.id === 'tree' ? 2 : 1,
+            team: assignment.role.id === 'werewolf' ? 'wolf' : assignment.role.id === 'angel' ? 'angel' : 'village',
+            lover: null, protected: false, lastHeal: null, blocked: false, copied: false, used: false,
+            extra: assignment.extraRole ? assignment.extraRole.id : null };
+        }), intents: {}, phase: null, selected: [], option: null, foxCanSniff: true, mayor: null, mayorEnabled: mayorSwitch.classList.contains('on')
+      };
+      beginNight();
     }
 
+    function livingPlayers() { return gameState.players.filter(function (player) { return player.alive; }); }
+    function playablePlayers() { return livingPlayers().filter(function (player) { return player.role !== 'narrator'; }); }
+    function playerById(id) { return gameState.players.find(function (player) { return player.id === Number(id); }); }
+    function roleLabel(role) { const template = roleTemplates.find(function (item) { return item.id === role; }) || extraRoleTemplates[role]; return template ? template.name : role; }
+    function clearPlayTimer() { if (playTimerId) window.clearTimeout(playTimerId); playTimerId = null; playTimer.hidden = true; }
+    function beginTimer(onEnd) {
+      clearPlayTimer(); playTimer.hidden = false; playTimerFill.style.transition = 'none'; playTimerFill.style.transform = 'scaleX(1)';
+      playTimerFill.offsetHeight; playTimerFill.style.transition = 'transform 5s linear'; playTimerFill.style.transform = 'scaleX(0)';
+      playTimerId = window.setTimeout(function () { playTimerId = null; if (onEnd) onEnd(); }, 5000);
+    }
+    function setPlay(title, copy, kicker) {
+      clearPlayTimer(); playKicker.textContent = kicker || ('Nacht ' + gameState.round); playTitle.textContent = title; playCopy.textContent = copy || '';
+      playOptions.innerHTML = ''; playChoices.innerHTML = ''; playSummary.textContent = ''; playConfirm.hidden = true; showView('playScreen');
+    }
+    function beginNight() {
+      gameState.intents = {}; livingPlayers().forEach(function (player) { player.protected = false; player.blocked = false; });
+      setPlay('Das Dorf schläft ein', 'Alle Spieler schließen ihre Augen.', 'Nacht ' + gameState.round);
+      beginTimer(runNightRoles);
+    }
+    function nightActors() {
+      const order = ['cupid', 'doppelganger', 'wild-child', 'twins', 'triplets', 'escort', 'cook', 'werewolf', 'healer', 'seer', 'fox', 'witch', 'kamikaze'];
+      return order.filter(function (role) {
+        if (role === 'twins' || role === 'triplets') {
+          const group = gameState.players.filter(function (player) { return player.extra === role; });
+          return group.length && group.every(function (player) { return player.alive; });
+        }
+        return livingPlayers().some(function (player) {
+          if (player.role !== role || player.blocked) return false;
+          if ((role === 'cupid' || role === 'doppelganger' || role === 'wild-child') && gameState.round !== 1) return false;
+          if (role === 'fox' && !gameState.foxCanSniff) return false;
+          if (role === 'cook' || role === 'kamikaze') return !player.used;
+          if (role === 'witch') return !player.used || !player.healUsed;
+          return true;
+        });
+      });
+    }
+    function runNightRoles() { gameState.roleQueue = nightActors(); gameState.roleIndex = 0; runNextRole(); }
+    function runNextRole() {
+      const role = gameState.roleQueue[gameState.roleIndex++];
+      if (!role) { resolveNight(); return; }
+      const actor = livingPlayers().find(function (player) { return (player.role === role || player.extra === role) && !player.blocked; });
+      if (!actor) { runNextRole(); return; }
+      showRoleAction(actor);
+    }
+    function choiceButtons(filter, max) {
+      playChoices.innerHTML = '';
+      playablePlayers().filter(filter || function () { return true; }).forEach(function (player) {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'choice-player'; button.dataset.id = player.id;
+        button.innerHTML = '<span class="choice-emoji">●</span><span class="choice-name"></span>';
+        button.querySelector('.choice-name').textContent = player.name;
+        button.addEventListener('click', function () {
+          const id = Number(button.dataset.id), index = gameState.selected.indexOf(id);
+          if (index >= 0) gameState.selected.splice(index, 1); else { if (gameState.selected.length >= (max || 1)) gameState.selected.shift(); gameState.selected.push(id); }
+          Array.from(playChoices.children).forEach(function (item) { item.classList.toggle('selected', gameState.selected.indexOf(Number(item.dataset.id)) >= 0); });
+          playConfirm.hidden = gameState.selected.length === 0 || (gameState.phase === 'cupid' && gameState.selected.length !== 2);
+          playConfirm.disabled = playConfirm.hidden;
+        }); playChoices.appendChild(button);
+      });
+    }
+    function showRoleAction(actor) {
+      const role = actor.role; gameState.phase = role; gameState.selected = []; gameState.option = null;
+      const texts = {
+        cupid: 'Wähle zwei Spieler, die sich ineinander verlieben.', doppelganger: 'Wähle die Rolle, die du kopierst.', 'wild-child': 'Wähle dein Vorbild.', escort: 'Wähle, bei wem du übernachtest.', cook: 'Wähle, wessen Fähigkeit heute Nacht ausfällt.', werewolf: 'Das Rudel wählt sein Opfer.', healer: 'Wähle einen Spieler, den du schützt.', seer: 'Wähle einen Spieler, dessen Rolle du sehen willst.', fox: 'Wähle einen Spieler. Du erfährst, ob dort oder daneben ein Wolf ist.', witch: 'Wähle optional Heil- oder Gifttrank und ein Ziel.', kamikaze: 'Wähle ein Opfer. Du stirbst mit ihm.'
+      };
+      setPlay(roleLabel(role) + ' erwacht', texts[role], 'Nacht ' + gameState.round);
+      if (role === 'witch') {
+        ['Heiltrank', 'Gifttrank', 'Überspringen'].forEach(function (label) { const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.disabled = (label === 'Heiltrank' && actor.healUsed) || (label === 'Gifttrank' && actor.poisonUsed); button.addEventListener('click', function () { gameState.option = label; Array.from(playOptions.children).forEach(function (b) { b.classList.toggle('selected', b === button); }); gameState.selected = []; choiceButtons(label === 'Heiltrank' ? function (p) { return gameState.intents.wolf === p.id; } : function (p) { return label !== 'Gifttrank' || p.id !== actor.id; }); playConfirm.hidden = label !== 'Überspringen'; }); playOptions.appendChild(button); });
+      } else choiceButtons(role === 'cupid' ? function () { return true; } : role === 'werewolf' ? function (p) { return p.team !== 'wolf'; } : function (p) { return !(role === 'doppelganger' && p.id === actor.id); }, role === 'cupid' ? 2 : 1);
+      if (role === 'cupid') { playConfirm.hidden = true; const old = playChoices.querySelectorAll; }
+      playConfirm.textContent = 'Akzeptieren';
+      playConfirm.onclick = acceptRoleAction;
+      beginTimer(function () { playCopy.textContent += '\nZeit abgelaufen – Auswahl jetzt bestätigen.'; });
+    }
+    function acceptRoleAction() {
+      const actor = livingPlayers().find(function (player) { return player.role === gameState.phase; }); const target = playerById(gameState.selected[0]);
+      if (!actor) { runNextRole(); return; }
+      if (gameState.phase === 'cupid' && gameState.selected.length === 2) { const a = playerById(gameState.selected[0]), b = playerById(gameState.selected[1]); a.lover = b.id; b.lover = a.id; }
+      else if (gameState.phase === 'doppelganger' && target) { actor.role = target.role; actor.roleName = target.roleName; actor.emoji = target.emoji; actor.team = target.team; actor.copied = true; }
+      else if (gameState.phase === 'wild-child' && target) actor.model = target.id;
+      else if (gameState.phase === 'escort' && target) gameState.intents.escort = { actor: actor.id, target: target.id };
+      else if (gameState.phase === 'cook' && target) { target.blocked = true; actor.used = true; }
+      else if (gameState.phase === 'werewolf' && target) gameState.intents.wolf = target.id;
+      else if (gameState.phase === 'healer' && target) { target.protected = true; actor.lastHeal = target.id; }
+      else if (gameState.phase === 'seer' && target) { playCopy.textContent = target.name + ' ist ' + target.roleName + '.'; }
+      else if (gameState.phase === 'fox' && target) { const list = playablePlayers(), pos = list.indexOf(target); gameState.foxCanSniff = list.slice(Math.max(0, pos - 1), pos + 2).some(function (p) { return p.team === 'wolf'; }); playCopy.textContent = gameState.foxCanSniff ? 'Du riechst einen Werwolf in dieser Gruppe.' : 'Du riechst keinen Werwolf.'; }
+      else if (gameState.phase === 'witch' && target) { if (gameState.option === 'Heiltrank') { gameState.intents.heal = target.id; actor.healUsed = true; } if (gameState.option === 'Gifttrank') { gameState.intents.poison = target.id; actor.poisonUsed = true; } }
+      else if (gameState.phase === 'kamikaze' && target) { gameState.intents.kamikaze = [actor.id, target.id]; actor.used = true; }
+      clearPlayTimer(); window.setTimeout(runNextRole, gameState.phase === 'seer' || gameState.phase === 'fox' ? 1500 : 0);
+    }
+    // Overrides: keep player targets anonymous and unlock interactions only after the five-second thinking time.
+    function showRoleAction(actor) {
+      const role = actor.extra === 'twins' || actor.extra === 'triplets' ? actor.extra : actor.role;
+      gameState.phase = role; gameState.selected = []; gameState.option = null;
+      const notes = { twins: 'Alle Zwillinge wachen auf und erkennen sich.', triplets: 'Alle Drillinge wachen auf und erkennen sich.', seer: 'Waehle einen anderen Spieler. Danach wird seine Rolle nur dir angezeigt.', kamikaze: 'Waehle ein Opfer oder ueberspringe. Nur mit Opfer stirbst du mit.' };
+      setPlay(roleLabel(role) + ' erwacht', notes[role] || 'Waehle einen Spieler fuer deine Faehigkeit.', 'Nacht ' + gameState.round);
+      if (role === 'twins' || role === 'triplets') { playConfirm.hidden = false; playConfirm.textContent = 'Weiter'; }
+      else if (role === 'witch') {
+        ['Heiltrank', 'Gifttrank', 'Ueberspringen'].forEach(function (label) { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.disabled = (label === 'Heiltrank' && actor.healUsed) || (label === 'Gifttrank' && actor.poisonUsed); b.addEventListener('click', function () { gameState.option = label; Array.from(playOptions.children).forEach(function (x) { x.classList.toggle('selected', x === b); }); gameState.selected = []; choiceButtons(label === 'Heiltrank' ? function (p) { return gameState.intents.wolf === p.id && !(p.role === 'tree' && p.lives > 1); } : function (p) { return label !== 'Gifttrank' || p.id !== actor.id; }); playConfirm.hidden = label !== 'Ueberspringen'; }); playOptions.appendChild(b); });
+      } else if (role === 'kamikaze') {
+        const skip = document.createElement('button'); skip.type = 'button'; skip.textContent = 'Niemanden toeten'; skip.addEventListener('click', function () { gameState.option = 'skip'; playConfirm.hidden = false; playConfirm.disabled = false; }); playOptions.appendChild(skip); choiceButtons(function (p) { return p.id !== actor.id; });
+      } else choiceButtons(role === 'cupid' ? function () { return true; } : role === 'werewolf' ? function (p) { return p.team !== 'wolf'; } : function (p) { return !(role === 'doppelganger' && p.id === actor.id) && !(role === 'seer' && p.id === actor.id) && !(role === 'healer' && p.id === actor.lastHeal); }, role === 'cupid' ? 2 : 1);
+      playConfirm.textContent = role === 'twins' || role === 'triplets' ? 'Weiter' : 'Akzeptieren'; playConfirm.onclick = acceptRoleAction;
+      Array.from(playOptions.querySelectorAll('button')).concat(Array.from(playChoices.querySelectorAll('button'))).forEach(function (b) { b.disabled = true; }); playConfirm.disabled = true;
+      beginTimer(function () { Array.from(playOptions.querySelectorAll('button')).concat(Array.from(playChoices.querySelectorAll('button'))).forEach(function (b) { b.disabled = false; }); playConfirm.disabled = playConfirm.hidden; playCopy.textContent += '\nDu kannst jetzt waehlen und bestaetigen.'; });
+    }
+    function acceptRoleAction() {
+      const actor = livingPlayers().find(function (p) { return p.role === gameState.phase || p.extra === gameState.phase; }); const target = playerById(gameState.selected[0]);
+      if (!actor) { runNextRole(); return; }
+      if (gameState.phase === 'twins' || gameState.phase === 'triplets') { clearPlayTimer(); runNextRole(); return; }
+      if (gameState.phase === 'cupid' && gameState.selected.length === 2) { const a = playerById(gameState.selected[0]), b = playerById(gameState.selected[1]); a.lover = b.id; b.lover = a.id; }
+      else if (gameState.phase === 'doppelganger' && target) { actor.role = target.role; actor.roleName = target.roleName; actor.emoji = target.emoji; actor.team = target.team; }
+      else if (gameState.phase === 'wild-child' && target) actor.model = target.id;
+      else if (gameState.phase === 'escort' && target) gameState.intents.escort = { actor: actor.id, target: target.id };
+      else if (gameState.phase === 'cook' && target) target.blocked = true;
+      else if (gameState.phase === 'werewolf' && target) gameState.intents.wolf = target.id;
+      else if (gameState.phase === 'healer' && target) { target.protected = true; actor.lastHeal = target.id; }
+      else if (gameState.phase === 'seer' && target) { clearPlayTimer(); playCopy.textContent = target.name + ' ist ' + target.roleName + '.'; playConfirm.disabled = false; playConfirm.hidden = false; playConfirm.textContent = 'Weiter'; playConfirm.onclick = runNextRole; return; }
+      else if (gameState.phase === 'fox' && target) { const list = playablePlayers(), pos = list.indexOf(target); gameState.foxCanSniff = list.slice(Math.max(0, pos - 1), pos + 2).some(function (p) { return p.team === 'wolf'; }); }
+      else if (gameState.phase === 'witch' && target) { if (gameState.option === 'Heiltrank') { gameState.intents.heal = target.id; actor.healUsed = true; } if (gameState.option === 'Gifttrank') { gameState.intents.poison = target.id; actor.poisonUsed = true; } }
+      else if (gameState.phase === 'kamikaze' && target && gameState.option !== 'skip') { gameState.intents.kamikaze = [actor.id, target.id]; actor.used = true; }
+      clearPlayTimer(); runNextRole();
+    }
+    function killPlayer(player, deaths) {
+      if (!player || !player.alive) return;
+      player.lives -= 1; if (player.lives > 0) return;
+      player.alive = false; deaths.push(player);
+      if (player.lover !== null) killPlayer(playerById(player.lover), deaths);
+      livingPlayers().forEach(function (child) { if (child.role === 'wild-child' && child.model === player.id) { child.role = 'werewolf'; child.roleName = 'Werwolf'; child.emoji = '🐺'; child.team = 'wolf'; } });
+    }
+    function resolveNight() {
+      const deaths = [], attacked = playerById(gameState.intents.wolf), escort = gameState.intents.escort;
+      const escortSafe = escort && attacked && escort.actor === attacked.id;
+      const guestAttack = escort && attacked && escort.target === attacked.id;
+      if (attacked && !attacked.protected && gameState.intents.heal !== attacked.id && !escortSafe) { killPlayer(attacked, deaths); if (guestAttack) killPlayer(playerById(escort.actor), deaths); }
+      const poison = playerById(gameState.intents.poison); if (poison && !poison.protected) killPlayer(poison, deaths);
+      (gameState.intents.kamikaze || []).forEach(function (id) { killPlayer(playerById(id), deaths); });
+      announceDay(deaths);
+    }
+    function announceDay(deaths) {
+      const names = deaths.map(function (p) { return p.name; });
+      setPlay('Der Tag bricht an', names.length ? 'Alle dürfen die Augen öffnen. Gestorben: ' + names.join(', ') + '.' : 'Alle dürfen die Augen öffnen. In dieser Nacht ist niemand gestorben.', 'Tag ' + gameState.round);
+      if (checkWinner(gameState.round === 1 && deaths.some(function (player) { return player.role === 'angel'; }))) return;
+      playConfirm.hidden = false; playConfirm.textContent = 'Beratung beginnen'; playConfirm.onclick = beginDiscussion;
+    }
+    function beginDiscussion() {
+      setPlay('Das Dorf berät sich', 'Diskutiert, wer heute verurteilt werden soll.', 'Tag ' + gameState.round); beginTimer(function () { playConfirm.hidden = false; playConfirm.textContent = 'Zur Abstimmung'; playConfirm.onclick = beginVote; });
+    }
+    function beginVote() {
+      clearPlayTimer(); const eligible = playablePlayers(), total = eligible.length; gameState.votes = {}; gameState.voteTotal = total;
+      setPlay('Abstimmung', 'Verteile insgesamt ' + total + ' Stimmen. Pro Person sind höchstens ' + Math.max(0, total - 1) + ' Stimmen möglich.', 'Tag ' + gameState.round);
+      playSummary.textContent = 'Noch zu vergeben: ' + total;
+      eligible.forEach(function (player) {
+        const row = document.createElement('div'); row.className = 'vote-row'; row.innerHTML = '<span class="vote-name"></span><button class="vote-adjust" type="button">−</button><span class="vote-count">0</span><button class="vote-adjust" type="button">+</button>';
+        row.querySelector('.vote-name').textContent = player.name; const buttons = row.querySelectorAll('button'), count = row.querySelector('.vote-count');
+        function update(delta) { const current = gameState.votes[player.id] || 0, used = Object.values(gameState.votes).reduce(function (a,b) { return a + b; }, 0); if (delta > 0 && (current >= total - 1 || used >= total)) return; if (delta < 0 && !current) return; gameState.votes[player.id] = current + delta; count.textContent = gameState.votes[player.id]; const now = Object.values(gameState.votes).reduce(function (a,b) { return a + b; }, 0); playSummary.textContent = 'Noch zu vergeben: ' + (total - now); playConfirm.hidden = now === 0; }
+        buttons[0].addEventListener('click', function () { update(-1); }); buttons[1].addEventListener('click', function () { update(1); }); playChoices.appendChild(row);
+      });
+      playConfirm.textContent = 'Abstimmung beenden'; playConfirm.onclick = finishVote;
+    }
+    function finishVote() {
+      const max = Math.max.apply(null, Object.values(gameState.votes)); const candidates = playablePlayers().filter(function (p) { return gameState.votes[p.id] === max; });
+      if (!candidates.length || candidates.length > 1) { setPlay('Keine Entscheidung', 'Bei Gleichstand stirbt niemand.', 'Tag ' + gameState.round); playConfirm.hidden = false; playConfirm.textContent = 'Nächste Nacht'; playConfirm.onclick = nextNight; return; }
+      const deaths = []; killPlayer(candidates[0], deaths); const angelWin = gameState.round === 1 && deaths.some(function (p) { return p.role === 'angel'; });
+      setPlay(candidates[0].name + ' stirbt', angelWin ? 'Der Engel hat seine Bedingung erfüllt.' : candidates[0].name + ' wurde vom Dorf verurteilt.', 'Tag ' + gameState.round);
+      if (checkWinner(angelWin)) return; playConfirm.hidden = false; playConfirm.textContent = 'Nächste Nacht'; playConfirm.onclick = nextNight;
+    }
+    function nextNight() { gameState.round += 1; beginNight(); }
+    function checkWinner(angelWin) {
+      const active = playablePlayers(), wolves = active.filter(function (p) { return p.team === 'wolf'; }); let winner = null;
+      if (angelWin) winner = 'angel'; else if (!wolves.length) winner = 'village'; else if (wolves.length >= active.length - wolves.length) winner = 'wolf';
+      if (!winner) return false; showResults(winner); return true;
+    }
+    function showResults(winner) {
+      const labels = { wolf: 'Die Werwölfe gewinnen', village: 'Das Dorf gewinnt', angel: 'Der Engel gewinnt' };
+      setPlay(labels[winner], 'Die Rollen werden aufgedeckt.', 'Spielende');
+      gameState.players.filter(function (p) { return p.role !== 'narrator'; }).forEach(function (player) { const row = document.createElement('div'); row.className = 'result-row'; const won = player.team === winner || (winner === 'village' && player.team === 'village'); row.innerHTML = '<span><strong></strong><span class="result-role"></span></span><span class="result-status"></span>'; row.querySelector('strong').textContent = player.name + ' · '; row.querySelector('.result-role').textContent = player.roleName; const status = row.querySelector('.result-status'); status.textContent = won ? 'Gewonnen' : 'Verloren'; status.classList.add(won ? 'win' : 'lose'); playChoices.appendChild(row); });
+      playConfirm.hidden = false; playConfirm.textContent = 'Nochmal spielen'; playConfirm.onclick = function () { gameState = null; revealQueue = []; showView('gameScreen'); };
+    }
+
+    function resolveHunter(deaths, done) {
+      const hunter = deaths.find(function (p) { return p.role === 'hunter' && !p.revengeUsed; });
+      if (!hunter) { done(); return; }
+      hunter.revengeUsed = true; gameState.phase = 'hunter'; gameState.selected = [];
+      setPlay('Der Jaeger stirbt', 'Der Jaeger waehlt einen Spieler, den er mit in den Tod reisst.', 'Nacht ' + gameState.round);
+      choiceButtons(function (p) { return p.id !== hunter.id; });
+      playConfirm.textContent = 'Mit in den Tod reissen'; playConfirm.hidden = true;
+      playConfirm.onclick = function () { killPlayer(playerById(gameState.selected[0]), deaths); resolveHunter(deaths, done); };
+    }
+    function resolveNight() {
+      const deaths = [], attacked = playerById(gameState.intents.wolf), escort = gameState.intents.escort;
+      const escortSafe = escort && attacked && escort.actor === attacked.id, guestAttack = escort && attacked && escort.target === attacked.id;
+      if (attacked && !attacked.protected && gameState.intents.heal !== attacked.id && !escortSafe) { killPlayer(attacked, deaths); if (guestAttack) killPlayer(playerById(escort.actor), deaths); }
+      const poison = playerById(gameState.intents.poison); if (poison && !poison.protected) killPlayer(poison, deaths);
+      (gameState.intents.kamikaze || []).forEach(function (id) { killPlayer(playerById(id), deaths); });
+      resolveHunter(deaths, function () { announceDay(deaths); });
+    }
+    function beginMayorElection() {
+      setPlay('Buergermeisterwahl', 'Waehlt den Buergermeister. Seine Stimme zaehlt bei jeder Abstimmung doppelt.', 'Tag 1');
+      playablePlayers().forEach(function (player) { const b = document.createElement('button'); b.type = 'button'; b.className = 'choice-player'; b.innerHTML = '<span class="choice-emoji">●</span><span class="choice-name"></span>'; b.querySelector('.choice-name').textContent = player.name; b.addEventListener('click', function () { gameState.mayor = player.id; Array.from(playChoices.children).forEach(function (item) { item.classList.toggle('selected', item === b); }); playConfirm.hidden = false; }); playChoices.appendChild(b); });
+      playConfirm.textContent = 'Als Buergermeister waehlen'; playConfirm.hidden = true; playConfirm.onclick = beginDiscussion;
+    }
+    function announceDay(deaths) {
+      const names = deaths.map(function (p) { return p.name; }); setPlay('Der Tag bricht an', names.length ? 'Alle oeffnen die Augen. Gestorben: ' + names.join(', ') + '.' : 'Alle oeffnen die Augen. Niemand ist gestorben.', 'Tag ' + gameState.round);
+      if (checkWinner(gameState.round === 1 && deaths.some(function (p) { return p.role === 'angel'; }))) return;
+      playConfirm.hidden = false; playConfirm.textContent = gameState.round === 1 && gameState.mayorEnabled && gameState.mayor === null ? 'Buergermeisterwahl' : 'Beratung beginnen'; playConfirm.onclick = gameState.round === 1 && gameState.mayorEnabled && gameState.mayor === null ? beginMayorElection : beginDiscussion;
+    }
+    function beginVote() {
+      clearPlayTimer(); const eligible = playablePlayers(), total = eligible.length + (gameState.mayor !== null ? 1 : 0); gameState.votes = {}; gameState.voteTotal = total;
+      setPlay('Abstimmung', 'Verteile insgesamt ' + total + ' Stimmen. Der Buergermeister hat zwei Stimmen.', 'Tag ' + gameState.round); playSummary.textContent = 'Noch zu vergeben: ' + total;
+      eligible.forEach(function (player) { const row = document.createElement('div'); row.className = 'vote-row'; row.innerHTML = '<span class="vote-name"></span><button class="vote-adjust" type="button">-</button><span class="vote-count">0</span><button class="vote-adjust" type="button">+</button>'; row.querySelector('.vote-name').textContent = player.name + (player.id === gameState.mayor ? ' (Buergermeister)' : ''); const buttons = row.querySelectorAll('button'), count = row.querySelector('.vote-count'); function update(d) { const cur = gameState.votes[player.id] || 0, used = Object.values(gameState.votes).reduce(function (a,b) { return a+b; },0); if (d > 0 && (cur >= total - 1 || used >= total)) return; if (d < 0 && !cur) return; gameState.votes[player.id] = cur+d; count.textContent = gameState.votes[player.id]; const now = Object.values(gameState.votes).reduce(function(a,b){return a+b;},0); playSummary.textContent = 'Noch zu vergeben: ' + (total-now); playConfirm.hidden = now === 0; } buttons[0].onclick = function(){update(-1);}; buttons[1].onclick = function(){update(1);}; playChoices.appendChild(row); }); playConfirm.textContent = 'Abstimmung beenden'; playConfirm.onclick = finishVote;
+    }
     function showView(targetId) {
       views.forEach(function (view) {
         view.classList.toggle('active', view.id === targetId);
       });
 
-      phone.classList.toggle('detail-open', targetId === 'gameScreen' || targetId === 'rolesScreen' || targetId === 'advancedScreen' || targetId === 'roleRevealScreen' || targetId === 'gameReadyScreen' || targetId === 'nightScreen');
+      phone.classList.toggle('detail-open', targetId === 'gameScreen' || targetId === 'rolesScreen' || targetId === 'advancedScreen' || targetId === 'roleRevealScreen' || targetId === 'gameReadyScreen' || targetId === 'nightScreen' || targetId === 'playScreen');
 
       navButtons.forEach(function (navButton) {
         navButton.classList.toggle('active', navButton.dataset.target === targetId);
@@ -3133,6 +3408,8 @@ body.dark-mode .night-progress-bar {
     closeNightFlowButton.addEventListener('click', function () {
       showView('gameScreen');
     });
+
+    closePlayFlowButton.addEventListener('click', requestLeaveGame);
 
     gameAlertCancel.addEventListener('click', function () {
       closeGameAlert(true);
@@ -3321,6 +3598,25 @@ body.dark-mode .night-progress-bar {
     loadSavedRoles();
     updateExtraRoleAvailability();
     startBannerTimer();
+
+
+ // Dein bisheriger JavaScript-Code
+    // z.B. Funktionen, Buttons usw.
+
+
+    // Service Worker registrieren:
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("./service-worker.js")
+                .then(() => {
+                    console.log("Service Worker aktiv");
+                })
+                .catch(error => {
+                    console.log("Fehler:", error);
+                });
+        });
+    }
+
   </script>
 
 </body>
