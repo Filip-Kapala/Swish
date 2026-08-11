@@ -1,4 +1,4 @@
-const CACHE_NAME = "swish-v1.0.0";
+const CACHE_NAME = "swish-v1.0.10";
 
 const urlsToCache = [
   "./",
@@ -35,6 +35,12 @@ self.addEventListener("activate", event => {
       );
     })
   );
+});
+
+self.addEventListener("message", event => {
+  if (event.data && event.data.type === "GET_CACHE_NAME" && event.ports[0]) {
+    event.ports[0].postMessage(CACHE_NAME);
+  }
 });
 
 

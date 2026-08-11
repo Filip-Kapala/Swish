@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Swish</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <meta name="theme-color" content="#262626">
   <style>
     :root {
@@ -427,6 +429,24 @@ h2 {
   font-size: 16px;
   font-weight: 800;
   cursor: pointer;
+}
+
+.player-remove {
+  width: 100%;
+  height: 42px;
+  margin-top: 10px;
+  border: 1px solid #c83b3b;
+  border-radius: 8px;
+  background: transparent;
+  color: #b42d2d;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.category.is-reordering {
+  opacity: .58;
+  transform: scale(.92);
 }
 
 body.dark-mode .player-accept {
@@ -1330,8 +1350,9 @@ body.dark-mode .flow-primary-button {
   height: 44px;
   border: 0;
   border-radius: 50%;
-  background: transparent;
+  background: #e5e5e5;
   color: #111;
+  box-shadow: inset 0 0 0 1px #bdbdbd;
   display: grid;
   place-items: center;
   padding: 0;
@@ -1339,7 +1360,21 @@ body.dark-mode .flow-primary-button {
 }
 
 .reset-button:active {
-  background: #f2f2f2;
+  background: #d2d2d2;
+}
+
+body.dark-mode .reset-button {
+  background: #3a3a40;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px #777781;
+}
+
+.game-icon-button.is-favorite {
+  color: #e53935;
+}
+
+.game-icon-button.is-favorite svg {
+  fill: currentColor;
 }
 
 .reset-button svg {
@@ -1429,6 +1464,31 @@ body.dark-mode .role-count {
   font-size: 26px;
   font-weight: 800;
 }
+
+.role-group-title {
+  margin: 18px 18px 6px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #777;
+}
+
+.role-group-title:first-child { margin-top: 12px; }
+
+.role-order-row {
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px;
+}
+
+.role-order-row + .role-order-row { border-top: 1px solid #dcdcdc; }
+.role-order-actions { display: flex; gap: 6px; }
+.role-order-actions button { width: 34px; height: 34px; border: 0; border-radius: 50%; background: #eee; color: var(--text); font-size: 18px; cursor: pointer; }
+body.dark-mode .role-order-actions button { background: #2a2a2e; }
 
 .role-list-row {
   height: 66px;
@@ -1523,6 +1583,7 @@ body.dark-mode .night-progress-bar {
 .play-stage { min-height: calc(100% - 64px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
 .play-kicker { margin: 0; color: var(--muted); font-size: 14px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .play-title { margin: 0; font-size: 30px; line-height: 1.12; }
+.play-title.is-role-reveal { font-size: 52px; line-height: 1.08; }
 .play-copy { max-width: 330px; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.4; white-space: pre-line; }
 .play-timer { width: min(100%, 300px); height: 12px; overflow: hidden; border-radius: 99px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
 .play-timer-fill { width: 100%; height: 100%; transform-origin: left; background: #1d1d20; }
@@ -1530,6 +1591,7 @@ body.dark-mode .play-timer-fill { background: #f5f5f5; }
 .choice-list, .vote-list, .result-list { width: min(100%, 352px); display: grid; gap: 9px; max-height: 310px; overflow-y: auto; text-align: left; }
 .choice-player, .vote-row, .result-row { display: flex; align-items: center; gap: 12px; min-height: 55px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); color: var(--text); font: inherit; }
 button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
+button.choice-player:disabled, .action-options button:disabled, .flow-primary-button:disabled { pointer-events: none; cursor: not-allowed; opacity: .52; }
 .choice-player.selected { outline: 3px solid #1473e6; border-color: #1473e6; }
 .choice-emoji { font-size: 25px; }
 .choice-name { flex: 1; }
@@ -1546,6 +1608,39 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 .result-role { color: var(--muted); font-size: 14px; }
 .result-status { font-weight: 850; }
 .result-status.win { color: #16803c; }.result-status.lose { color: #bb3434; }
+
+.account-screen { overflow-y: auto; padding: 22px 32px calc(var(--nav-height) + 28px); }
+.account-auth { min-height: calc(100% - 20px); display: flex; flex-direction: column; justify-content: center; text-align: center; }
+.account-auth[hidden], .account-dashboard[hidden] { display: none; }
+.account-logo { margin: 0 0 120px; font-size: 40px; font-weight: 900; letter-spacing: -.04em; }
+.account-auth h1 { margin: 0 0 10px; font-size: 30px; letter-spacing: -.03em; }
+.account-auth-copy { margin: 0 0 30px; color: var(--muted); font-size: 17px; line-height: 1.35; }
+.account-form { display: grid; gap: 12px; }
+.account-field { width: 100%; height: 58px; padding: 0 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); color: var(--text); font: inherit; font-size: 17px; outline: none; }
+.account-field:focus { border-color: #2869ee; box-shadow: 0 0 0 3px rgba(40,105,238,.15); }
+.account-submit, .account-secondary { min-height: 56px; border: 0; border-radius: 14px; font: inherit; font-size: 18px; font-weight: 800; cursor: pointer; }
+.account-submit { margin-top: 4px; background: var(--text); color: var(--bg); }
+.account-secondary { background: var(--soft); color: var(--text); }
+.account-form-note { min-height: 21px; margin: 6px 0 0; color: #c53535; font-size: 13px; }
+.account-switch { margin: 26px 0 0; color: var(--muted); font-size: 14px; }
+.account-link { border: 0; background: none; padding: 0; color: var(--text); font: inherit; font-weight: 800; cursor: pointer; text-decoration: underline; }
+.account-dashboard { display: grid; gap: 22px; padding-bottom: 10px; }
+.account-header { display: grid; grid-template-columns: 1fr 42px; align-items: center; min-height: 50px; }
+.account-header h1 { margin: 0; text-align: center; font-size: 29px; letter-spacing: -.04em; }
+.account-avatar { width: 42px; height: 42px; border: 0; border-radius: 50%; background: #ffb11d center / cover no-repeat; color: #111; font: inherit; font-weight: 900; cursor: pointer; }
+.account-details { display: none; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--soft); }
+.account-details.open { display: grid; gap: 5px; }
+.account-details-name { font-weight: 900; font-size: 18px; }.account-details-email { color: var(--muted); font-size: 14px; }
+.account-logout { justify-self: start; margin-top: 7px; border: 0; background: transparent; color: #c53535; padding: 0; font: inherit; font-weight: 800; cursor: pointer; }
+.account-edit-toggle { justify-self: start; border: 0; background: transparent; color: var(--text); padding: 0; font: inherit; font-weight: 800; cursor: pointer; }
+.account-edit { display: grid; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }.account-edit[hidden] { display: none; }
+.account-edit label { display: grid; gap: 5px; color: var(--muted); font-size: 12px; font-weight: 750; }.account-edit input { height: 42px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--text); font: inherit; }.account-edit input[type="file"] { height: auto; padding: 8px; font-size: 12px; }.account-edit button { min-height: 42px; border: 0; border-radius: 10px; background: var(--text); color: var(--bg); font: inherit; font-weight: 800; cursor: pointer; }.account-edit-note { min-height: 16px; margin: 0; color: #c53535; font-size: 12px; }
+.wins-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; overflow-x: auto; }
+.wins-summary-card { min-width: 190px; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }.wins-summary-card span { display: block; color: var(--muted); font-size: 14px; font-weight: 700; }.wins-summary-card strong { display: block; margin-top: 10px; font-size: 36px; line-height: 1; }
+.account-card { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg); }.account-card h2 { margin: 0 0 18px; font-size: 22px; }
+.wins-list { display: grid; gap: 13px; }.wins-row { display: grid; grid-template-columns: minmax(70px,1fr) 1fr 30px; gap: 10px; align-items: center; font-size: 15px; font-weight: 750; }.wins-bar { height: 10px; overflow: hidden; border-radius: 99px; background: var(--soft); }.wins-bar > span { display: block; height: 100%; border-radius: inherit; background: #2f6df6; }
+.victory-chart { width: 100%; height: 190px; display: block; }.victory-chart line { stroke: var(--line); stroke-width: 1; }.victory-chart path { fill: none; stroke: #2f6df6; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }.victory-chart .area { fill: rgba(47,109,246,.12); stroke: none; }.victory-chart circle { fill: #2f6df6; }
+.friend-list { display: grid; gap: 15px; }.friend-row { display: flex; align-items: center; gap: 12px; }.friend-avatar { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: #e8d8bd; color: #4c3520; font-weight: 900; }.friend-name { font-weight: 800; }.friend-note { margin-top: 3px; color: var(--muted); font-size: 13px; }
 
   </style>
 </head>
@@ -1596,7 +1691,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
   <div class="section-header">
     <h2>Spieler</h2>
-    <button class="icon-pill" id="addCategory" type="button" aria-label="Hinzufuegen">
+    <button class="icon-pill" id="addCategory" type="button" aria-label="Hinzufügen">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
         <path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
@@ -1625,7 +1720,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
   </div>
 
   <div class="products" aria-label="Produkte">
-    <article class="product clickable" id="werwolfGame" tabindex="0" role="button" aria-label="Werwolf das Spiel oeffnen">
+    <article class="product clickable" id="werwolfGame" tabindex="0" role="button" aria-label="Werwolf das Spiel öffnen">
       <img src="img/card/werwolf/werwolf-card.png" alt="Werwolf das Spiel">
       <div class="brand">6+ Spieler</div>
       <div class="name">Werwolf das Spiel</div>
@@ -1643,7 +1738,52 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
   </div>
 </section>
 
-<section class="screen view" id="profileScreen" aria-label="Profil">
+<section class="screen view account-screen" id="profileScreen" aria-label="Profil und Konto">
+  <div class="account-auth" id="accountAuth">
+    <div class="account-logo">Swish</div>
+    <h1 id="accountAuthTitle">Konto erstellen</h1>
+    <p class="account-auth-copy" id="accountAuthCopy">Erstelle dein Konto und behalte deine Siege im Blick.</p>
+    <form class="account-form" id="accountForm">
+      <input class="account-field" id="accountUsername" type="text" maxlength="20" autocomplete="username" placeholder="Nutzername" required>
+      <input class="account-field" id="accountEmail" type="email" autocomplete="email" placeholder="E-Mail-Adresse" required>
+      <input class="account-field" id="accountPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Passwort (mindestens 8 Zeichen)" required>
+      <button class="account-submit" id="accountSubmit" type="submit">Konto erstellen</button>
+      <p class="account-form-note" id="accountFormNote" role="alert"></p>
+    </form>
+    <p class="account-switch" id="accountSwitchText">Bereits ein Konto? <button class="account-link" id="accountSwitch" type="button">Anmelden</button></p>
+  </div>
+  <div class="account-dashboard" id="accountDashboard" hidden>
+    <header class="account-header">
+      <h1>Swish</h1>
+      <button class="account-avatar" id="accountAvatar" type="button" aria-label="Profil öffnen"></button>
+    </header>
+    <div class="account-details" id="accountDetails">
+      <span class="account-details-name" id="accountDetailsName"></span>
+      <span class="account-details-email" id="accountDetailsEmail"></span>
+      <button class="account-edit-toggle" id="accountEditToggle" type="button">Profil bearbeiten</button>
+      <button class="account-logout" id="accountLogout" type="button">Abmelden</button>
+      <form class="account-edit" id="accountEditForm" hidden>
+        <label>Nutzername<input id="accountEditUsername" type="text" minlength="3" maxlength="20" required></label>
+        <label>Profilbild aus Galerie<input id="accountEditAvatar" type="file" accept="image/*"></label>
+        <label>Aktuelles Passwort<input id="accountCurrentPassword" type="password" autocomplete="current-password" placeholder="Nur für Passwortwechsel nötig"></label>
+        <label>Neues Passwort<input id="accountNewPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Mindestens 8 Zeichen"></label>
+        <button type="submit">Änderungen speichern</button>
+        <p class="account-edit-note" id="accountEditNote" role="alert"></p>
+      </form>
+    </div>
+    <div class="wins-summary" id="winsSummary"></div>
+    <section class="account-card">
+      <h2>Siege insgesamt</h2>
+      <svg class="victory-chart" viewBox="0 0 300 190" role="img" aria-label="Diagramm der gesamten Siege">
+        <line x1="0" y1="150" x2="300" y2="150"/><line x1="0" y1="105" x2="300" y2="105"/><line x1="0" y1="60" x2="300" y2="60"/>
+        <path class="area" id="victoryArea" d="M8 150 L292 150 Z"></path><path id="victoryLine" d="M8 150 L292 150"></path><circle id="victoryPoint" cx="292" cy="150" r="5"></circle>
+      </svg>
+    </section>
+    <section class="account-card">
+      <h2>Freunde</h2>
+      <div class="friend-list" id="friendList"></div>
+    </section>
+  </div>
 </section>
 
 <section class="screen view settings-screen" id="settingsScreen" aria-label="Einstellungen">
@@ -1655,7 +1795,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     <img src="img/banner/container-banner.png" alt="Swish Einstellungen">
     <div class="settings-hero-text">
       <div class="settings-hero-kicker">Swish</div>
-      <h2 class="settings-hero-title">Alles bereit fuer die naechste Runde</h2>
+      <h2 class="settings-hero-title">Alles bereit für die nächste Runde</h2>
     </div>
   </div>
 
@@ -1711,7 +1851,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         </span>
         <span>
           <span class="settings-link-title">App bewerten</span>
-          <span class="settings-link-note">Sag uns, wie dir Swish gefaellt</span>
+          <span class="settings-link-note">Sag uns, wie dir Swish gefällt</span>
         </span>
       </span>
       <span class="settings-link-meta">
@@ -1720,7 +1860,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         </svg>
       </span>
     </button>
-    <button class="settings-link" type="button">
+    <button class="settings-link" id="inviteFriends" type="button">
       <span class="settings-link-main">
         <span class="settings-link-icon">
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1744,7 +1884,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
   </div>
 
   <div class="settings-group">
-    <button class="settings-link" type="button">
+    <button class="settings-link" id="languageSetting" type="button">
       <span class="settings-link-main">
         <span class="settings-link-icon">
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1754,10 +1894,10 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         </span>
         <span>
           <span class="settings-link-title">Sprache</span>
-          <span class="settings-link-note">Deutsch</span>
+          <span class="settings-link-note" id="languageSettingNote">Deutsch</span>
         </span>
       </span>
-      <span class="settings-link-meta">DE</span>
+      <span class="settings-link-meta" id="languageSettingCode">DE</span>
     </button>
     <button class="settings-link" type="button">
       <span class="settings-link-main">
@@ -1790,7 +1930,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         </span>
         <span>
           <span class="settings-link-title">Datenschutz</span>
-          <span class="settings-link-note">Daten und Privatsphaere</span>
+          <span class="settings-link-note">Daten und Privatsphäre</span>
         </span>
       </span>
       <span class="settings-link-meta">
@@ -1840,7 +1980,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
   </div>
 
   <div class="settings-group">
-    <a class="settings-link" href="https://www.instagram.com/_filip_k_k/" target="_blank" rel="noopener noreferrer" aria-label="Instagram Profil von Filip oeffnen">
+    <a class="settings-link" href="https://www.instagram.com/_filip_k_k/" target="_blank" rel="noopener noreferrer" aria-label="Instagram Profil von Filip öffnen">
       <span class="settings-link-main">
         <span class="settings-social-icon instagram">IG</span>
         <span>
@@ -1854,7 +1994,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         </svg>
       </span>
     </a>
-    <a class="settings-link" href="https://www.tiktok.com/@filip.k.k" target="_blank" rel="noopener noreferrer" aria-label="TikTok Profil von Filip oeffnen">
+    <a class="settings-link" href="https://www.tiktok.com/@filip.k.k" target="_blank" rel="noopener noreferrer" aria-label="TikTok Profil von Filip öffnen">
       <span class="settings-link-main">
         <span class="settings-social-icon tiktok">TT</span>
         <span>
@@ -1870,7 +2010,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     </a>
   </div>
 
-  <p class="settings-version">Swish Testversion 1.0.0</p>
+  <p class="settings-version" id="settingsVersion">Version wird geladen …</p>
 </section>
 
 <div class="design-modal" id="appDesignModal" hidden>
@@ -1896,7 +2036,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 <div class="player-modal" id="playerModal" hidden>
   <div class="player-panel" role="dialog" aria-modal="true" aria-labelledby="playerModalTitle">
     <div class="player-panel-header">
-      <h2 class="player-panel-title" id="playerModalTitle">Spieler hinzufuegen</h2>
+      <h2 class="player-panel-title" id="playerModalTitle">Spieler hinzufügen</h2>
       <button class="player-close" id="closePlayerModal" type="button" aria-label="Schliessen">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
@@ -1909,12 +2049,13 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         <input class="player-name-input" id="playerNameInput" type="text" maxlength="18" autocomplete="off" required>
       </label>
       <span class="player-avatar-label">Spieler</span>
-      <div class="player-avatar-options" aria-label="Spieler auswaehlen">
-        <button class="player-avatar-option" type="button" aria-label="Standard Spieler ausgewaehlt" aria-pressed="true">
+      <div class="player-avatar-options" aria-label="Spieler auswählen">
+        <button class="player-avatar-option" type="button" aria-label="Standard-Spieler ausgewählt" aria-pressed="true">
           <img src="img/player/container-player.png" alt="">
         </button>
       </div>
       <button class="player-accept" type="submit">Akzeptieren</button>
+      <button class="player-remove" id="removePlayerFromModal" type="button" hidden>Spieler entfernen</button>
     </form>
   </div>
 </div>
@@ -1950,18 +2091,18 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
 <section class="screen view game-screen" id="gameScreen" aria-label="Werwolf das Spiel">
   <div class="game-topbar">
-    <button class="game-icon-button" id="backToHome" type="button" aria-label="Zurueck">
+    <button class="game-icon-button" id="backToHome" type="button" aria-label="Zurück">
       <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
     <div class="game-actions">
-      <button class="game-icon-button" type="button" aria-label="Favorit">
+      <button class="game-icon-button" id="favoriteWerwolf" type="button" aria-label="Zu Favoriten hinzufügen" aria-pressed="false">
         <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M20.4 5.6a5 5 0 0 0-7.1 0L12 6.9l-1.3-1.3a5 5 0 0 0-7.1 7.1L12 21l8.4-8.3a5 5 0 0 0 0-7.1Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
         </svg>
       </button>
-      <button class="game-icon-button" type="button" aria-label="Hilfe">
+      <button class="game-icon-button" id="werwolfHelp" type="button" aria-label="Spiel erklären">
         <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.2"/>
           <path d="M9.8 9a2.4 2.4 0 0 1 4.6 1c0 1.8-2.4 2-2.4 3.7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
@@ -1990,7 +2131,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         <span class="setting-emoji">🎙️</span>
         <span>Erzähler</span>
       </div>
-      <button class="switch" id="narratorSwitch" type="button" aria-label="Erzaehler einschalten" aria-pressed="false"></button>
+      <button class="switch" id="narratorSwitch" type="button" aria-label="Erzähler einschalten" aria-pressed="false"></button>
     </div>
     <button class="setting-row" id="openAdvanced" type="button">
       <div class="setting-main">
@@ -2000,6 +2141,10 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
+    </button>
+    <button class="setting-row" id="openRoleOrder" type="button">
+      <div class="setting-main"><span class="setting-emoji">🧠</span><span>Reihenfolge</span></div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </div>
 
@@ -2012,7 +2157,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
 <section class="screen view roles-screen" id="rolesScreen" aria-label="Rollen">
   <div class="roles-header">
-    <button class="game-icon-button" id="backToGame" type="button" aria-label="Zurueck">
+    <button class="game-icon-button" id="backToGame" type="button" aria-label="Zurück">
       <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -2021,7 +2166,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
   <div class="roles-section-title">
     <span>Aktive Rollen</span>
-    <button class="reset-button" id="resetRoles" type="button" aria-label="Zuruecksetzen">
+    <button class="reset-button" id="resetRoles" type="button" aria-label="Zurücksetzen">
       <svg width="31" height="31" viewBox="0 0 32 32" fill="none" aria-hidden="true">
         <path d="M26.2 18.5a10.5 10.5 0 0 1-16.9 5.7" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
         <path d="M21.9 19.4 26.2 18.5l.9 4.4" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2050,7 +2195,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     </div>
   </div>
 
-  <h2 class="other-roles-title">Andere Rollen</h2>
+  <h2 class="other-roles-title" id="otherRolesTitle">Andere Rollen</h2>
   <div class="roles-card" id="otherRoles">
     <div class="role-list-row">
       <span class="roles-emoji">🔮</span>
@@ -2087,7 +2232,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
 <section class="screen view roles-screen" id="advancedScreen" aria-label="Erweitert">
   <div class="roles-header">
-    <button class="game-icon-button" id="backFromAdvanced" type="button" aria-label="Zurueck">
+    <button class="game-icon-button" id="backFromAdvanced" type="button" aria-label="Zurück">
       <svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -2104,7 +2249,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         <span class="setting-emoji">🏛️</span>
         <span>Bürgermeister</span>
       </div>
-      <button class="switch" id="mayorSwitch" type="button" aria-label="Buergermeister einschalten" aria-pressed="false"></button>
+      <button class="switch" id="mayorSwitch" type="button" aria-label="Bürgermeister einschalten" aria-pressed="false"></button>
     </div>
     <div class="setting-row">
       <div class="setting-main">
@@ -2120,11 +2265,28 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       </div>
       <button class="switch" id="tripletsSwitch" type="button" aria-label="Drillinge einschalten" aria-pressed="false"></button>
     </div>
+    <div class="setting-row">
+      <div class="setting-main"><span class="setting-emoji">👍🏻</span><span>Reine Seele</span></div>
+      <button class="switch" id="pureSoulSwitch" type="button" aria-label="Reine Seele einschalten" aria-pressed="false"></button>
+    </div>
   </div>
 
   <div class="roles-section-title">
     <span>Extra Regeln</span>
   </div>
+  <div class="roles-card">
+    <div class="setting-row"><div class="setting-main"><span class="setting-emoji">🔄</span><span>Spieler Karussell</span></div><button class="switch" id="playerCarouselSwitch" type="button" aria-pressed="true"></button></div>
+    <div class="setting-row"><div class="setting-main"><span class="setting-emoji">🙈</span><span>Jugendfreundlich</span></div><button class="switch" id="youthFriendlySwitch" type="button" aria-pressed="false"></button></div>
+    <div class="setting-row"><div class="setting-main"><span class="setting-emoji">👀</span><span>Erzähler Icons</span></div><button class="switch" id="narratorIconsSwitch" type="button" aria-pressed="false"></button></div>
+    <div class="setting-row"><div class="setting-main"><span class="setting-emoji">🎲</span><span>Zufallsrollen</span></div><button class="switch" id="randomRolesSwitch" type="button" aria-label="Zufallsrollen einschalten" aria-pressed="false"></button></div>
+  </div>
+</section>
+
+<section class="screen view roles-screen" id="roleOrderScreen" aria-label="Rollenreihenfolge">
+  <div class="roles-header"><button class="game-icon-button" id="backFromRoleOrder" type="button" aria-label="Zurück"><svg width="31" height="31" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  <div class="roles-section-title"><span>Nacht-Reihenfolge</span><button class="reset-button" id="resetRoleOrder" type="button" aria-label="Standard wiederherstellen">↺</button></div>
+  <p class="game-copy">Lege fest, in welcher Reihenfolge die Rollen nachts aufgerufen werden.</p>
+  <div class="roles-card" id="roleOrderList"></div>
 </section>
 
 <section class="screen view wolf-flow-screen" id="roleRevealScreen" aria-label="Rollen aufdecken">
@@ -2249,8 +2411,12 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     const backToHomeButton = document.getElementById('backToHome');
     const openRolesButton = document.getElementById('openRoles');
     const openAdvancedButton = document.getElementById('openAdvanced');
+    const openRoleOrderButton = document.getElementById('openRoleOrder');
     const backToGameButton = document.getElementById('backToGame');
     const backFromAdvancedButton = document.getElementById('backFromAdvanced');
+    const backFromRoleOrderButton = document.getElementById('backFromRoleOrder');
+    const roleOrderList = document.getElementById('roleOrderList');
+    const resetRoleOrderButton = document.getElementById('resetRoleOrder');
     const startGameButton = document.getElementById('startGameButton');
     const gameAlert = document.getElementById('gameAlert');
     const gameAlertTitle = document.getElementById('gameAlertTitle');
@@ -2285,6 +2451,18 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     const mayorSwitch = document.getElementById('mayorSwitch');
     const twinsSwitch = document.getElementById('twinsSwitch');
     const tripletsSwitch = document.getElementById('tripletsSwitch');
+    const pureSoulSwitch = document.getElementById('pureSoulSwitch');
+    const playerCarouselSwitch = document.getElementById('playerCarouselSwitch');
+    const youthFriendlySwitch = document.getElementById('youthFriendlySwitch');
+    const narratorIconsSwitch = document.getElementById('narratorIconsSwitch');
+    const randomRolesSwitch = document.getElementById('randomRolesSwitch');
+    const favoriteWerwolfButton = document.getElementById('favoriteWerwolf');
+    const werwolfHelpButton = document.getElementById('werwolfHelp');
+    const settingsVersion = document.getElementById('settingsVersion');
+    const inviteFriendsButton = document.getElementById('inviteFriends');
+    const languageSettingButton = document.getElementById('languageSetting');
+    const languageSettingNote = document.getElementById('languageSettingNote');
+    const languageSettingCode = document.getElementById('languageSettingCode');
     const openAppDesignButton = document.getElementById('openAppDesign');
     const appDesignModal = document.getElementById('appDesignModal');
     const closeAppDesignButton = document.getElementById('closeAppDesign');
@@ -2294,6 +2472,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     const closePlayerModalButton = document.getElementById('closePlayerModal');
     const playerForm = document.getElementById('playerForm');
     const playerNameInput = document.getElementById('playerNameInput');
+    const removePlayerFromModalButton = document.getElementById('removePlayerFromModal');
     const roleInfoModal = document.getElementById('roleInfoModal');
     const roleInfoTitle = document.getElementById('roleInfoTitle');
     const roleInfoDescription = document.getElementById('roleInfoDescription');
@@ -2302,8 +2481,38 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     const resetRolesButton = document.getElementById('resetRoles');
     const activeRolesContainer = document.getElementById('activeRoles');
     const otherRolesContainer = document.getElementById('otherRoles');
+    const otherRolesTitle = document.getElementById('otherRolesTitle');
     const navButtons = document.querySelectorAll('.nav-button[data-target]');
     const views = document.querySelectorAll('.view');
+    const accountAuth = document.getElementById('accountAuth');
+    const accountDashboard = document.getElementById('accountDashboard');
+    const accountForm = document.getElementById('accountForm');
+    const accountAuthTitle = document.getElementById('accountAuthTitle');
+    const accountAuthCopy = document.getElementById('accountAuthCopy');
+    const accountUsername = document.getElementById('accountUsername');
+    const accountEmail = document.getElementById('accountEmail');
+    const accountPassword = document.getElementById('accountPassword');
+    const accountSubmit = document.getElementById('accountSubmit');
+    const accountFormNote = document.getElementById('accountFormNote');
+    const accountSwitch = document.getElementById('accountSwitch');
+    const accountSwitchText = document.getElementById('accountSwitchText');
+    const accountAvatar = document.getElementById('accountAvatar');
+    const accountDetails = document.getElementById('accountDetails');
+    const accountDetailsName = document.getElementById('accountDetailsName');
+    const accountDetailsEmail = document.getElementById('accountDetailsEmail');
+    const accountLogout = document.getElementById('accountLogout');
+    const accountEditToggle = document.getElementById('accountEditToggle');
+    const accountEditForm = document.getElementById('accountEditForm');
+    const accountEditUsername = document.getElementById('accountEditUsername');
+    const accountEditAvatar = document.getElementById('accountEditAvatar');
+    const accountCurrentPassword = document.getElementById('accountCurrentPassword');
+    const accountNewPassword = document.getElementById('accountNewPassword');
+    const accountEditNote = document.getElementById('accountEditNote');
+    const winsSummary = document.getElementById('winsSummary');
+    const victoryLine = document.getElementById('victoryLine');
+    const victoryArea = document.getElementById('victoryArea');
+    const victoryPoint = document.getElementById('victoryPoint');
+    const friendList = document.getElementById('friendList');
     const bannerTrack = document.getElementById('bannerTrack');
     const bannerDots = document.querySelectorAll('.hero .dot');
     const playersStorageKey = 'swishPlayerCount';
@@ -2311,6 +2520,11 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     const mayorStorageKey = 'swishMayorEnabled';
     const extraRolesStorageKey = 'swishExtraRoles';
     const darkModeStorageKey = 'swishDarkModeEnabled';
+    const extraRulesStorageKey = 'swishExtraRules';
+    const favoriteWerwolfStorageKey = 'swishFavoriteWerwolf';
+    const accountsStorageKey = 'swishAccounts';
+    const accountSessionStorageKey = 'swishActiveAccount';
+    const roleOrderStorageKey = 'swishRoleOrder';
     const playerAvatarSrc = 'img/player/container-player.png';
     mayorEmoji.textContent = '\u{1F396}\uFE0F';
     const roleTemplates = [
@@ -2330,11 +2544,21 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       { id: 'escort', emoji: '\u{1F351}', name: 'Dorfnutte', description: 'Fraktion: Die Dorfnutte spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In der Nacht bestimmt die Dorfnutte gegen\u00fcber der Spielleitung einen Dorfbewohner, bei dem sie \u00fcbernachtet (!\u00dcbernachten [Spielername]).\nWenn die Werw\u00f6lfe die Dorfnutte angreifen, so schl\u00e4gt der Angriff fehl.\nWenn die Werw\u00f6lfe den One-Night-Stand der Dorfnutte angreifen, so wird auch die Dorfnutte angegriffen.\nDie Dorfnutte kann nicht bei demselben Spieler in zwei aufeinanderfolgenden N\u00e4chten \u00fcbernachten.' },
       { id: 'snowman', emoji: '\u{26C4}', name: 'Schneemann', description: 'Fraktion: Der Schneemann spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: Der Schneemann schmilzt, wodurch er in der 2. Runde nicht mehr sprechen kann und in der 3. Runde stirbt.' },
       { id: 'cook', emoji: '\u{1F373}', name: 'Koch', description: 'Fraktion: Der Koch spielt f\u00fcr das Dorf.\nF\u00e4higkeiten: In einer Nacht kann der Koch einen Spieler bestimmen, dessen Essen er am Vorabend verkocht. Dieser Spieler kann in dieser Nacht seine F\u00e4higkeiten nicht nutzen, sofern er welche besitzt. Die Spielleitung teilt diesem Spieler mit, dass sein Essen vom Koch verkocht wurde.' },
+      { id: 'village-idiot', emoji: '🥸', name: 'Dorfdepp', description: 'Fraktion: Der Dorfdepp spielt für das Dorf.\nFähigkeiten: Wird der Dorfdepp gelyncht, wird er in letzter Sekunde erkannt: Niemand stirbt an diesem Tag, seine Rolle wird bekannt und er darf fortan nicht mehr abstimmen.' },
+      { id: 'sharpshooter', emoji: '🔫', name: 'Scharfschütze', description: 'Fraktion: Der Scharfschütze spielt für das Dorf.\nFähigkeiten: Er zielt nachts auf einen Spieler und kann sein vorheriges Ziel in der folgenden Nacht erschießen. Bei einem Dorfbewohner ist es eine Fehlzündung und der Scharfschütze stirbt.' },
+      { id: 'red-riding-hood', emoji: '⛑️', name: 'Rotkäppchen', description: 'Fraktion: Das Rotkäppchen spielt für das Dorf.\nFähigkeiten: Solange der Jäger lebt, schlagen Angriffe der Werwölfe auf das Rotkäppchen fehl.' },
+      { id: 'aura', emoji: '📿', name: 'Aura', description: 'Fraktion: Die Aura spielt für das Dorf.\nFähigkeiten: Sie spürt nachts die Aura eines Spielers. Dorfbewohner haben eine gute, alle anderen eine böse Aura.' },
+      { id: 'thief', emoji: '💰', name: 'Dieb', description: 'Fraktion: Der Dieb ist ein Zweideutiger.\nFähigkeiten: Zwei Rollen bleiben übrig. In der ersten Nacht darf der Dieb eine davon stehlen und spielt fortan diese Rolle.' },
+      { id: 'piper', emoji: '🗣️', name: 'Flötenspieler', description: 'Fraktion: Der Flötenspieler ist ein Einzelgänger.\nSiegbedingungen: Er gewinnt, wenn alle anderen lebenden Spieler verzaubert sind.\nFähigkeiten: Er verzaubert nachts einen Spieler.' },
+      { id: 'white-wolf', emoji: '🌕', name: 'Weißer Wolf', description: 'Fraktion: Der Weiße Wolf ist ein Einzelgänger.\nSiegbedingungen: Er gewinnt, wenn alle anderen Spieler verstorben sind.\nFähigkeiten: Er kann nachts einen anderen Werwolf fressen, jedoch nicht in zwei aufeinanderfolgenden Nächten.' },
+      { id: 'lone-wolf', emoji: '🌑', name: 'Einsamer Wolf', description: 'Fraktion: Der Einsame Wolf ist ein Einzelgänger.\nSiegbedingungen: Er gewinnt, wenn alle anderen Spieler verstorben sind.\nFähigkeiten: Er greift nachts einen Spieler an; gegen Werwölfe schlägt der Angriff fehl.' },
       { id: 'narrator', emoji: '\u{1F399}\uFE0F', name: 'Erz\u00e4hler', fixed: true, hiddenWhenInactive: true, description: 'Die Spielleitung f\u00fchrt durch die Nacht und moderiert die Runde.' }
     ];
+    const standardEscortRole = Object.assign({}, roleTemplates.find(function (role) { return role.id === 'escort'; }));
     const extraRoleTemplates = {
-      twins: { id: 'twins', emoji: '\u{1F46F}', name: 'Zwillinge', description: 'Extra Rolle: Zwei zufaellige Spieler sind Zwillinge. Sie behalten ihre normale Rolle und bekommen diese Extra Rolle dazu.', count: 2 },
-      triplets: { id: 'triplets', emoji: '\u{1F46A}', name: 'Drillinge', description: 'Extra Rolle: Drei zufaellige Spieler sind Drillinge. Sie behalten ihre normale Rolle und bekommen diese Extra Rolle dazu.', count: 3 }
+      twins: { id: 'twins', emoji: '\u{1F46F}', name: 'Zwillinge', description: 'Extra Rolle: Zwei zufällige Spieler sind Zwillinge. Sie behalten ihre normale Rolle und bekommen diese Extra Rolle dazu.', count: 2 },
+      triplets: { id: 'triplets', emoji: '\u{1F46A}', name: 'Drillinge', description: 'Extra Rolle: Drei zufällige Spieler sind Drillinge. Sie behalten ihre normale Rolle und bekommen diese Extra Rolle dazu.', count: 3 },
+      'pure-soul': { id: 'pure-soul', emoji: '👍🏻', name: 'Reine Seele', description: 'Extra Rolle: Die Reine Seele spielt für das Dorf. Ihre Identität wird am Morgen der Bürgermeisterwahl bekannt gegeben.', count: 1 }
     };
     let roles = [];
     let bannerTimer;
@@ -2347,8 +2571,12 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     let dragStartY = null;
     let gameState = null;
     let playTimerId = null;
+    let playerHoldTimer = null;
+    let draggedPlayerIndex = null;
+    let suppressPlayerClick = false;
+    let accountMode = 'signup';
     playOptions.addEventListener('click', function () {
-      if (gameState && gameState.phase === 'witch' && gameState.option === 'Ueberspringen') {
+      if (gameState && gameState.phase === 'witch' && gameState.option === 'Überspringen') {
         playConfirm.disabled = false;
       }
     });
@@ -2364,6 +2592,183 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         name: name,
         avatar: playerAvatarSrc
       };
+    }
+
+    function getAccounts() {
+      try { return JSON.parse(localStorage.getItem(accountsStorageKey)) || {}; } catch (error) { return {}; }
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(accountsStorageKey, JSON.stringify(accounts));
+    }
+
+    function getActiveAccount() {
+      const email = localStorage.getItem(accountSessionStorageKey);
+      return email ? getAccounts()[email] || null : null;
+    }
+
+    function bytesToBase64(bytes) {
+      return btoa(Array.from(bytes).map(function (byte) { return String.fromCharCode(byte); }).join(''));
+    }
+
+    async function hashPassword(password, salt) {
+      if (!window.crypto || !window.crypto.subtle) throw new Error('Sichere Passwortspeicherung wird von diesem Browser nicht unterstützt.');
+      const data = new TextEncoder().encode(salt + ':' + password);
+      const digest = await window.crypto.subtle.digest('SHA-256', data);
+      return bytesToBase64(new Uint8Array(digest));
+    }
+
+    function updateAccountAuth() {
+      const loggingIn = accountMode === 'login';
+      accountAuthTitle.textContent = loggingIn ? 'Willkommen zurück' : 'Konto erstellen';
+      accountAuthCopy.textContent = loggingIn ? 'Melde dich an, um dein Profil zu öffnen.' : 'Erstelle dein Konto und behalte deine Siege im Blick.';
+      accountUsername.hidden = loggingIn;
+      accountUsername.required = !loggingIn;
+      accountPassword.autocomplete = loggingIn ? 'current-password' : 'new-password';
+      accountSubmit.textContent = loggingIn ? 'Anmelden' : 'Konto erstellen';
+      accountSwitchText.innerHTML = loggingIn ? 'Noch kein Konto? <button class="account-link" id="accountSwitch" type="button">Konto erstellen</button>' : 'Bereits ein Konto? <button class="account-link" id="accountSwitch" type="button">Anmelden</button>';
+      document.getElementById('accountSwitch').addEventListener('click', function () { accountMode = loggingIn ? 'signup' : 'login'; accountFormNote.textContent = ''; updateAccountAuth(); });
+    }
+
+    function renderAccountDashboard(account) {
+      const wins = account.wins || { werwolf: 0 };
+      const labels = { werwolf: 'Werwolf' };
+      const entries = Object.keys(wins).map(function (game) { return { game: game, count: Number(wins[game]) || 0 }; }).sort(function (a, b) { return b.count - a.count; });
+      if (!entries.length) entries.push({ game: 'werwolf', count: 0 });
+      const total = entries.reduce(function (sum, entry) { return sum + entry.count; }, 0);
+      const maximum = Math.max(1, entries[0].count);
+      winsSummary.innerHTML = '';
+      entries.forEach(function (entry) {
+        const card = document.createElement('div'); card.className = 'wins-summary-card';
+        card.innerHTML = '<span></span><strong></strong>';
+        card.querySelector('span').textContent = labels[entry.game] || entry.game;
+        card.querySelector('strong').textContent = entry.count + ' Siege';
+        winsSummary.appendChild(card);
+      });
+      const rows = entries.map(function (entry) { return '<div class="wins-row"><span>' + (labels[entry.game] || entry.game) + '</span><span class="wins-bar"><span style="width:' + (entry.count / maximum * 100) + '%"></span></span><strong>' + entry.count + '</strong></div>'; }).join('');
+      const history = (account.victoryHistory || [0]).slice(-7);
+      while (history.length < 7) history.unshift(0);
+      const maxHistory = Math.max(1, total, Math.max.apply(null, history));
+      const points = history.map(function (value, index) { return (8 + index * 47) + ' ' + (150 - value / maxHistory * 110); });
+      const line = 'M' + points.join(' L');
+      victoryLine.setAttribute('d', line);
+      victoryArea.setAttribute('d', line + ' L292 150 L8 150 Z');
+      const last = points[points.length - 1].split(' '); victoryPoint.setAttribute('cx', last[0]); victoryPoint.setAttribute('cy', last[1]);
+      const friends = (account.friends || []).concat(players.map(function (player) { return { name: player.name, note: 'Mitspieler' }; })).filter(function (friend, index, array) { return array.findIndex(function (item) { return item.name === friend.name; }) === index; });
+      friendList.innerHTML = friends.length ? '' : '<p class="friend-note">Noch keine Freunde hinzugefügt.</p>';
+      friends.forEach(function (friend) { const row = document.createElement('div'); row.className = 'friend-row'; row.innerHTML = '<span class="friend-avatar"></span><div><div class="friend-name"></div><div class="friend-note"></div></div>'; row.querySelector('.friend-avatar').textContent = friend.name.slice(0, 1).toUpperCase(); row.querySelector('.friend-name').textContent = friend.name; row.querySelector('.friend-note').textContent = friend.note || 'Freund'; friendList.appendChild(row); });
+      accountDetailsName.textContent = account.username;
+      accountDetailsEmail.textContent = account.email;
+      accountAvatar.textContent = account.username.slice(0, 1).toUpperCase();
+      accountAvatar.style.backgroundImage = account.avatar ? 'url("' + account.avatar + '")' : '';
+      if (account.avatar) accountAvatar.textContent = '';
+      accountEditUsername.value = account.username;
+      document.querySelector('#accountDashboard .account-card:first-of-type').querySelector('h2').textContent = 'Siege insgesamt: ' + total;
+    }
+
+    function updateAccountView() {
+      const account = getActiveAccount();
+      accountAuth.hidden = Boolean(account);
+      accountDashboard.hidden = !account;
+      if (account) renderAccountDashboard(account); else updateAccountAuth();
+    }
+
+    function recordAccountWin(game, winner) {
+      const account = getActiveAccount();
+      if (!account || !gameState || gameState.accountWinRecorded) return;
+      const participant = gameState.players.find(function (player) { return player.name.toLowerCase() === account.username.toLowerCase(); });
+      const won = participant && (participant.team === winner || (winner === 'village' && participant.team === 'village') || (winner === 'piper' && participant.role === 'piper') || (winner === 'solo' && (participant.role === 'white-wolf' || participant.role === 'lone-wolf')));
+      if (!won) return;
+      const accounts = getAccounts();
+      const storedAccount = accounts[account.email];
+      storedAccount.wins = storedAccount.wins || {};
+      storedAccount.wins[game] = (storedAccount.wins[game] || 0) + 1;
+      const total = Object.keys(storedAccount.wins).reduce(function (sum, key) { return sum + storedAccount.wins[key]; }, 0);
+      storedAccount.victoryHistory = (storedAccount.victoryHistory || []).concat(total).slice(-7);
+      accounts[account.email] = storedAccount;
+      saveAccounts(accounts);
+      gameState.accountWinRecorded = true;
+    }
+
+    function imageFileToDataUrl(file) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader();
+        reader.onerror = function () { reject(new Error('Das Bild konnte nicht gelesen werden.')); };
+        reader.onload = function () {
+          const image = new Image();
+          image.onerror = function () { reject(new Error('Die gewählte Datei ist kein gültiges Bild.')); };
+          image.onload = function () {
+            const maxSize = 256;
+            const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(image.width * scale));
+            canvas.height = Math.max(1, Math.round(image.height * scale));
+            canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', .86));
+          };
+          image.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function saveAccountProfile(event) {
+      event.preventDefault();
+      accountEditNote.textContent = '';
+      const account = getActiveAccount();
+      if (!account) return;
+      const username = accountEditUsername.value.trim();
+      const newPassword = accountNewPassword.value;
+      try {
+        if (username.length < 3) throw new Error('Der Nutzername muss mindestens 3 Zeichen haben.');
+        const accounts = getAccounts();
+        if (Object.keys(accounts).some(function (email) { return email !== account.email && accounts[email].username.toLowerCase() === username.toLowerCase(); })) throw new Error('Dieser Nutzername ist bereits vergeben.');
+        const storedAccount = accounts[account.email];
+        if (newPassword) {
+          if (newPassword.length < 8) throw new Error('Das neue Passwort muss mindestens 8 Zeichen haben.');
+          if (!accountCurrentPassword.value || await hashPassword(accountCurrentPassword.value, storedAccount.salt) !== storedAccount.passwordHash) throw new Error('Das aktuelle Passwort stimmt nicht.');
+          storedAccount.passwordHash = await hashPassword(newPassword, storedAccount.salt);
+        }
+        const selectedFile = accountEditAvatar.files[0];
+        if (selectedFile) {
+          if (!selectedFile.type.startsWith('image/')) throw new Error('Bitte wähle eine Bilddatei aus.');
+          storedAccount.avatar = await imageFileToDataUrl(selectedFile);
+        }
+        storedAccount.username = username;
+        accounts[account.email] = storedAccount;
+        saveAccounts(accounts);
+        accountEditForm.reset();
+        accountEditUsername.value = username;
+        accountEditNote.textContent = 'Profil gespeichert.';
+        renderAccountDashboard(storedAccount);
+      } catch (error) { accountEditNote.textContent = error.message || 'Profil konnte nicht gespeichert werden.'; }
+    }
+
+    async function submitAccount(event) {
+      event.preventDefault();
+      accountFormNote.textContent = '';
+      const email = accountEmail.value.trim().toLowerCase();
+      const password = accountPassword.value;
+      const accounts = getAccounts();
+      try {
+        if (accountMode === 'signup') {
+          const username = accountUsername.value.trim();
+          if (username.length < 3) throw new Error('Der Nutzername muss mindestens 3 Zeichen haben.');
+          if (password.length < 8) throw new Error('Das Passwort muss mindestens 8 Zeichen haben.');
+          if (accounts[email]) throw new Error('Für diese E-Mail gibt es bereits ein Konto.');
+          if (Object.keys(accounts).some(function (key) { return accounts[key].username.toLowerCase() === username.toLowerCase(); })) throw new Error('Dieser Nutzername ist bereits vergeben.');
+          const salt = new Uint8Array(16); window.crypto.getRandomValues(salt);
+          accounts[email] = { email: email, username: username, salt: bytesToBase64(salt), passwordHash: await hashPassword(password, bytesToBase64(salt)), wins: { werwolf: 0 }, victoryHistory: [0], friends: [] };
+          saveAccounts(accounts);
+        } else {
+          const account = accounts[email];
+          if (!account || await hashPassword(password, account.salt) !== account.passwordHash) throw new Error('E-Mail oder Passwort stimmt nicht.');
+        }
+        localStorage.setItem(accountSessionStorageKey, email);
+        accountForm.reset();
+        updateAccountView();
+        showView('profileScreen');
+      } catch (error) { accountFormNote.textContent = error.message || 'Das Konto konnte nicht gespeichert werden.'; }
     }
 
     function createPlayerElement(player, index) {
@@ -2449,8 +2854,9 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
     function openPlayerModal(index) {
       editingPlayerIndex = Number.isInteger(index) ? index : null;
-      playerModalTitle.textContent = editingPlayerIndex === null ? 'Spieler hinzufuegen' : 'Spieler bearbeiten';
+      playerModalTitle.textContent = editingPlayerIndex === null ? 'Spieler hinzufügen' : 'Spieler bearbeiten';
       playerNameInput.value = editingPlayerIndex === null ? '' : players[editingPlayerIndex].name;
+      removePlayerFromModalButton.hidden = editingPlayerIndex === null || players.length <= 1;
       playerModal.hidden = false;
       playerNameInput.focus();
     }
@@ -2459,7 +2865,24 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       playerModal.hidden = true;
       editingPlayerIndex = null;
       playerForm.reset();
+      removePlayerFromModalButton.hidden = true;
       addCategoryButton.focus();
+    }
+
+    function removeEditingPlayer() {
+      if (editingPlayerIndex === null || players.length <= 1) return;
+      players.splice(editingPlayerIndex, 1);
+      savePlayers();
+      renderPlayers();
+      resetRoles();
+      closePlayerModal();
+    }
+
+    function swapPlayers(firstIndex, secondIndex) {
+      if (firstIndex === secondIndex || !players[firstIndex] || !players[secondIndex]) return;
+      const player = players[firstIndex];
+      players[firstIndex] = players[secondIndex];
+      players[secondIndex] = player;
     }
 
     function acceptPlayerForm() {
@@ -2495,7 +2918,8 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     }
 
     function isRoleLimitReached() {
-      return getActiveRoleTotal(roles) >= getPlayerCount();
+      const thief = getRole('thief');
+      return getActiveRoleTotal(roles) >= getPlayerCount() + (thief && thief.count > 0 ? 2 : 0);
     }
 
     function isNarratorEnabled() {
@@ -2505,13 +2929,52 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     function updateNarratorSwitch(isOn) {
       narratorSwitch.classList.toggle('on', isOn);
       narratorSwitch.setAttribute('aria-pressed', String(isOn));
-      narratorSwitch.setAttribute('aria-label', isOn ? 'Erzaehler ausschalten' : 'Erzaehler einschalten');
+      narratorSwitch.setAttribute('aria-label', isOn ? 'Erzähler ausschalten' : 'Erzähler einschalten');
     }
 
     function updateMayorSwitch(isOn) {
       mayorSwitch.classList.toggle('on', isOn);
       mayorSwitch.setAttribute('aria-pressed', String(isOn));
-      mayorSwitch.setAttribute('aria-label', isOn ? 'Buergermeister ausschalten' : 'Buergermeister einschalten');
+      mayorSwitch.setAttribute('aria-label', isOn ? 'Bürgermeister ausschalten' : 'Bürgermeister einschalten');
+    }
+
+    function getExtraRuleSettings() {
+      try {
+        return Object.assign({ playerCarousel: true, youthFriendly: false, narratorIcons: false, randomRoles: false, randomExcludedRoleIds: [] }, JSON.parse(localStorage.getItem(extraRulesStorageKey)) || {});
+      } catch (error) {
+        return { playerCarousel: true, youthFriendly: false, narratorIcons: false, randomRoles: false, randomExcludedRoleIds: [] };
+      }
+    }
+
+    function saveExtraRuleSettings(settings) {
+      localStorage.setItem(extraRulesStorageKey, JSON.stringify(settings));
+    }
+
+    function updateRuleSwitch(button, isOn, label) {
+      button.classList.toggle('on', isOn);
+      button.setAttribute('aria-pressed', String(isOn));
+      button.setAttribute('aria-label', label + (isOn ? ' ausschalten' : ' einschalten'));
+    }
+
+    function refreshYouthFriendlyRole() {
+      const escort = roleTemplates.find(function (role) { return role.id === 'escort'; });
+      const youthFriendly = getExtraRuleSettings().youthFriendly;
+      const presentation = youthFriendly
+        ? { emoji: '🎅', name: 'Weihnachtsmann', description: 'Fraktion: Der Weihnachtsmann spielt für das Dorf.\nFähigkeiten: In der Nacht bestimmt der Weihnachtsmann gegenüber der Spielleitung einen Dorfbewohner, bei dem er ins Haus klettert, um Geschenke zu vergeben.\nWenn die Werwölfe den Weihnachtsmann angreifen, so schlägt der Angriff fehl.\nWenn die Werwölfe das Haus, das er besucht, angreifen, so wird auch der Weihnachtsmann angegriffen.\nDer Weihnachtsmann kann nicht bei demselben Spieler in zwei aufeinanderfolgenden Nächten Geschenke verteilen.' }
+        : standardEscortRole;
+      Object.assign(escort, presentation);
+      const activeEscort = getRole('escort');
+      if (activeEscort) Object.assign(activeEscort, presentation);
+      renderRoles();
+    }
+
+    function loadExtraRuleSettings() {
+      const settings = getExtraRuleSettings();
+      updateRuleSwitch(playerCarouselSwitch, settings.playerCarousel, 'Spieler Karussell');
+      updateRuleSwitch(youthFriendlySwitch, settings.youthFriendly, 'Jugendfreundlich');
+      updateRuleSwitch(narratorIconsSwitch, settings.narratorIcons, 'Erzähler Icons');
+      updateRuleSwitch(randomRolesSwitch, settings.randomRoles, 'Zufallsrollen');
+      refreshYouthFriendlyRole();
     }
 
     function getExtraRoleSettings() {
@@ -2534,7 +2997,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       button.setAttribute('aria-pressed', String(isOn && isAvailable));
       button.setAttribute('aria-label', isAvailable
         ? label + (isOn ? ' ausschalten' : ' einschalten')
-        : label + ' ab ' + minPlayers + ' Spielern verfuegbar');
+        : label + ' ab ' + minPlayers + ' Spielern verfügbar');
     }
 
     function setMayorEnabled(isOn) {
@@ -2558,7 +3021,8 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
     function getSelectedExtraRoleCount(settings) {
       return (settings.twins ? extraRoleTemplates.twins.count : 0)
-        + (settings.triplets ? extraRoleTemplates.triplets.count : 0);
+        + (settings.triplets ? extraRoleTemplates.triplets.count : 0)
+        + (settings['pure-soul'] ? extraRoleTemplates['pure-soul'].count : 0);
     }
 
     function updateExtraRoleAvailability() {
@@ -2573,6 +3037,8 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         settings.triplets = false;
       }
 
+      if (eligiblePlayerCount < 1) settings['pure-soul'] = false;
+
       if (getSelectedExtraRoleCount(settings) > eligiblePlayerCount && settings.triplets) {
         settings.triplets = false;
       }
@@ -2584,22 +3050,23 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       saveExtraRoleSettings(settings);
       updateExtraSwitch(twinsSwitch, Boolean(settings.twins), 3, 'Zwillinge');
       updateExtraSwitch(tripletsSwitch, Boolean(settings.triplets), 4, 'Drillinge');
+      updateExtraSwitch(pureSoulSwitch, Boolean(settings['pure-soul']), 1, 'Reine Seele');
     }
 
     function setExtraRoleEnabled(roleId, isOn) {
-      const minPlayers = roleId === 'triplets' ? 4 : 3;
+      const minPlayers = roleId === 'triplets' ? 4 : roleId === 'twins' ? 3 : 1;
 
       if (getPlayerCount() < minPlayers) return;
 
       const settings = getExtraRoleSettings();
-      const otherRoleId = roleId === 'twins' ? 'triplets' : 'twins';
-      const selectedExtraRoleCount = (isOn ? extraRoleTemplates[roleId].count : 0)
-        + (settings[otherRoleId] ? extraRoleTemplates[otherRoleId].count : 0);
+      const selectedExtraRoleCount = Object.keys(extraRoleTemplates).reduce(function (total, id) {
+        return total + ((id === roleId ? isOn : settings[id]) ? extraRoleTemplates[id].count : 0);
+      }, 0);
 
       if (isOn && selectedExtraRoleCount > getExtraRoleEligiblePlayerCount()) {
         showGameAlert({
-          title: 'Extra Rollen pruefen',
-          message: 'Fuer diese Extra Rollen gibt es nicht genug Spieler. Der Erzaehler kann keine Extra Rolle bekommen.',
+          title: 'Extra Rollen prüfen',
+          message: 'Für diese Extra Rollen gibt es nicht genug Spieler. Der Erzähler kann keine Extra Rolle bekommen.',
           confirmText: 'OK',
           hideCancel: true
         });
@@ -2629,6 +3096,48 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
     function loadDarkModeSetting() {
       updateDarkModeSwitch(localStorage.getItem(darkModeStorageKey) === 'true');
+    }
+
+    function updateFavoriteWerwolf(isFavorite) {
+      favoriteWerwolfButton.classList.toggle('is-favorite', isFavorite);
+      favoriteWerwolfButton.setAttribute('aria-pressed', String(isFavorite));
+      favoriteWerwolfButton.setAttribute('aria-label', isFavorite ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen');
+    }
+
+    function loadFavoriteWerwolf() {
+      updateFavoriteWerwolf(localStorage.getItem(favoriteWerwolfStorageKey) === 'true');
+    }
+
+    function loadCacheVersion() {
+      function showCacheName(cacheName) {
+        settingsVersion.textContent = cacheName;
+      }
+      function readFromActiveServiceWorker() {
+        if (!('serviceWorker' in navigator)) return Promise.reject(new Error('Service Worker nicht verfügbar'));
+        return navigator.serviceWorker.ready.then(function (registration) {
+          const worker = navigator.serviceWorker.controller || registration.active;
+          if (!worker) throw new Error('Kein aktiver Service Worker');
+          return new Promise(function (resolve, reject) {
+            const channel = new MessageChannel();
+            const timer = window.setTimeout(function () { reject(new Error('Keine Antwort vom Service Worker')); }, 1500);
+            channel.port1.onmessage = function (event) { window.clearTimeout(timer); resolve(event.data); };
+            worker.postMessage({ type: 'GET_CACHE_NAME' }, [channel.port2]);
+          });
+        });
+      }
+      const serviceWorkerUrl = new URL('./service-worker.js', window.location.href);
+      serviceWorkerUrl.searchParams.set('versionCheck', Date.now().toString());
+      readFromActiveServiceWorker()
+        .then(showCacheName)
+        .catch(function () {
+          return fetch(serviceWorkerUrl.toString(), { cache: 'no-store' })
+            .then(function (response) { return response.text(); })
+            .then(function (source) {
+              const match = source.match(/const\s+CACHE_NAME\s*=\s*["']([^"']+)["']/);
+              showCacheName(match ? match[1] : 'CACHE_NAME nicht gefunden');
+            });
+        })
+        .catch(function () { settingsVersion.textContent = 'swish-v1.0.10'; });
     }
 
     function openAppDesignModal() {
@@ -2725,7 +3234,8 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
         const loadedRoles = createRolesFromSavedCounts(parsedRoles.counts);
 
-        if (getActiveRoleTotal(loadedRoles) !== getPlayerCount()) {
+        const savedThief = loadedRoles.find(function (role) { return role.id === 'thief'; });
+        if (getActiveRoleTotal(loadedRoles) !== getPlayerCount() + (savedThief && savedThief.count > 0 ? 2 : 0)) {
           resetRoles();
           return;
         }
@@ -2813,7 +3323,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       plusButton.type = 'button';
       plusButton.dataset.role = role.id;
       plusButton.dataset.action = 'increase';
-      plusButton.setAttribute('aria-label', role.name + ' erhoehen');
+      plusButton.setAttribute('aria-label', role.name + ' erhöhen');
       plusButton.disabled = isRoleLimitReached();
       plusButton.textContent = '+';
 
@@ -2847,7 +3357,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       plusButton.type = 'button';
       plusButton.dataset.role = role.id;
       plusButton.dataset.action = 'increase';
-      plusButton.setAttribute('aria-label', role.name + ' hinzufuegen');
+      plusButton.setAttribute('aria-label', role.name + ' hinzufügen');
       plusButton.disabled = isRoleLimitReached();
       plusButton.textContent = '+';
 
@@ -2855,20 +3365,111 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       return row;
     }
 
+    function roleFaction(role) {
+      if (['werewolf'].indexOf(role.id) >= 0) return 'Rudel';
+      if (['angel', 'piper', 'white-wolf', 'lone-wolf'].indexOf(role.id) >= 0) return 'Einzelgänger';
+      if (['wild-child', 'thief'].indexOf(role.id) >= 0) return 'Zwielichtiger';
+      return 'Dorf';
+    }
+
     function renderRoles() {
       activeRolesContainer.innerHTML = '';
       otherRolesContainer.innerHTML = '';
 
+      if (getExtraRuleSettings().randomRoles) {
+        renderRandomRolePool();
+        return;
+      }
+
+      otherRolesTitle.textContent = 'Andere Rollen';
+
       roles.forEach(function (role) {
         if (role.count > 0) {
           activeRolesContainer.appendChild(createActiveRoleElement(role));
-        } else {
-          const otherRoleElement = createOtherRoleElement(role);
-
-          if (otherRoleElement) {
-            otherRolesContainer.appendChild(otherRoleElement);
-          }
         }
+      });
+      ['Dorf', 'Rudel', 'Einzelgänger', 'Zwielichtiger'].forEach(function (faction) {
+        const inactiveRoles = roles.filter(function (role) { return role.count === 0 && !role.hiddenWhenInactive && roleFaction(role) === faction; });
+        if (!inactiveRoles.length) return;
+        const heading = document.createElement('div'); heading.className = 'role-group-title'; heading.textContent = faction;
+        otherRolesContainer.appendChild(heading);
+        inactiveRoles.forEach(function (role) { otherRolesContainer.appendChild(createOtherRoleElement(role)); });
+      });
+    }
+
+    function getRandomExcludedRoleIds() {
+      const excluded = getExtraRuleSettings().randomExcludedRoleIds;
+      return Array.isArray(excluded) ? excluded : [];
+    }
+
+    function createRandomRoleElement(role, isIncluded) {
+      const row = document.createElement('div');
+      row.className = 'role-list-row';
+      const emoji = document.createElement('span');
+      emoji.className = 'roles-emoji';
+      emoji.textContent = role.emoji;
+      const name = document.createElement('div');
+      name.className = 'role-list-name';
+      name.append(role.name, ' ', createInfoMark(role));
+      const toggle = document.createElement('button');
+      toggle.className = 'role-action role-button';
+      toggle.type = 'button';
+      toggle.dataset.randomRole = role.id;
+      toggle.dataset.included = String(isIncluded);
+      toggle.setAttribute('aria-label', role.name + (isIncluded ? ' aus dem Zufallstopf entfernen' : ' zum Zufallstopf hinzufügen'));
+      toggle.textContent = isIncluded ? '−' : '+';
+      row.append(emoji, name, toggle);
+      return row;
+    }
+
+    function renderRandomRolePool() {
+      const excluded = getRandomExcludedRoleIds();
+      const available = roleTemplates.filter(function (role) { return role.id !== 'narrator' && excluded.indexOf(role.id) < 0; });
+      const hidden = roleTemplates.filter(function (role) { return role.id !== 'narrator' && excluded.indexOf(role.id) >= 0; });
+      otherRolesTitle.textContent = 'Ausgeschlossene Rollen';
+      activeRolesContainer.appendChild(Object.assign(document.createElement('div'), { className: 'role-group-title', textContent: 'Rollen im Zufallstopf' }));
+      available.forEach(function (role) { activeRolesContainer.appendChild(createRandomRoleElement(role, true)); });
+      hidden.forEach(function (role) { otherRolesContainer.appendChild(createRandomRoleElement(role, false)); });
+    }
+
+    function setRandomRoleIncluded(roleId, isIncluded) {
+      const settings = getExtraRuleSettings();
+      const excluded = getRandomExcludedRoleIds().filter(function (id) { return id !== roleId; });
+      if (!isIncluded) {
+        if (roleId === 'hunter' && excluded.indexOf('red-riding-hood') < 0) {
+          showGameAlert({ title: 'Jäger wird benötigt', message: 'Solange Rotkäppchen im Zufallstopf ist, muss auch der Jäger enthalten sein.', confirmText: 'OK', hideCancel: true });
+          return;
+        }
+        excluded.push(roleId);
+      }
+      if (roleId === 'red-riding-hood' && isIncluded) {
+        const hunterIndex = excluded.indexOf('hunter');
+        if (hunterIndex >= 0) excluded.splice(hunterIndex, 1);
+      }
+      settings.randomExcludedRoleIds = excluded;
+      saveExtraRuleSettings(settings);
+      renderRoles();
+    }
+
+    const defaultNightOrder = ['thief', 'doppelganger', 'cupid', 'wild-child', 'cook', 'piper', 'healer', 'escort', 'white-wolf', 'werewolf', 'lone-wolf', 'twins', 'triplets', 'sharpshooter', 'witch', 'fox', 'aura', 'seer', 'kamikaze'];
+    function getNightOrder() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(roleOrderStorageKey));
+        if (Array.isArray(saved)) return defaultNightOrder.slice().sort(function (a, b) { const ai = saved.indexOf(a), bi = saved.indexOf(b); return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi); });
+      } catch (error) {}
+      return defaultNightOrder.slice();
+    }
+    function saveNightOrder(order) { localStorage.setItem(roleOrderStorageKey, JSON.stringify(order)); }
+    function renderRoleOrder() {
+      const order = getNightOrder(); roleOrderList.innerHTML = '';
+      order.forEach(function (roleId, index) {
+        const role = roleTemplates.find(function (item) { return item.id === roleId; }) || extraRoleTemplates[roleId]; if (!role) return;
+        const row = document.createElement('div'); row.className = 'role-order-row'; row.innerHTML = '<span class="roles-emoji"></span><span></span><span class="role-order-actions"><button type="button" aria-label="Nach oben">↑</button><button type="button" aria-label="Nach unten">↓</button></span>';
+        row.children[0].textContent = role.emoji; row.children[1].textContent = role.name; const buttons = row.querySelectorAll('button');
+        buttons[0].disabled = index === 0; buttons[1].disabled = index === order.length - 1;
+        buttons[0].onclick = function () { const next = order.slice(); [next[index - 1], next[index]] = [next[index], next[index - 1]]; saveNightOrder(next); renderRoleOrder(); };
+        buttons[1].onclick = function () { const next = order.slice(); [next[index], next[index + 1]] = [next[index + 1], next[index]]; saveNightOrder(next); renderRoleOrder(); };
+        roleOrderList.appendChild(row);
       });
     }
 
@@ -2885,6 +3486,11 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     }
 
     function handleRoleClick(event) {
+      const randomButton = event.target.closest('.role-button[data-random-role]');
+      if (randomButton) {
+        setRandomRoleIncluded(randomButton.dataset.randomRole, randomButton.dataset.included !== 'true');
+        return;
+      }
       const button = event.target.closest('.role-button[data-role][data-action]');
 
       if (!button) return;
@@ -2901,6 +3507,13 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     }
 
     function resetRoles() {
+      if (getExtraRuleSettings().randomRoles) {
+        const settings = getExtraRuleSettings();
+        settings.randomExcludedRoleIds = [];
+        saveExtraRuleSettings(settings);
+        renderRoles();
+        return;
+      }
       roles = createDefaultRoles();
       renderRoles();
       saveRoles();
@@ -2940,6 +3553,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     }
 
     function getActiveRoleCards() {
+      if (getExtraRuleSettings().randomRoles) return getRandomRoleCards();
       return roles.reduce(function (roleCards, role) {
         for (let count = 0; count < role.count; count += 1) {
           roleCards.push(role);
@@ -2947,6 +3561,29 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
         return roleCards;
       }, []);
+    }
+
+    function getRandomRoleCards() {
+      const narratorCount = getNarratorRoleCount();
+      const playableCount = Math.max(0, getPlayerCount() - narratorCount);
+      const excluded = getRandomExcludedRoleIds();
+      let pool = roleTemplates.filter(function (role) { return role.id !== 'narrator' && excluded.indexOf(role.id) < 0; });
+      const redRidingHood = pool.find(function (role) { return role.id === 'red-riding-hood'; });
+      const hunter = pool.find(function (role) { return role.id === 'hunter'; });
+      let selected = shuffleItems(pool).slice(0, playableCount);
+      if (redRidingHood && hunter && selected.some(function (role) { return role.id === 'red-riding-hood'; }) && !selected.some(function (role) { return role.id === 'hunter'; })) {
+        const replaceIndex = selected.findIndex(function (role) { return role.id !== 'red-riding-hood'; });
+        if (replaceIndex >= 0) selected[replaceIndex] = hunter;
+        else selected = [hunter];
+      }
+      const thief = selected.find(function (role) { return role.id === 'thief'; });
+      if (thief) {
+        const spareRoles = shuffleItems(pool.filter(function (role) { return role.id !== 'thief'; })).slice(0, 2);
+        selected = selected.concat(spareRoles);
+      }
+      const narrator = roleTemplates.find(function (role) { return role.id === 'narrator'; });
+      for (let index = 0; index < narratorCount; index += 1) selected.push(narrator);
+      return selected;
     }
 
     function getEnabledExtraRoleCards() {
@@ -2967,6 +3604,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     }
 
     function assignExtraRoles(assignments) {
+      const settings = getExtraRoleSettings();
       const eligibleIndexes = assignments.reduce(function (indexes, assignment, index) {
         if (assignment.role.id !== 'narrator' && assignment.role.id !== 'werewolf') {
           indexes.push(index);
@@ -2984,6 +3622,13 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
         assignment.extraRole = extraRole;
       });
+      if (settings['pure-soul']) {
+        const pureSoulCandidates = shuffledIndexes.filter(function (index) {
+          const roleId = assignments[index].role.id;
+          return !assignments[index].extraRole && ['werewolf', 'wild-child', 'doppelganger', 'thief'].indexOf(roleId) < 0;
+        });
+        if (pureSoulCandidates.length) assignments[pureSoulCandidates[0]].extraRole = extraRoleTemplates['pure-soul'];
+      }
     }
 
     function showGameAlert(options) {
@@ -3016,7 +3661,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       nextRevealButton.hidden = false;
       revealInstruction.textContent = revealIndex === revealQueue.length - 1
         ? 'Alle Rollen wurden angesehen. Starte das Spiel, wenn ihr bereit seid.'
-        : 'Geraet an den naechsten Spieler weitergeben.';
+        : 'Gerät an den nächsten Spieler weitergeben.';
     }
 
     function renderRevealStep() {
@@ -3036,7 +3681,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     }
 
     function startRoleRevealFlow() {
-      const shuffledPlayers = shuffleItems(players);
+      const shuffledPlayers = getExtraRuleSettings().playerCarousel ? shuffleItems(players) : players.slice();
       const shuffledRoles = shuffleItems(getActiveRoleCards());
 
       revealQueue = shuffledPlayers.map(function (player, index) {
@@ -3045,6 +3690,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
           role: shuffledRoles[index]
         };
       });
+      revealQueue.unusedRoles = shuffledRoles.slice(shuffledPlayers.length);
       assignExtraRoles(revealQueue);
       revealIndex = 0;
       renderRevealStep();
@@ -3053,14 +3699,26 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
 
     function requestGameStart() {
       updateExtraRoleAvailability();
+      const randomRoles = getExtraRuleSettings().randomRoles;
+
+      if (randomRoles && roleTemplates.filter(function (role) { return role.id !== 'narrator'; }).length - getRandomExcludedRoleIds().length < getPlayerCount() - getNarratorRoleCount()) {
+        showGameAlert({ title: 'Zufallsrollen prüfen', message: 'Im Zufallstopf müssen mindestens so viele Rollen wie Mitspieler sein.', confirmText: 'OK', hideCancel: true });
+        return;
+      }
+
+      if (!randomRoles && getRole('red-riding-hood') && getRole('red-riding-hood').count > 0 && (!getRole('hunter') || getRole('hunter').count === 0)) {
+        showGameAlert({ title: 'Rotkäppchen benötigt den Jäger', message: 'Rotkäppchen kann nur zusammen mit dem Jäger gespielt werden. Bitte füge den Jäger hinzu.', confirmText: 'OK', hideCancel: true });
+        return;
+      }
 
       const roleCount = getActiveRoleTotal(roles);
       const playerCount = getPlayerCount();
 
-      if (roleCount !== playerCount) {
+      const thiefEnabled = Boolean(getRole('thief') && getRole('thief').count > 0);
+      if (!randomRoles && roleCount !== playerCount + (thiefEnabled ? 2 : 0)) {
         showGameAlert({
-          title: 'Rollen pruefen',
-          message: 'Bitte waehle eine gueltige Anzahl an Rollen.',
+          title: 'Rollen prüfen',
+          message: thiefEnabled ? 'Mit dem Dieb müssen genau zwei Rollen mehr ausgewählt sein als Spieler.' : 'Bitte wähle eine gültige Anzahl an Rollen.',
           confirmText: 'OK',
           hideCancel: true
         });
@@ -3084,7 +3742,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     function requestLeaveGame() {
       showGameAlert({
         title: 'Spiel verlassen?',
-        message: 'Wenn du das Spiel verlaesst, kommst du zurueck ins Werwolf-Menue.',
+        message: 'Wenn du das Spiel verlässt, kommst du zurück ins Werwolf-Menü.',
         cancelText: 'Abbrechen',
         confirmText: 'Verlassen',
         onConfirm: function () {
@@ -3102,15 +3760,25 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         round: 1, players: revealQueue.map(function (assignment, index) {
           return { id: index, name: assignment.player.name, role: assignment.role.id, roleName: assignment.role.name,
             emoji: assignment.role.emoji, alive: assignment.role.id !== 'narrator', lives: assignment.role.id === 'tree' ? 2 : 1,
-            team: assignment.role.id === 'werewolf' ? 'wolf' : assignment.role.id === 'angel' ? 'angel' : 'village',
+            team: initialTeamForRole(assignment.role.id),
             lover: null, protected: false, lastHeal: null, blocked: false, copied: false, used: false,
-            extra: assignment.extraRole ? assignment.extraRole.id : null };
-        }), intents: {}, phase: null, selected: [], option: null, foxCanSniff: true, mayor: null, mayorEnabled: mayorSwitch.classList.contains('on')
+            extra: assignment.extraRole ? assignment.extraRole.id : null, charmed: false, canVote: true };
+        }), unusedRoles: (revealQueue.unusedRoles || []).filter(function (role) { return role.id !== 'narrator'; }), intents: {}, phase: null, selected: [], option: null, foxCanSniff: true, mayor: null, mayorEnabled: mayorSwitch.classList.contains('on')
       };
       beginNight();
     }
 
     function livingPlayers() { return gameState.players.filter(function (player) { return player.alive; }); }
+    function initialTeamForRole(role) { if (role === 'werewolf') return 'wolf'; if (role === 'angel') return 'angel'; if (['piper', 'white-wolf', 'lone-wolf'].indexOf(role) >= 0) return 'solo'; if (['wild-child', 'thief'].indexOf(role) >= 0) return 'ambiguous'; return 'village'; }
+    function isWolfAligned(player) { return player.team === 'wolf' || player.role === 'white-wolf'; }
+    function wouldDieFromWolfAttack(player) {
+      if (!player || gameState.intents.wolf !== player.id) return false;
+      if (player.protected || player.lives > 1) return false;
+      const escort = gameState.intents.escort;
+      if (escort && escort.actor === player.id) return false;
+      if (player.role === 'red-riding-hood' && livingPlayers().some(function (other) { return other.role === 'hunter'; })) return false;
+      return true;
+    }
     function playablePlayers() { return livingPlayers().filter(function (player) { return player.role !== 'narrator'; }); }
     function playerById(id) { return gameState.players.find(function (player) { return player.id === Number(id); }); }
     function roleLabel(role) { const template = roleTemplates.find(function (item) { return item.id === role; }) || extraRoleTemplates[role]; return template ? template.name : role; }
@@ -3121,8 +3789,8 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       playTimerId = window.setTimeout(function () { playTimerId = null; if (onEnd) onEnd(); }, 5000);
     }
     function setPlay(title, copy, kicker) {
-      clearPlayTimer(); playKicker.textContent = kicker || ('Nacht ' + gameState.round); playTitle.textContent = title; playCopy.textContent = copy || '';
-      playOptions.innerHTML = ''; playChoices.innerHTML = ''; playSummary.textContent = ''; playConfirm.hidden = true; showView('playScreen');
+      clearPlayTimer(); playTitle.classList.remove('is-role-reveal'); playKicker.textContent = kicker || ('Nacht ' + gameState.round); playTitle.textContent = title; playCopy.textContent = copy || '';
+      playOptions.innerHTML = ''; playChoices.innerHTML = ''; playSummary.textContent = ''; playConfirm.hidden = true; playConfirm.disabled = false; showView('playScreen');
     }
     function beginNight() {
       gameState.intents = {}; livingPlayers().forEach(function (player) { player.protected = false; player.blocked = false; });
@@ -3130,7 +3798,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       beginTimer(runNightRoles);
     }
     function nightActors() {
-      const order = ['cupid', 'doppelganger', 'wild-child', 'twins', 'triplets', 'escort', 'cook', 'werewolf', 'healer', 'seer', 'fox', 'witch', 'kamikaze'];
+      const order = getNightOrder();
       return order.filter(function (role) {
         if (role === 'twins' || role === 'triplets') {
           const group = gameState.players.filter(function (player) { return player.extra === role; });
@@ -3138,9 +3806,10 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         }
         return livingPlayers().some(function (player) {
           if (player.role !== role || player.blocked) return false;
-          if ((role === 'cupid' || role === 'doppelganger' || role === 'wild-child') && gameState.round !== 1) return false;
+          if ((role === 'cupid' || role === 'doppelganger' || role === 'wild-child' || role === 'thief') && gameState.round !== 1) return false;
           if (role === 'fox' && !gameState.foxCanSniff) return false;
           if (role === 'cook' || role === 'kamikaze') return !player.used;
+          if (role === 'white-wolf') return !player.ateWolfLastNight;
           if (role === 'witch') return !player.used || !player.healUsed;
           return true;
         });
@@ -3152,14 +3821,14 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       if (!role) { resolveNight(); return; }
       const actor = livingPlayers().find(function (player) { return (player.role === role || player.extra === role) && !player.blocked; });
       if (!actor) { runNextRole(); return; }
-      showRoleAction(actor);
+      showRoleAction(actor, role);
     }
     function choiceButtons(filter, max) {
       playChoices.innerHTML = '';
       playablePlayers().filter(filter || function () { return true; }).forEach(function (player) {
         const button = document.createElement('button'); button.type = 'button'; button.className = 'choice-player'; button.dataset.id = player.id;
         button.innerHTML = '<span class="choice-emoji">●</span><span class="choice-name"></span>';
-        button.querySelector('.choice-name').textContent = player.name;
+        button.querySelector('.choice-name').textContent = getExtraRuleSettings().narratorIcons ? player.emoji + ' ' + player.name : player.name;
         button.addEventListener('click', function () {
           const id = Number(button.dataset.id), index = gameState.selected.indexOf(id);
           if (index >= 0) gameState.selected.splice(index, 1); else { if (gameState.selected.length >= (max || 1)) gameState.selected.shift(); gameState.selected.push(id); }
@@ -3200,33 +3869,48 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       clearPlayTimer(); window.setTimeout(runNextRole, gameState.phase === 'seer' || gameState.phase === 'fox' ? 1500 : 0);
     }
     // Overrides: keep player targets anonymous and unlock interactions only after the five-second thinking time.
-    function showRoleAction(actor) {
-      const role = actor.extra === 'twins' || actor.extra === 'triplets' ? actor.extra : actor.role;
-      gameState.phase = role; gameState.selected = []; gameState.option = null;
-      const notes = { twins: 'Alle Zwillinge wachen auf und erkennen sich.', triplets: 'Alle Drillinge wachen auf und erkennen sich.', seer: 'Waehle einen anderen Spieler. Danach wird seine Rolle nur dir angezeigt.', kamikaze: 'Waehle ein Opfer oder ueberspringe. Nur mit Opfer stirbst du mit.' };
-      setPlay(roleLabel(role) + ' erwacht', notes[role] || 'Waehle einen Spieler fuer deine Faehigkeit.', 'Nacht ' + gameState.round);
+    function showRoleAction(actor, queuedRole) {
+      const role = queuedRole || actor.role;
+      gameState.phase = role; gameState.activeActorId = actor.id; gameState.roleActionLocked = false; gameState.selected = []; gameState.option = null;
+      const notes = { twins: 'Alle Zwillinge wachen auf und erkennen sich.', triplets: 'Alle Drillinge wachen auf und erkennen sich.', seer: 'Wähle einen anderen Spieler. Danach wird seine Rolle nur dir angezeigt.', aura: 'Wähle einen Spieler. Du erfährst, ob seine Aura gut oder böse ist.', piper: 'Wähle einen Spieler, den du verzauberst.', sharpshooter: actor.aimedTarget !== undefined ? 'Wähle erneut ein Ziel oder erschieße dein bisheriges Ziel.' : 'Wähle einen Spieler, auf den du zielst.', 'white-wolf': 'Wähle einen anderen Werwolf, den du fressen willst, oder überspringe.', 'lone-wolf': 'Wähle einen Spieler, den du angreifst.', thief: 'Wähle eine der beiden übrig gebliebenen Rollen.', kamikaze: 'Wähle ein Opfer oder überspringe. Nur mit Opfer stirbst du mit.' };
+      setPlay(roleLabel(role) + ' erwacht', notes[role] || 'Wähle einen Spieler für deine Fähigkeit.', 'Nacht ' + gameState.round);
       if (role === 'twins' || role === 'triplets') { playConfirm.hidden = false; playConfirm.textContent = 'Weiter'; }
+      else if (role === 'thief') {
+        if (!gameState.unusedRoles.length) { playCopy.textContent = 'Es sind keine Rollen zum Stehlen übrig.'; playConfirm.hidden = false; }
+        gameState.unusedRoles.forEach(function (stolenRole) { const b = document.createElement('button'); b.type = 'button'; b.textContent = stolenRole.emoji + ' ' + stolenRole.name; b.addEventListener('click', function () { gameState.stolenRole = stolenRole; Array.from(playOptions.children).forEach(function (item) { item.classList.toggle('selected', item === b); }); playConfirm.hidden = false; }); playOptions.appendChild(b); });
+      }
       else if (role === 'witch') {
-        ['Heiltrank', 'Gifttrank', 'Ueberspringen'].forEach(function (label) { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.disabled = (label === 'Heiltrank' && actor.healUsed) || (label === 'Gifttrank' && actor.poisonUsed); b.addEventListener('click', function () { gameState.option = label; Array.from(playOptions.children).forEach(function (x) { x.classList.toggle('selected', x === b); }); gameState.selected = []; choiceButtons(label === 'Heiltrank' ? function (p) { return gameState.intents.wolf === p.id && !(p.role === 'tree' && p.lives > 1); } : function (p) { return label !== 'Gifttrank' || p.id !== actor.id; }); playConfirm.hidden = label !== 'Ueberspringen'; }); playOptions.appendChild(b); });
+        ['Heiltrank', 'Gifttrank', 'Überspringen'].forEach(function (label) { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.disabled = (label === 'Heiltrank' && actor.healUsed) || (label === 'Gifttrank' && actor.poisonUsed); b.addEventListener('click', function () { gameState.option = label; Array.from(playOptions.children).forEach(function (x) { x.classList.toggle('selected', x === b); }); gameState.selected = []; playChoices.innerHTML = ''; if (label !== 'Überspringen') choiceButtons(label === 'Heiltrank' ? wouldDieFromWolfAttack : function (p) { return label !== 'Gifttrank' || p.id !== actor.id; }); playConfirm.hidden = label !== 'Überspringen'; playConfirm.disabled = playConfirm.hidden; }); playOptions.appendChild(b); });
       } else if (role === 'kamikaze') {
-        const skip = document.createElement('button'); skip.type = 'button'; skip.textContent = 'Niemanden toeten'; skip.addEventListener('click', function () { gameState.option = 'skip'; playConfirm.hidden = false; playConfirm.disabled = false; }); playOptions.appendChild(skip); choiceButtons(function (p) { return p.id !== actor.id; });
-      } else choiceButtons(role === 'cupid' ? function () { return true; } : role === 'werewolf' ? function (p) { return p.team !== 'wolf'; } : function (p) { return !(role === 'doppelganger' && p.id === actor.id) && !(role === 'seer' && p.id === actor.id) && !(role === 'healer' && p.id === actor.lastHeal); }, role === 'cupid' ? 2 : 1);
+        const skip = document.createElement('button'); skip.type = 'button'; skip.textContent = 'Niemanden töten'; skip.addEventListener('click', function () { gameState.option = 'skip'; playConfirm.hidden = false; playConfirm.disabled = false; }); playOptions.appendChild(skip); choiceButtons(function (p) { return p.id !== actor.id; });
+      } else if (role === 'white-wolf') {
+        const skip = document.createElement('button'); skip.type = 'button'; skip.textContent = 'Überspringen'; skip.addEventListener('click', function () { gameState.option = 'skip'; playConfirm.hidden = false; }); playOptions.appendChild(skip); choiceButtons(function (p) { return p.id !== actor.id && p.team === 'wolf'; });
+      } else choiceButtons(role === 'cupid' ? function () { return true; } : role === 'werewolf' ? function (p) { return !isWolfAligned(p); } : function (p) { return p.id !== actor.id && !(role === 'healer' && p.id === actor.lastHeal); }, role === 'cupid' ? 2 : 1);
       playConfirm.textContent = role === 'twins' || role === 'triplets' ? 'Weiter' : 'Akzeptieren'; playConfirm.onclick = acceptRoleAction;
-      Array.from(playOptions.querySelectorAll('button')).concat(Array.from(playChoices.querySelectorAll('button'))).forEach(function (b) { b.disabled = true; }); playConfirm.disabled = true;
-      beginTimer(function () { Array.from(playOptions.querySelectorAll('button')).concat(Array.from(playChoices.querySelectorAll('button'))).forEach(function (b) { b.disabled = false; }); playConfirm.disabled = playConfirm.hidden; playCopy.textContent += '\nDu kannst jetzt waehlen und bestaetigen.'; });
+      // Eingaben sind sofort möglich. Die frühere Timer-Sperre konnte nach Phasenwechseln Buttons ausgegraut lassen.
+      playConfirm.disabled = playConfirm.hidden;
     }
     function acceptRoleAction() {
-      const actor = livingPlayers().find(function (p) { return p.role === gameState.phase || p.extra === gameState.phase; }); const target = playerById(gameState.selected[0]);
+      if (gameState.roleActionLocked) return;
+      gameState.roleActionLocked = true;
+      playConfirm.disabled = true;
+      const actor = playerById(gameState.activeActorId); const target = playerById(gameState.selected[0]);
       if (!actor) { runNextRole(); return; }
       if (gameState.phase === 'twins' || gameState.phase === 'triplets') { clearPlayTimer(); runNextRole(); return; }
-      if (gameState.phase === 'cupid' && gameState.selected.length === 2) { const a = playerById(gameState.selected[0]), b = playerById(gameState.selected[1]); a.lover = b.id; b.lover = a.id; }
+      if (gameState.phase === 'cupid' && gameState.selected.length === 2) { const a = playerById(gameState.selected[0]), b = playerById(gameState.selected[1]); a.lover = b.id; b.lover = a.id; clearPlayTimer(); setPlay('Die Verliebten erwachen', a.name + ' und ' + b.name + ' schauen sich an.', 'Nacht ' + gameState.round); playConfirm.hidden = false; playConfirm.disabled = false; playConfirm.textContent = 'Weiter'; gameState.roleActionLocked = false; playConfirm.onclick = function () { if (gameState.roleActionLocked) return; gameState.roleActionLocked = true; runNextRole(); }; return; }
+      else if (gameState.phase === 'thief' && gameState.stolenRole) { const stolen = gameState.stolenRole; actor.role = stolen.id; actor.roleName = stolen.name; actor.emoji = stolen.emoji; actor.team = initialTeamForRole(stolen.id); gameState.unusedRoles = gameState.unusedRoles.filter(function (role) { return role !== stolen; }); }
       else if (gameState.phase === 'doppelganger' && target) { actor.role = target.role; actor.roleName = target.roleName; actor.emoji = target.emoji; actor.team = target.team; }
       else if (gameState.phase === 'wild-child' && target) actor.model = target.id;
       else if (gameState.phase === 'escort' && target) gameState.intents.escort = { actor: actor.id, target: target.id };
       else if (gameState.phase === 'cook' && target) target.blocked = true;
       else if (gameState.phase === 'werewolf' && target) gameState.intents.wolf = target.id;
+      else if (gameState.phase === 'white-wolf' && target && gameState.option !== 'skip') { gameState.intents.whiteWolfEat = target.id; actor.ateWolfLastNight = true; }
+      else if (gameState.phase === 'lone-wolf' && target) gameState.intents.loneWolf = target.id;
+      else if (gameState.phase === 'piper' && target) target.charmed = true;
+      else if (gameState.phase === 'sharpshooter' && target) { if (actor.aimedTarget === target.id && !actor.shotUsed) gameState.intents.shot = { actor: actor.id, target: target.id }; else actor.aimedTarget = target.id; }
+      else if (gameState.phase === 'aura' && target) { clearPlayTimer(); playOptions.innerHTML = ''; playChoices.innerHTML = ''; playTitle.classList.add('is-role-reveal'); playTitle.textContent = target.team === 'village' ? '✨ Gute Aura' : '🌑 Böse Aura'; playCopy.textContent = target.name + ' hat diese Aura.'; playConfirm.disabled = false; playConfirm.hidden = false; playConfirm.textContent = 'Weiter'; gameState.roleActionLocked = false; playConfirm.onclick = function () { if (gameState.roleActionLocked) return; gameState.roleActionLocked = true; runNextRole(); }; return; }
       else if (gameState.phase === 'healer' && target) { target.protected = true; actor.lastHeal = target.id; }
-      else if (gameState.phase === 'seer' && target) { clearPlayTimer(); playCopy.textContent = target.name + ' ist ' + target.roleName + '.'; playConfirm.disabled = false; playConfirm.hidden = false; playConfirm.textContent = 'Weiter'; playConfirm.onclick = runNextRole; return; }
+      else if (gameState.phase === 'seer' && target) { clearPlayTimer(); playOptions.innerHTML = ''; playChoices.innerHTML = ''; playTitle.classList.add('is-role-reveal'); playTitle.textContent = target.emoji + ' ' + target.roleName; playCopy.textContent = target.name + ' hat diese Rolle.'; playConfirm.disabled = false; playConfirm.hidden = false; playConfirm.textContent = 'Weiter'; gameState.roleActionLocked = false; playConfirm.onclick = function () { if (gameState.roleActionLocked) return; gameState.roleActionLocked = true; runNextRole(); }; return; }
       else if (gameState.phase === 'fox' && target) { const list = playablePlayers(), pos = list.indexOf(target); gameState.foxCanSniff = list.slice(Math.max(0, pos - 1), pos + 2).some(function (p) { return p.team === 'wolf'; }); }
       else if (gameState.phase === 'witch' && target) { if (gameState.option === 'Heiltrank') { gameState.intents.heal = target.id; actor.healUsed = true; } if (gameState.option === 'Gifttrank') { gameState.intents.poison = target.id; actor.poisonUsed = true; } }
       else if (gameState.phase === 'kamikaze' && target && gameState.option !== 'skip') { gameState.intents.kamikaze = [actor.id, target.id]; actor.used = true; }
@@ -3270,8 +3954,9 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       playConfirm.textContent = 'Abstimmung beenden'; playConfirm.onclick = finishVote;
     }
     function finishVote() {
-      const max = Math.max.apply(null, Object.values(gameState.votes)); const candidates = playablePlayers().filter(function (p) { return gameState.votes[p.id] === max; });
+      const max = Math.max.apply(null, Object.values(gameState.votes)); if ((gameState.votes.skip || 0) === max) { setPlay('Abstimmung übersprungen', 'Heute wird niemand verurteilt.', 'Tag ' + gameState.round); playConfirm.hidden = false; playConfirm.textContent = 'Nächste Nacht'; playConfirm.onclick = nextNight; return; } const candidates = playablePlayers().filter(function (p) { return gameState.votes[p.id] === max; });
       if (!candidates.length || candidates.length > 1) { setPlay('Keine Entscheidung', 'Bei Gleichstand stirbt niemand.', 'Tag ' + gameState.round); playConfirm.hidden = false; playConfirm.textContent = 'Nächste Nacht'; playConfirm.onclick = nextNight; return; }
+      if (candidates[0].role === 'village-idiot' && !candidates[0].idiotRevealed) { candidates[0].idiotRevealed = true; candidates[0].canVote = false; setPlay('Der Dorfdepp wurde erkannt', candidates[0].name + ' wird nicht gelyncht. Seine Rolle wird bekannt gegeben und er darf nicht mehr abstimmen.', 'Tag ' + gameState.round); playConfirm.hidden = false; playConfirm.textContent = 'Nächste Nacht'; playConfirm.onclick = nextNight; return; }
       const deaths = []; killPlayer(candidates[0], deaths); const angelWin = gameState.round === 1 && deaths.some(function (p) { return p.role === 'angel'; });
       setPlay(candidates[0].name + ' stirbt', angelWin ? 'Der Engel hat seine Bedingung erfüllt.' : candidates[0].name + ' wurde vom Dorf verurteilt.', 'Tag ' + gameState.round);
       if (checkWinner(angelWin)) return; playConfirm.hidden = false; playConfirm.textContent = 'Nächste Nacht'; playConfirm.onclick = nextNight;
@@ -3279,13 +3964,16 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     function nextNight() { gameState.round += 1; beginNight(); }
     function checkWinner(angelWin) {
       const active = playablePlayers(), wolves = active.filter(function (p) { return p.team === 'wolf'; }); let winner = null;
-      if (angelWin) winner = 'angel'; else if (!wolves.length) winner = 'village'; else if (wolves.length >= active.length - wolves.length) winner = 'wolf';
+      const piper = active.find(function (p) { return p.role === 'piper'; });
+      const soloWinner = active.find(function (p) { return (p.role === 'white-wolf' || p.role === 'lone-wolf') && active.length === 1; });
+      if (angelWin) winner = 'angel'; else if (piper && active.filter(function (p) { return p.id !== piper.id; }).every(function (p) { return p.charmed; })) winner = 'piper'; else if (soloWinner) winner = 'solo'; else if (!wolves.length) winner = 'village'; else if (wolves.length >= active.length - wolves.length) winner = 'wolf';
       if (!winner) return false; showResults(winner); return true;
     }
     function showResults(winner) {
-      const labels = { wolf: 'Die Werwölfe gewinnen', village: 'Das Dorf gewinnt', angel: 'Der Engel gewinnt' };
+      recordAccountWin('werwolf', winner);
+      const labels = { wolf: 'Die Werwölfe gewinnen', village: 'Das Dorf gewinnt', angel: 'Der Engel gewinnt', piper: 'Der Flötenspieler gewinnt', solo: 'Der Einzelgänger gewinnt' };
       setPlay(labels[winner], 'Die Rollen werden aufgedeckt.', 'Spielende');
-      gameState.players.filter(function (p) { return p.role !== 'narrator'; }).forEach(function (player) { const row = document.createElement('div'); row.className = 'result-row'; const won = player.team === winner || (winner === 'village' && player.team === 'village'); row.innerHTML = '<span><strong></strong><span class="result-role"></span></span><span class="result-status"></span>'; row.querySelector('strong').textContent = player.name + ' · '; row.querySelector('.result-role').textContent = player.roleName; const status = row.querySelector('.result-status'); status.textContent = won ? 'Gewonnen' : 'Verloren'; status.classList.add(won ? 'win' : 'lose'); playChoices.appendChild(row); });
+      gameState.players.filter(function (p) { return p.role !== 'narrator'; }).forEach(function (player) { const row = document.createElement('div'); row.className = 'result-row'; const won = player.team === winner || (winner === 'village' && player.team === 'village') || (winner === 'piper' && player.role === 'piper') || (winner === 'solo' && (player.role === 'white-wolf' || player.role === 'lone-wolf')); row.innerHTML = '<span><strong></strong><span class="result-role"></span></span><span class="result-status"></span>'; row.querySelector('strong').textContent = player.name + ' · '; row.querySelector('.result-role').textContent = player.roleName; const status = row.querySelector('.result-status'); status.textContent = won ? 'Gewonnen' : 'Verloren'; status.classList.add(won ? 'win' : 'lose'); playChoices.appendChild(row); });
       playConfirm.hidden = false; playConfirm.textContent = 'Nochmal spielen'; playConfirm.onclick = function () { gameState = null; revealQueue = []; showView('gameScreen'); };
     }
 
@@ -3293,7 +3981,7 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       const hunter = deaths.find(function (p) { return p.role === 'hunter' && !p.revengeUsed; });
       if (!hunter) { done(); return; }
       hunter.revengeUsed = true; gameState.phase = 'hunter'; gameState.selected = [];
-      setPlay('Der Jaeger stirbt', 'Der Jaeger waehlt einen Spieler, den er mit in den Tod reisst.', 'Nacht ' + gameState.round);
+      setPlay('Der Jäger stirbt', 'Der Jäger wählt einen Spieler, den er mit in den Tod reißt.', 'Nacht ' + gameState.round);
       choiceButtons(function (p) { return p.id !== hunter.id; });
       playConfirm.textContent = 'Mit in den Tod reissen'; playConfirm.hidden = true;
       playConfirm.onclick = function () { killPlayer(playerById(gameState.selected[0]), deaths); resolveHunter(deaths, done); };
@@ -3301,36 +3989,44 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     function resolveNight() {
       const deaths = [], attacked = playerById(gameState.intents.wolf), escort = gameState.intents.escort;
       const escortSafe = escort && attacked && escort.actor === attacked.id, guestAttack = escort && attacked && escort.target === attacked.id;
-      if (attacked && !attacked.protected && gameState.intents.heal !== attacked.id && !escortSafe) { killPlayer(attacked, deaths); if (guestAttack) killPlayer(playerById(escort.actor), deaths); }
+      const redHoodProtected = attacked && attacked.role === 'red-riding-hood' && livingPlayers().some(function (player) { return player.role === 'hunter'; });
+      if (attacked && !attacked.protected && gameState.intents.heal !== attacked.id && !escortSafe && !redHoodProtected) { killPlayer(attacked, deaths); if (guestAttack) killPlayer(playerById(escort.actor), deaths); }
+      const whiteWolfTarget = playerById(gameState.intents.whiteWolfEat); if (whiteWolfTarget) killPlayer(whiteWolfTarget, deaths);
+      const loneWolfTarget = playerById(gameState.intents.loneWolf); if (loneWolfTarget && !isWolfAligned(loneWolfTarget)) killPlayer(loneWolfTarget, deaths);
+      const shot = gameState.intents.shot; if (shot) { const shooter = playerById(shot.actor), target = playerById(shot.target); if (shooter && target) { shooter.shotUsed = true; if (target.team === 'village') killPlayer(shooter, deaths); else killPlayer(target, deaths); } }
       const poison = playerById(gameState.intents.poison); if (poison && !poison.protected) killPlayer(poison, deaths);
       (gameState.intents.kamikaze || []).forEach(function (id) { killPlayer(playerById(id), deaths); });
+      livingPlayers().filter(function (player) { return player.role === 'white-wolf'; }).forEach(function (player) { player.ateWolfLastNight = Boolean(gameState.intents.whiteWolfEat); });
       resolveHunter(deaths, function () { announceDay(deaths); });
     }
     function beginMayorElection() {
-      setPlay('Buergermeisterwahl', 'Waehlt den Buergermeister. Seine Stimme zaehlt bei jeder Abstimmung doppelt.', 'Tag 1');
+      setPlay('Bürgermeisterwahl', 'Wählt den Bürgermeister. Seine Stimme zählt bei jeder Abstimmung doppelt.', 'Tag 1');
       playablePlayers().forEach(function (player) { const b = document.createElement('button'); b.type = 'button'; b.className = 'choice-player'; b.innerHTML = '<span class="choice-emoji">●</span><span class="choice-name"></span>'; b.querySelector('.choice-name').textContent = player.name; b.addEventListener('click', function () { gameState.mayor = player.id; Array.from(playChoices.children).forEach(function (item) { item.classList.toggle('selected', item === b); }); playConfirm.hidden = false; }); playChoices.appendChild(b); });
-      playConfirm.textContent = 'Als Buergermeister waehlen'; playConfirm.hidden = true; playConfirm.onclick = beginDiscussion;
+      playConfirm.textContent = 'Als Bürgermeister wählen'; playConfirm.hidden = true; playConfirm.onclick = beginDiscussion;
     }
     function announceDay(deaths) {
-      const names = deaths.map(function (p) { return p.name; }); setPlay('Der Tag bricht an', names.length ? 'Alle oeffnen die Augen. Gestorben: ' + names.join(', ') + '.' : 'Alle oeffnen die Augen. Niemand ist gestorben.', 'Tag ' + gameState.round);
+      const names = deaths.map(function (p) { return p.name; }); const pureSoul = gameState.round === 1 ? playablePlayers().find(function (player) { return player.extra === 'pure-soul'; }) : null; setPlay('Der Tag bricht an', (names.length ? 'Alle öffnen die Augen. Gestorben: ' + names.join(', ') + '.' : 'Alle öffnen die Augen. Niemand ist gestorben.') + (pureSoul ? '\nDie Reine Seele ist: ' + pureSoul.name + '.' : ''), 'Tag ' + gameState.round);
       if (checkWinner(gameState.round === 1 && deaths.some(function (p) { return p.role === 'angel'; }))) return;
-      playConfirm.hidden = false; playConfirm.textContent = gameState.round === 1 && gameState.mayorEnabled && gameState.mayor === null ? 'Buergermeisterwahl' : 'Beratung beginnen'; playConfirm.onclick = gameState.round === 1 && gameState.mayorEnabled && gameState.mayor === null ? beginMayorElection : beginDiscussion;
+      playConfirm.hidden = false; playConfirm.textContent = gameState.round === 1 && gameState.mayorEnabled && gameState.mayor === null ? 'Bürgermeisterwahl' : 'Beratung beginnen'; playConfirm.onclick = gameState.round === 1 && gameState.mayorEnabled && gameState.mayor === null ? beginMayorElection : beginDiscussion;
     }
     function beginVote() {
-      clearPlayTimer(); const eligible = playablePlayers(), total = eligible.length + (gameState.mayor !== null ? 1 : 0); gameState.votes = {}; gameState.voteTotal = total;
-      setPlay('Abstimmung', 'Verteile insgesamt ' + total + ' Stimmen. Der Buergermeister hat zwei Stimmen.', 'Tag ' + gameState.round); playSummary.textContent = 'Noch zu vergeben: ' + total;
-      eligible.forEach(function (player) { const row = document.createElement('div'); row.className = 'vote-row'; row.innerHTML = '<span class="vote-name"></span><button class="vote-adjust" type="button">-</button><span class="vote-count">0</span><button class="vote-adjust" type="button">+</button>'; row.querySelector('.vote-name').textContent = player.name + (player.id === gameState.mayor ? ' (Buergermeister)' : ''); const buttons = row.querySelectorAll('button'), count = row.querySelector('.vote-count'); function update(d) { const cur = gameState.votes[player.id] || 0, used = Object.values(gameState.votes).reduce(function (a,b) { return a+b; },0); if (d > 0 && (cur >= total - 1 || used >= total)) return; if (d < 0 && !cur) return; gameState.votes[player.id] = cur+d; count.textContent = gameState.votes[player.id]; const now = Object.values(gameState.votes).reduce(function(a,b){return a+b;},0); playSummary.textContent = 'Noch zu vergeben: ' + (total-now); playConfirm.hidden = now === 0; } buttons[0].onclick = function(){update(-1);}; buttons[1].onclick = function(){update(1);}; playChoices.appendChild(row); }); playConfirm.textContent = 'Abstimmung beenden'; playConfirm.onclick = finishVote;
+      clearPlayTimer(); const eligible = playablePlayers().filter(function (player) { return player.canVote !== false; }), total = eligible.length + (gameState.mayor !== null ? 1 : 0); gameState.votes = {}; gameState.voteTotal = total;
+      setPlay('Abstimmung', 'Verteile insgesamt ' + total + ' Stimmen. Der Bürgermeister hat zwei Stimmen.', 'Tag ' + gameState.round); playSummary.textContent = 'Noch zu vergeben: ' + total;
+      eligible.forEach(function (player) { const row = document.createElement('div'); row.className = 'vote-row'; row.innerHTML = '<span class="vote-name"></span><button class="vote-adjust" type="button">-</button><span class="vote-count">0</span><button class="vote-adjust" type="button">+</button>'; row.querySelector('.vote-name').textContent = player.name + (player.id === gameState.mayor ? ' (Bürgermeister)' : ''); const buttons = row.querySelectorAll('button'), count = row.querySelector('.vote-count'); function update(d) { const cur = gameState.votes[player.id] || 0, used = Object.values(gameState.votes).reduce(function (a,b) { return a+b; },0); if (d > 0 && (cur >= total - 1 || used >= total)) return; if (d < 0 && !cur) return; gameState.votes[player.id] = cur+d; count.textContent = gameState.votes[player.id]; const now = Object.values(gameState.votes).reduce(function(a,b){return a+b;},0); playSummary.textContent = 'Noch zu vergeben: ' + (total-now); playConfirm.hidden = now === 0; } buttons[0].onclick = function(){update(-1);}; buttons[1].onclick = function(){update(1);}; playChoices.appendChild(row); }); const skip = document.createElement('div'); skip.className = 'vote-row'; skip.innerHTML = '<span class="vote-name">⏭️ Überspringen</span><button class="vote-adjust" type="button">-</button><span class="vote-count">0</span><button class="vote-adjust" type="button">+</button>'; const sb = skip.querySelectorAll('button'), sc = skip.querySelector('.vote-count'); function updateSkip(d) { const cur = gameState.votes.skip || 0, used = Object.values(gameState.votes).reduce(function(a,b){return a+b;},0); if (d > 0 && (cur >= total - 1 || used >= total)) return; if (d < 0 && !cur) return; gameState.votes.skip = cur + d; sc.textContent = gameState.votes.skip; const now = Object.values(gameState.votes).reduce(function(a,b){return a+b;},0); playSummary.textContent = 'Noch zu vergeben: ' + (total-now); playConfirm.hidden = now === 0; } sb[0].onclick=function(){updateSkip(-1);}; sb[1].onclick=function(){updateSkip(1);}; playChoices.appendChild(skip); playConfirm.textContent = 'Abstimmung beenden'; playConfirm.onclick = finishVote;
     }
+    function inviteFriends() { showGameAlert({ title: 'Freunde einladen', message: 'Wie möchtest du den Download-Link teilen?', cancelText: 'Link kopieren', confirmText: 'Teilen', onCancel: function () { navigator.clipboard && navigator.clipboard.writeText(window.location.href); }, onConfirm: function () { if (navigator.share) navigator.share({ title: 'Swish', text: 'Lade Swish herunter und spiel mit uns!', url: window.location.href }); else if (navigator.clipboard) navigator.clipboard.writeText(window.location.href); } }); }
+    function chooseLanguage() { const en = document.documentElement.lang !== 'en'; document.documentElement.lang = en ? 'en' : 'de'; languageSettingNote.textContent = en ? 'English' : 'Deutsch'; languageSettingCode.textContent = en ? 'EN' : 'DE'; localStorage.setItem('swishLanguage', en ? 'en' : 'de'); showGameAlert({ title: en ? 'English' : 'Deutsch', message: en ? 'English is enabled. Further screen texts are shown in English where available.' : 'Deutsch ist aktiviert.', confirmText: 'OK', hideCancel: true }); }
     function showView(targetId) {
       views.forEach(function (view) {
         view.classList.toggle('active', view.id === targetId);
       });
 
-      phone.classList.toggle('detail-open', targetId === 'gameScreen' || targetId === 'rolesScreen' || targetId === 'advancedScreen' || targetId === 'roleRevealScreen' || targetId === 'gameReadyScreen' || targetId === 'nightScreen' || targetId === 'playScreen');
+      phone.classList.toggle('detail-open', targetId === 'gameScreen' || targetId === 'rolesScreen' || targetId === 'advancedScreen' || targetId === 'roleOrderScreen' || targetId === 'roleRevealScreen' || targetId === 'gameReadyScreen' || targetId === 'nightScreen' || targetId === 'playScreen');
 
       navButtons.forEach(function (navButton) {
         navButton.classList.toggle('active', navButton.dataset.target === targetId);
       });
+      if (targetId === 'profileScreen') updateAccountView();
     }
 
     addCategoryButton.addEventListener('click', function () {
@@ -3346,7 +4042,13 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       resetRoles();
     });
 
+    removePlayerFromModalButton.addEventListener('click', removeEditingPlayer);
+
     categoryRow.addEventListener('click', function (event) {
+      if (suppressPlayerClick) {
+        suppressPlayerClick = false;
+        return;
+      }
       const avatarButton = event.target.closest('.player-avatar-button');
 
       if (!avatarButton) return;
@@ -3358,6 +4060,44 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
         openPlayerModal(playerIndex);
       }
     });
+
+    categoryRow.addEventListener('pointerdown', function (event) {
+      const item = event.target.closest('.category');
+      if (!item || event.button !== 0) return;
+      const playerIndex = Number(item.dataset.playerIndex);
+      if (!Number.isInteger(playerIndex)) return;
+      playerHoldTimer = window.setTimeout(function () {
+        draggedPlayerIndex = playerIndex;
+        item.classList.add('is-reordering');
+        suppressPlayerClick = true;
+        if (navigator.vibrate) navigator.vibrate(35);
+      }, 450);
+    });
+
+    categoryRow.addEventListener('pointermove', function (event) {
+      if (draggedPlayerIndex === null) return;
+      const target = document.elementFromPoint(event.clientX, event.clientY);
+      const targetItem = target && target.closest('.category');
+      const targetIndex = targetItem ? Number(targetItem.dataset.playerIndex) : NaN;
+      if (!Number.isInteger(targetIndex) || targetIndex === draggedPlayerIndex) return;
+      swapPlayers(draggedPlayerIndex, targetIndex);
+      draggedPlayerIndex = targetIndex;
+      renderPlayers();
+      const currentItem = categoryRow.querySelector('[data-player-index="' + draggedPlayerIndex + '"]');
+      if (currentItem) currentItem.classList.add('is-reordering');
+    });
+
+    function finishPlayerReordering() {
+      if (playerHoldTimer) window.clearTimeout(playerHoldTimer);
+      playerHoldTimer = null;
+      if (draggedPlayerIndex === null) return;
+      draggedPlayerIndex = null;
+      savePlayers();
+      renderPlayers();
+    }
+
+    document.addEventListener('pointerup', finishPlayerReordering);
+    document.addEventListener('pointercancel', finishPlayerReordering);
 
     navButtons.forEach(function (button) {
       button.addEventListener('click', function (event) {
@@ -3389,6 +4129,8 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       showView('advancedScreen');
     });
 
+    openRoleOrderButton.addEventListener('click', function () { renderRoleOrder(); showView('roleOrderScreen'); });
+
     backToGameButton.addEventListener('click', function () {
       showView('gameScreen');
     });
@@ -3396,6 +4138,9 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     backFromAdvancedButton.addEventListener('click', function () {
       showView('gameScreen');
     });
+
+    backFromRoleOrderButton.addEventListener('click', function () { showView('gameScreen'); });
+    resetRoleOrderButton.addEventListener('click', function () { saveNightOrder(defaultNightOrder); renderRoleOrder(); });
 
     startGameButton.addEventListener('click', requestGameStart);
 
@@ -3497,6 +4242,48 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
       setExtraRoleEnabled('triplets', !tripletsSwitch.classList.contains('on'));
     });
 
+    pureSoulSwitch.addEventListener('click', function () {
+      setExtraRoleEnabled('pure-soul', !pureSoulSwitch.classList.contains('on'));
+    });
+
+    inviteFriendsButton.addEventListener('click', inviteFriends);
+    languageSettingButton.addEventListener('click', chooseLanguage);
+    playerCarouselSwitch.addEventListener('click', function () {
+      const settings = getExtraRuleSettings();
+      settings.playerCarousel = !settings.playerCarousel;
+      saveExtraRuleSettings(settings);
+      updateRuleSwitch(playerCarouselSwitch, settings.playerCarousel, 'Spieler Karussell');
+    });
+
+    youthFriendlySwitch.addEventListener('click', function () {
+      const settings = getExtraRuleSettings();
+      settings.youthFriendly = !settings.youthFriendly;
+      saveExtraRuleSettings(settings);
+      updateRuleSwitch(youthFriendlySwitch, settings.youthFriendly, 'Jugendfreundlich');
+      refreshYouthFriendlyRole();
+    });
+
+    narratorIconsSwitch.addEventListener('click', function () {
+      const settings = getExtraRuleSettings();
+      settings.narratorIcons = !settings.narratorIcons;
+      saveExtraRuleSettings(settings);
+      updateRuleSwitch(narratorIconsSwitch, settings.narratorIcons, 'Erzähler Icons');
+    });
+    randomRolesSwitch.addEventListener('click', function () {
+      const settings = getExtraRuleSettings();
+      settings.randomRoles = !settings.randomRoles;
+      saveExtraRuleSettings(settings);
+      updateRuleSwitch(randomRolesSwitch, settings.randomRoles, 'Zufallsrollen');
+      renderRoles();
+    });
+    favoriteWerwolfButton.addEventListener('click', function () {
+      const isFavorite = !favoriteWerwolfButton.classList.contains('is-favorite');
+      localStorage.setItem(favoriteWerwolfStorageKey, String(isFavorite));
+      updateFavoriteWerwolf(isFavorite);
+    });
+    werwolfHelpButton.addEventListener('click', function () {
+      showGameAlert({ title: 'Werwolf – kurz erklärt', message: 'Die Werwölfe wählen nachts heimlich ein Opfer. Die Dorfbewohner versuchen tagsüber durch Abstimmungen die Werwölfe zu entlarven. Jede Rolle kann dabei eigene Fähigkeiten haben. Das Dorf gewinnt, wenn alle Werwölfe ausgeschieden sind; die Werwölfe gewinnen, sobald sie mindestens so viele sind wie die übrigen Spieler.', confirmText: 'Verstanden', hideCancel: true });
+    });
     openAppDesignButton.addEventListener('click', openAppDesignModal);
 
     closeAppDesignButton.addEventListener('click', closeAppDesignModal);
@@ -3526,6 +4313,22 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     playerForm.addEventListener('submit', function (event) {
       event.preventDefault();
       acceptPlayerForm();
+    });
+
+    accountForm.addEventListener('submit', submitAccount);
+    accountAvatar.addEventListener('click', function () { accountDetails.classList.toggle('open'); });
+    accountEditToggle.addEventListener('click', function () {
+      accountEditForm.hidden = !accountEditForm.hidden;
+      accountEditNote.textContent = '';
+      if (!accountEditForm.hidden) accountEditUsername.focus();
+    });
+    accountEditForm.addEventListener('submit', saveAccountProfile);
+    accountLogout.addEventListener('click', function () {
+      localStorage.removeItem(accountSessionStorageKey);
+      accountDetails.classList.remove('open');
+      accountMode = 'login';
+      accountForm.reset();
+      updateAccountView();
     });
 
     darkModeSwitch.addEventListener('click', function () {
@@ -3596,6 +4399,10 @@ button.choice-player { width: 100%; cursor: pointer; font-weight: 700; }
     loadExtraRoleSettings();
     loadDarkModeSetting();
     loadSavedRoles();
+    loadExtraRuleSettings();
+    loadFavoriteWerwolf();
+    loadCacheVersion();
+    updateAccountView();
     updateExtraRoleAvailability();
     startBannerTimer();
 
