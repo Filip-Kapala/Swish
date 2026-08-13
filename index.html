@@ -1609,7 +1609,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
 .result-status { font-weight: 850; }
 .result-status.win { color: #16803c; }.result-status.lose { color: #bb3434; }
 
-.account-screen { overflow-y: auto; padding: 22px 32px calc(var(--nav-height) + 28px); }
+.account-screen { overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; padding: 22px 32px calc(var(--nav-height) + 28px); }.account-screen::-webkit-scrollbar { display: none; }
 .account-auth { min-height: calc(100% - 20px); display: flex; flex-direction: column; justify-content: center; text-align: center; }
 .account-auth[hidden], .account-dashboard[hidden] { display: none; }
 .account-logo { margin: 0 0 120px; font-size: 40px; font-weight: 900; letter-spacing: -.04em; }
@@ -1632,15 +1632,23 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
 .account-details.open { display: grid; gap: 5px; }
 .account-details-name { font-weight: 900; font-size: 18px; }.account-details-email { color: var(--muted); font-size: 14px; }
 .account-logout { justify-self: start; margin-top: 7px; border: 0; background: transparent; color: #c53535; padding: 0; font: inherit; font-weight: 800; cursor: pointer; }
-.account-edit-toggle { justify-self: start; border: 0; background: transparent; color: var(--text); padding: 0; font: inherit; font-weight: 800; cursor: pointer; }
-.account-edit { display: grid; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }.account-edit[hidden] { display: none; }
-.account-edit label { display: grid; gap: 5px; color: var(--muted); font-size: 12px; font-weight: 750; }.account-edit input { height: 42px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--text); font: inherit; }.account-edit input[type="file"] { height: auto; padding: 8px; font-size: 12px; }.account-edit button { min-height: 42px; border: 0; border-radius: 10px; background: var(--text); color: var(--bg); font: inherit; font-weight: 800; cursor: pointer; }.account-edit-note { min-height: 16px; margin: 0; color: #c53535; font-size: 12px; }
+.account-edit-toggle { justify-self: start; border: 0; border-radius: 9px; background: #2869ee; color: #fff; padding: 7px 11px; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+.profile-edit-screen { overflow-y: auto; padding: 22px 32px calc(var(--nav-height) + 28px); }
+.profile-edit-header { display: grid; grid-template-columns: 42px 1fr 42px; align-items: center; margin-bottom: 30px; }.profile-edit-header h1 { margin: 0; text-align: center; font-size: 24px; }.profile-edit-back { width: 42px; height: 42px; border: 0; border-radius: 50%; background: var(--soft); color: var(--text); font-size: 28px; cursor: pointer; }
+.profile-edit-form { display: grid; gap: 17px; max-width: 460px; margin: 0 auto; }.profile-avatar-picker { width: 134px; height: 134px; position: relative; justify-self: center; overflow: visible; border: 0; border-radius: 50%; background: #ffb11d center / cover no-repeat; color: #111; font: inherit; font-size: 42px; font-weight: 900; cursor: pointer; }.profile-avatar-picker::after { content: 'Bild ändern'; position: absolute; right: -12px; bottom: 0; padding: 6px 9px; border-radius: 99px; background: #2869ee; color: #fff; font-size: 12px; font-weight: 800; white-space: nowrap; }.profile-edit-form label { display: grid; gap: 6px; color: var(--muted); font-size: 13px; font-weight: 750; }.profile-edit-form input, .profile-edit-form textarea { width: 100%; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--text); padding: 12px; font: inherit; }.profile-edit-form input { height: 48px; }.profile-edit-form textarea { min-height: 96px; resize: vertical; }.profile-save { min-height: 52px; border: 0; border-radius: 13px; background: #2869ee; color: #fff; font: inherit; font-weight: 850; cursor: pointer; }.profile-edit-note { min-height: 18px; margin: 0; color: #c53535; font-size: 13px; text-align: center; }
+.avatar-source-popup { position: fixed; z-index: 20; left: 50%; top: 50%; width: min(330px, calc(100vw - 36px)); transform: translate(-50%, -50%); padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--bg); box-shadow: 0 18px 50px rgba(0,0,0,.25); }.avatar-source-popup[hidden], .crop-modal[hidden] { display: none; }.avatar-source-popup h2 { margin: 0 0 13px; font-size: 19px; }.avatar-source-popup button { width: 100%; min-height: 46px; margin-top: 8px; border: 0; border-radius: 11px; background: var(--soft); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; }.avatar-source-popup button:last-child { background: transparent; color: var(--muted); }
+.crop-modal { position: fixed; z-index: 21; inset: 0; display: grid; place-items: center; padding: 18px; background: rgba(0,0,0,.55); }.crop-panel { width: min(390px, 100%); padding: 20px; border-radius: 18px; background: var(--bg); }.crop-panel h2 { margin: 0 0 15px; }.crop-preview { width: min(280px, 100%); aspect-ratio: 1; display: block; margin: 0 auto 16px; border-radius: 50%; background: var(--soft); }.crop-control { display: grid; grid-template-columns: 82px 1fr; gap: 10px; align-items: center; margin: 10px 0; color: var(--muted); font-size: 13px; font-weight: 750; }.crop-control input { width: 100%; }.crop-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }.crop-actions button { min-height: 46px; border: 0; border-radius: 11px; background: var(--soft); color: var(--text); font: inherit; font-weight: 800; cursor: pointer; }.crop-actions button:first-child { background: #2869ee; color: #fff; }
+.player-account-options { display: flex; gap: 12px; align-items: flex-start; overflow-x: auto; margin: 0 0 16px; padding: 4px 2px 8px; }.player-account-choice { min-width: 58px; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 12px; font-weight: 750; cursor: pointer; }.player-account-choice img, .player-account-choice .player-account-initial, .player-account-choice .player-account-plus { width: 52px; height: 52px; display: grid; place-items: center; margin: 0 auto 5px; border: 2px solid transparent; border-radius: 50%; object-fit: cover; background: #ffb11d; color: #111; font-size: 19px; font-weight: 900; }.player-account-choice .player-account-plus { background: #2869ee; color: #fff; font-size: 30px; line-height: 1; }.player-account-choice.selected img, .player-account-choice.selected .player-account-initial { border-color: #2869ee; box-shadow: 0 0 0 3px rgba(40,105,238,.15); }.player-account-choice.guest img { background: #fff; }
 .wins-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; overflow-x: auto; }
 .wins-summary-card { min-width: 190px; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }.wins-summary-card span { display: block; color: var(--muted); font-size: 14px; font-weight: 700; }.wins-summary-card strong { display: block; margin-top: 10px; font-size: 36px; line-height: 1; }
 .account-card { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg); }.account-card h2 { margin: 0 0 18px; font-size: 22px; }
 .wins-list { display: grid; gap: 13px; }.wins-row { display: grid; grid-template-columns: minmax(70px,1fr) 1fr 30px; gap: 10px; align-items: center; font-size: 15px; font-weight: 750; }.wins-bar { height: 10px; overflow: hidden; border-radius: 99px; background: var(--soft); }.wins-bar > span { display: block; height: 100%; border-radius: inherit; background: #2f6df6; }
 .victory-chart { width: 100%; height: 190px; display: block; }.victory-chart line { stroke: var(--line); stroke-width: 1; }.victory-chart path { fill: none; stroke: #2f6df6; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }.victory-chart .area { fill: rgba(47,109,246,.12); stroke: none; }.victory-chart circle { fill: #2f6df6; }
-.friend-list { display: grid; gap: 15px; }.friend-row { display: flex; align-items: center; gap: 12px; }.friend-avatar { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: #e8d8bd; color: #4c3520; font-weight: 900; }.friend-name { font-weight: 800; }.friend-note { margin-top: 3px; color: var(--muted); font-size: 13px; }
+.friend-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }.friend-card-header h2 { margin: 0; }.friend-add { width: 34px; height: 34px; border: 0; border-radius: 50%; background: #2869ee; color: #fff; font: inherit; font-size: 24px; line-height: 1; cursor: pointer; }.friend-list { display: grid; gap: 15px; }.friend-row-wrap { display: flex; align-items: center; gap: 10px; }.friend-row { width: 100%; display: flex; align-items: center; gap: 12px; border: 0; background: transparent; color: var(--text); padding: 0; text-align: left; font: inherit; cursor: pointer; }.friend-avatar { width: 42px; height: 42px; display: grid; place-items: center; overflow: hidden; border-radius: 50%; background: #e8d8bd center / cover no-repeat; color: #4c3520; font-weight: 900; }.friend-name { font-weight: 800; }.friend-note { margin-top: 3px; color: var(--muted); font-size: 13px; }.friend-remove, .friend-request-action { border: 0; border-radius: 9px; background: var(--soft); color: #c53535; padding: 7px 9px; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; }.friend-request-list { display: grid; gap: 9px; margin: 0 0 18px; }.friend-request-row { display: flex; align-items: center; gap: 9px; padding: 10px; border-radius: 12px; background: var(--soft); }.friend-request-row strong { flex: 1; }.friend-request-action.accept { background: #2869ee; color: #fff; }
+.friend-search-modal { position: fixed; z-index: 30; inset: 0; display: grid; place-items: center; padding: 18px; background: rgba(0,0,0,.55); }.friend-search-modal[hidden] { display: none; }.friend-search-panel { width: min(430px, 100%); max-height: min(560px, 85vh); display: flex; flex-direction: column; padding: 20px; border-radius: 18px; background: var(--bg); }.friend-search-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }.friend-search-header h2 { margin: 0; font-size: 21px; }.friend-search-close { border: 0; background: transparent; color: var(--muted); font-size: 28px; cursor: pointer; }.friend-search-input { width: 100%; height: 46px; margin: 18px 0 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); color: var(--text); padding: 0 12px; font: inherit; }.friend-search-results { display: grid; gap: 9px; overflow-y: auto; }.friend-search-result { display: flex; align-items: center; gap: 10px; border: 0; border-radius: 12px; background: var(--soft); color: var(--text); padding: 10px; text-align: left; font: inherit; cursor: pointer; }.friend-search-result .friend-avatar { flex: 0 0 40px; width: 40px; height: 40px; }.friend-search-empty { color: var(--muted); text-align: center; }
+.friend-profile-screen { overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; padding: 22px 32px calc(var(--nav-height) + 28px); }.friend-profile-screen::-webkit-scrollbar { display: none; }.friend-profile-header { display: grid; grid-template-columns: 42px 1fr 42px; align-items: center; margin-bottom: 24px; }.friend-profile-header h1 { margin: 0; text-align: center; font-size: 22px; }.friend-profile-hero { display: grid; justify-items: center; gap: 9px; margin-bottom: 24px; text-align: center; }.friend-profile-avatar { width: 108px; height: 108px; display: grid; place-items: center; overflow: hidden; border-radius: 50%; background: #ffb11d center / cover no-repeat; color: #111; font-size: 36px; font-weight: 900; }.friend-profile-name { margin: 0; font-size: 25px; }.friend-profile-bio { max-width: 420px; margin: 0; color: var(--muted); white-space: pre-wrap; }.friend-profile-screen .wins-summary { margin-bottom: 16px; }.friend-profile-screen .account-card { margin-bottom: 16px; }
+.game-icon-button:disabled { opacity: .4; cursor: not-allowed; }
+.friends-card { height: 260px; display: flex; flex-direction: column; overflow: hidden; }.friends-card .friend-request-list, .friends-card .friend-list { overflow-y: auto; }.friends-card .friend-list { flex: 1; }.friends-card .friend-request-list:empty { display: none; }
 
   </style>
 </head>
@@ -1762,14 +1770,6 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       <span class="account-details-email" id="accountDetailsEmail"></span>
       <button class="account-edit-toggle" id="accountEditToggle" type="button">Profil bearbeiten</button>
       <button class="account-logout" id="accountLogout" type="button">Abmelden</button>
-      <form class="account-edit" id="accountEditForm" hidden>
-        <label>Nutzername<input id="accountEditUsername" type="text" minlength="3" maxlength="20" required></label>
-        <label>Profilbild aus Galerie<input id="accountEditAvatar" type="file" accept="image/*"></label>
-        <label>Aktuelles Passwort<input id="accountCurrentPassword" type="password" autocomplete="current-password" placeholder="Nur für Passwortwechsel nötig"></label>
-        <label>Neues Passwort<input id="accountNewPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Mindestens 8 Zeichen"></label>
-        <button type="submit">Änderungen speichern</button>
-        <p class="account-edit-note" id="accountEditNote" role="alert"></p>
-      </form>
     </div>
     <div class="wins-summary" id="winsSummary"></div>
     <section class="account-card">
@@ -1779,12 +1779,52 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
         <path class="area" id="victoryArea" d="M8 150 L292 150 Z"></path><path id="victoryLine" d="M8 150 L292 150"></path><circle id="victoryPoint" cx="292" cy="150" r="5"></circle>
       </svg>
     </section>
-    <section class="account-card">
-      <h2>Freunde</h2>
+    <section class="account-card friends-card">
+      <div class="friend-card-header"><h2>Freunde</h2><button class="friend-add" id="openFriendSearch" type="button" aria-label="Freund hinzufügen">+</button></div>
+      <div class="friend-request-list" id="friendRequests"></div>
       <div class="friend-list" id="friendList"></div>
     </section>
   </div>
 </section>
+
+<section class="screen view friend-profile-screen" id="friendProfileScreen" aria-label="Freundesprofil">
+  <header class="friend-profile-header"><button class="profile-edit-back" id="closeFriendProfile" type="button" aria-label="Zurück">‹</button><h1>Profil</h1><span></span></header>
+  <div class="friend-profile-hero"><div class="friend-profile-avatar" id="friendProfileAvatar"></div><h2 class="friend-profile-name" id="friendProfileName"></h2><p class="friend-profile-bio" id="friendProfileBio"></p></div>
+  <div class="wins-summary" id="friendWinsSummary"></div>
+  <section class="account-card"><h2 id="friendTotalWinsTitle">Siege insgesamt</h2><svg class="victory-chart" viewBox="0 0 300 190" role="img" aria-label="Diagramm der gesamten Siege"><line x1="0" y1="150" x2="300" y2="150"/><line x1="0" y1="105" x2="300" y2="105"/><line x1="0" y1="60" x2="300" y2="60"/><path class="area" id="friendVictoryArea" d="M8 150 L292 150 Z"></path><path id="friendVictoryLine" d="M8 150 L292 150"></path><circle id="friendVictoryPoint" cx="292" cy="150" r="5"></circle></svg></section>
+  <section class="account-card"><h2>Freunde</h2><div class="friend-list" id="friendProfileFriends"></div></section>
+</section>
+
+<section class="screen view profile-edit-screen" id="profileEditScreen" aria-label="Profil bearbeiten">
+  <header class="profile-edit-header"><button class="profile-edit-back" id="closeProfileEdit" type="button" aria-label="Zurück">‹</button><h1>Profil bearbeiten</h1><span></span></header>
+  <form class="profile-edit-form" id="accountEditForm">
+    <button class="profile-avatar-picker" id="profileAvatarPicker" type="button" aria-label="Profilbild ändern"></button>
+    <input id="accountEditAvatar" type="file" accept="image/*" hidden>
+    <input id="accountEditCamera" type="file" accept="image/*" capture="user" hidden>
+    <label>Nutzername<input id="accountEditUsername" type="text" minlength="3" maxlength="20" required></label>
+    <label>Biografie <span>(optional)</span><textarea id="accountEditBio" maxlength="280" placeholder="Erzähl etwas über dich …"></textarea></label>
+    <label>Aktuelles Passwort<input id="accountCurrentPassword" type="password" autocomplete="current-password" placeholder="Nur für Passwortwechsel nötig"></label>
+    <label>Neues Passwort<input id="accountNewPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Mindestens 8 Zeichen"></label>
+    <button class="profile-save" type="submit">Änderungen speichern</button>
+    <p class="profile-edit-note" id="accountEditNote" role="alert"></p>
+  </form>
+</section>
+
+<div class="avatar-source-popup" id="avatarSourcePopup" hidden role="dialog" aria-modal="true" aria-labelledby="avatarSourceTitle">
+  <h2 id="avatarSourceTitle">Profilbild auswählen</h2>
+  <button id="chooseCamera" type="button">Kamera</button>
+  <button id="chooseGallery" type="button">Galerie</button>
+  <button id="closeAvatarSource" type="button">Abbrechen</button>
+</div>
+<div class="friend-search-modal" id="friendSearchModal" hidden role="dialog" aria-modal="true" aria-labelledby="friendSearchTitle"><div class="friend-search-panel"><div class="friend-search-header"><h2 id="friendSearchTitle">Freunde hinzufügen</h2><button class="friend-search-close" id="closeFriendSearch" type="button" aria-label="Schließen">×</button></div><input class="friend-search-input" id="friendSearchInput" type="search" placeholder="Nutzername suchen" autocomplete="off"><div class="friend-search-results" id="friendSearchResults"></div></div></div>
+<div class="crop-modal" id="cropModal" hidden role="dialog" aria-modal="true" aria-labelledby="cropTitle">
+  <div class="crop-panel"><h2 id="cropTitle">Bild zuschneiden</h2><canvas class="crop-preview" id="cropPreview" width="560" height="560"></canvas>
+    <label class="crop-control">Zoom <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1"></label>
+    <label class="crop-control">Horizontal <input id="cropX" type="range" min="-100" max="100" value="0"></label>
+    <label class="crop-control">Vertikal <input id="cropY" type="range" min="-100" max="100" value="0"></label>
+    <div class="crop-actions"><button id="applyCrop" type="button">Übernehmen</button><button id="cancelCrop" type="button">Abbrechen</button></div>
+  </div>
+</div>
 
 <section class="screen view settings-screen" id="settingsScreen" aria-label="Einstellungen">
   <div class="settings-header">
@@ -2045,15 +2085,11 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     </div>
     <form class="player-form" id="playerForm">
       <label class="player-field" for="playerNameInput">
-        <span class="player-field-label">Name</span>
+        <span class="player-field-label" id="playerNameLabel">Name</span>
         <input class="player-name-input" id="playerNameInput" type="text" maxlength="18" autocomplete="off" required>
       </label>
       <span class="player-avatar-label">Spieler</span>
-      <div class="player-avatar-options" aria-label="Spieler auswählen">
-        <button class="player-avatar-option" type="button" aria-label="Standard-Spieler ausgewählt" aria-pressed="true">
-          <img src="img/player/container-player.png" alt="">
-        </button>
-      </div>
+      <div class="player-account-options" id="playerAccountOptions" aria-label="Spieler auswählen"></div>
       <button class="player-accept" type="submit">Akzeptieren</button>
       <button class="player-remove" id="removePlayerFromModal" type="button" hidden>Spieler entfernen</button>
     </form>
@@ -2505,14 +2541,48 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     const accountEditForm = document.getElementById('accountEditForm');
     const accountEditUsername = document.getElementById('accountEditUsername');
     const accountEditAvatar = document.getElementById('accountEditAvatar');
+    const accountEditCamera = document.getElementById('accountEditCamera');
+    const accountEditBio = document.getElementById('accountEditBio');
     const accountCurrentPassword = document.getElementById('accountCurrentPassword');
     const accountNewPassword = document.getElementById('accountNewPassword');
     const accountEditNote = document.getElementById('accountEditNote');
+    const profileEditScreen = document.getElementById('profileEditScreen');
+    const closeProfileEdit = document.getElementById('closeProfileEdit');
+    const profileAvatarPicker = document.getElementById('profileAvatarPicker');
+    const avatarSourcePopup = document.getElementById('avatarSourcePopup');
+    const chooseCamera = document.getElementById('chooseCamera');
+    const chooseGallery = document.getElementById('chooseGallery');
+    const closeAvatarSource = document.getElementById('closeAvatarSource');
+    const cropModal = document.getElementById('cropModal');
+    const cropPreview = document.getElementById('cropPreview');
+    const cropZoom = document.getElementById('cropZoom');
+    const cropX = document.getElementById('cropX');
+    const cropY = document.getElementById('cropY');
+    const applyCrop = document.getElementById('applyCrop');
+    const cancelCrop = document.getElementById('cancelCrop');
+    const playerAccountOptions = document.getElementById('playerAccountOptions');
+    const playerNameLabel = document.getElementById('playerNameLabel');
+    const openFriendSearch = document.getElementById('openFriendSearch');
+    const friendSearchModal = document.getElementById('friendSearchModal');
+    const closeFriendSearch = document.getElementById('closeFriendSearch');
+    const friendSearchInput = document.getElementById('friendSearchInput');
+    const friendSearchResults = document.getElementById('friendSearchResults');
+    const closeFriendProfile = document.getElementById('closeFriendProfile');
+    const friendProfileAvatar = document.getElementById('friendProfileAvatar');
+    const friendProfileName = document.getElementById('friendProfileName');
+    const friendProfileBio = document.getElementById('friendProfileBio');
+    const friendWinsSummary = document.getElementById('friendWinsSummary');
+    const friendTotalWinsTitle = document.getElementById('friendTotalWinsTitle');
+    const friendVictoryLine = document.getElementById('friendVictoryLine');
+    const friendVictoryArea = document.getElementById('friendVictoryArea');
+    const friendVictoryPoint = document.getElementById('friendVictoryPoint');
+    const friendProfileFriends = document.getElementById('friendProfileFriends');
     const winsSummary = document.getElementById('winsSummary');
     const victoryLine = document.getElementById('victoryLine');
     const victoryArea = document.getElementById('victoryArea');
     const victoryPoint = document.getElementById('victoryPoint');
     const friendList = document.getElementById('friendList');
+    const friendRequests = document.getElementById('friendRequests');
     const bannerTrack = document.getElementById('bannerTrack');
     const bannerDots = document.querySelectorAll('.hero .dot');
     const playersStorageKey = 'swishPlayerCount';
@@ -2575,6 +2645,11 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     let draggedPlayerIndex = null;
     let suppressPlayerClick = false;
     let accountMode = 'signup';
+    let cropImage = null;
+    let pendingAvatar = '';
+    let selectedPlayerAccountEmail = '';
+    let viewedFriendEmail = '';
+    let friendChoicesOpen = false;
     playOptions.addEventListener('click', function () {
       if (gameState && gameState.phase === 'witch' && gameState.option === 'Überspringen') {
         playConfirm.disabled = false;
@@ -2587,10 +2662,11 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       removeCategoryButton.hidden = categoryRow.children.length < 2;
     }
 
-    function createPlayer(name) {
+    function createPlayer(name, accountEmail) {
       return {
         name: name,
-        avatar: playerAvatarSrc
+        avatar: playerAvatarSrc,
+        accountEmail: accountEmail || ''
       };
     }
 
@@ -2605,6 +2681,15 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     function getActiveAccount() {
       const email = localStorage.getItem(accountSessionStorageKey);
       return email ? getAccounts()[email] || null : null;
+    }
+
+    function accountStorageKey(key) {
+      const account = getActiveAccount();
+      return key + ':' + (account ? account.email : 'guest');
+    }
+
+    function loadAccountScopedState() {
+      loadSavedPlayers(); loadMayorSetting(); loadExtraRoleSettings(); loadDarkModeSetting(); loadSavedRoles(); loadExtraRuleSettings(); loadFavoriteWerwolf(); updateExtraRoleAvailability();
     }
 
     function bytesToBase64(bytes) {
@@ -2654,15 +2739,17 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       victoryLine.setAttribute('d', line);
       victoryArea.setAttribute('d', line + ' L292 150 L8 150 Z');
       const last = points[points.length - 1].split(' '); victoryPoint.setAttribute('cx', last[0]); victoryPoint.setAttribute('cy', last[1]);
-      const friends = (account.friends || []).concat(players.map(function (player) { return { name: player.name, note: 'Mitspieler' }; })).filter(function (friend, index, array) { return array.findIndex(function (item) { return item.name === friend.name; }) === index; });
-      friendList.innerHTML = friends.length ? '' : '<p class="friend-note">Noch keine Freunde hinzugefügt.</p>';
-      friends.forEach(function (friend) { const row = document.createElement('div'); row.className = 'friend-row'; row.innerHTML = '<span class="friend-avatar"></span><div><div class="friend-name"></div><div class="friend-note"></div></div>'; row.querySelector('.friend-avatar').textContent = friend.name.slice(0, 1).toUpperCase(); row.querySelector('.friend-name').textContent = friend.name; row.querySelector('.friend-note').textContent = friend.note || 'Freund'; friendList.appendChild(row); });
+      renderFriendList(friendList, account.friends || [], 'Noch keine Freunde hinzugefügt.');
+      renderFriendRequests(account);
       accountDetailsName.textContent = account.username;
       accountDetailsEmail.textContent = account.email;
       accountAvatar.textContent = account.username.slice(0, 1).toUpperCase();
       accountAvatar.style.backgroundImage = account.avatar ? 'url("' + account.avatar + '")' : '';
       if (account.avatar) accountAvatar.textContent = '';
       accountEditUsername.value = account.username;
+      accountEditBio.value = account.bio || '';
+      profileAvatarPicker.textContent = account.avatar ? '' : account.username.slice(0, 1).toUpperCase();
+      profileAvatarPicker.style.backgroundImage = account.avatar ? 'url("' + account.avatar + '")' : '';
       document.querySelector('#accountDashboard .account-card:first-of-type').querySelector('h2').textContent = 'Siege insgesamt: ' + total;
     }
 
@@ -2673,10 +2760,50 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       if (account) renderAccountDashboard(account); else updateAccountAuth();
     }
 
+    function renderFriendRequests(account) {
+      const accounts = getAccounts(); const requestEmails = Array.from(new Set(account.friendRequests || [])).filter(function (email) { return accounts[email]; });
+      friendRequests.innerHTML = requestEmails.length ? '<strong>Freundschaftsanfragen</strong>' : '';
+      requestEmails.forEach(function (email) { const sender = accounts[email]; const row = document.createElement('div'); row.className = 'friend-request-row'; row.innerHTML = '<span class="friend-avatar"></span><strong></strong><button class="friend-request-action accept" type="button">Annehmen</button><button class="friend-request-action" type="button">Ablehnen</button>'; const avatar = row.querySelector('.friend-avatar'); avatar.textContent = sender.username.slice(0, 1).toUpperCase(); if (sender.avatar) { avatar.style.backgroundImage = 'url("' + sender.avatar + '")'; avatar.textContent = ''; } row.querySelector('strong').textContent = sender.username;
+        const respond = function (accepted) { const all = getAccounts(); const active = all[account.email]; active.friendRequests = (active.friendRequests || []).filter(function (item) { return item !== email; }); if (accepted) { active.friends = Array.from(new Set((active.friends || []).concat(email))); const other = all[email]; other.friends = Array.from(new Set((other.friends || []).concat(account.email))); all[email] = other; } all[account.email] = active; saveAccounts(all); renderAccountDashboard(active); };
+        row.querySelector('.accept').addEventListener('click', function () { respond(true); }); row.querySelector('.friend-request-action:not(.accept)').addEventListener('click', function () { respond(false); }); friendRequests.appendChild(row); });
+    }
+
+    function renderFriendList(container, friendEmails, emptyText) {
+      const accounts = getAccounts();
+      const validEmails = Array.from(new Set(friendEmails)).filter(function (email) { return accounts[email]; });
+      container.innerHTML = validEmails.length ? '' : '<p class="friend-note">' + emptyText + '</p>';
+      validEmails.forEach(function (email) {
+        const friend = accounts[email]; const wrap = document.createElement('div'); wrap.className = 'friend-row-wrap'; const row = document.createElement('button'); row.className = 'friend-row'; row.type = 'button'; row.innerHTML = '<span class="friend-avatar"></span><div><div class="friend-name"></div><div class="friend-note"></div></div>';
+        const avatar = row.querySelector('.friend-avatar'); avatar.textContent = friend.username.slice(0, 1).toUpperCase(); if (friend.avatar) { avatar.style.backgroundImage = 'url("' + friend.avatar + '")'; avatar.textContent = ''; }
+        row.querySelector('.friend-name').textContent = friend.username; row.querySelector('.friend-note').textContent = 'Profil ansehen'; row.addEventListener('click', function () { openFriendProfile(email); }); wrap.appendChild(row);
+        if (container === friendList) { const remove = document.createElement('button'); remove.className = 'friend-remove'; remove.type = 'button'; remove.textContent = 'Entfernen'; remove.addEventListener('click', function () { const active = getActiveAccount(); if (!active) return; const all = getAccounts(); all[active.email].friends = (all[active.email].friends || []).filter(function (item) { return item !== email; }); if (all[email]) all[email].friends = (all[email].friends || []).filter(function (item) { return item !== active.email; }); saveAccounts(all); renderAccountDashboard(all[active.email]); }); wrap.appendChild(remove); } container.appendChild(wrap);
+      });
+    }
+
+    function renderWinsForProfile(account, summary, lineElement, areaElement, pointElement, totalTitle) {
+      const wins = account.wins || { werwolf: 0 }; const labels = { werwolf: 'Werwolf' };
+      const entries = Object.keys(wins).map(function (game) { return { game: game, count: Number(wins[game]) || 0 }; }).sort(function (a, b) { return b.count - a.count; }); if (!entries.length) entries.push({ game: 'werwolf', count: 0 });
+      const total = entries.reduce(function (sum, entry) { return sum + entry.count; }, 0); summary.innerHTML = '';
+      entries.forEach(function (entry) { const card = document.createElement('div'); card.className = 'wins-summary-card'; card.innerHTML = '<span></span><strong></strong>'; card.querySelector('span').textContent = labels[entry.game] || entry.game; card.querySelector('strong').textContent = entry.count + ' Siege'; summary.appendChild(card); });
+      const history = (account.victoryHistory || [0]).slice(-7); while (history.length < 7) history.unshift(0); const maxHistory = Math.max(1, total, Math.max.apply(null, history)); const points = history.map(function (value, index) { return (8 + index * 47) + ' ' + (150 - value / maxHistory * 110); }); const line = 'M' + points.join(' L'); lineElement.setAttribute('d', line); areaElement.setAttribute('d', line + ' L292 150 L8 150 Z'); const last = points[points.length - 1].split(' '); pointElement.setAttribute('cx', last[0]); pointElement.setAttribute('cy', last[1]); totalTitle.textContent = 'Siege insgesamt: ' + total;
+    }
+
+    function openFriendProfile(email) {
+      const friend = getAccounts()[email]; if (!friend) return; viewedFriendEmail = email; friendProfileName.textContent = friend.username; friendProfileBio.textContent = friend.bio || 'Keine Biografie vorhanden.'; friendProfileAvatar.textContent = friend.username.slice(0, 1).toUpperCase(); friendProfileAvatar.style.backgroundImage = friend.avatar ? 'url("' + friend.avatar + '")' : ''; if (friend.avatar) friendProfileAvatar.textContent = '';
+      renderWinsForProfile(friend, friendWinsSummary, friendVictoryLine, friendVictoryArea, friendVictoryPoint, friendTotalWinsTitle); renderFriendList(friendProfileFriends, friend.friends || [], 'Keine Freunde sichtbar.'); showView('friendProfileScreen');
+    }
+
+    function renderFriendSearch() {
+      const account = getActiveAccount(); if (!account) return; const search = friendSearchInput.value.trim().toLocaleLowerCase('de'); const accounts = getAccounts();
+      const candidates = Object.keys(accounts).filter(function (email) { return email !== account.email && !(account.friends || []).includes(email) && !(accounts[email].friendRequests || []).includes(account.email) && accounts[email].username.toLocaleLowerCase('de').includes(search); });
+      friendSearchResults.innerHTML = candidates.length ? '' : '<p class="friend-search-empty">Keine passenden Nutzer gefunden.</p>';
+      candidates.forEach(function (email) { const candidate = accounts[email]; const button = document.createElement('button'); button.type = 'button'; button.className = 'friend-search-result'; button.innerHTML = '<span class="friend-avatar"></span><strong></strong><span>Anfrage senden</span>'; const avatar = button.querySelector('.friend-avatar'); avatar.textContent = candidate.username.slice(0, 1).toUpperCase(); if (candidate.avatar) { avatar.style.backgroundImage = 'url("' + candidate.avatar + '")'; avatar.textContent = ''; } button.querySelector('strong').textContent = candidate.username; button.addEventListener('click', function () { const all = getAccounts(); const target = all[email]; target.friendRequests = Array.from(new Set((target.friendRequests || []).concat(account.email))); all[email] = target; saveAccounts(all); renderFriendSearch(); }); friendSearchResults.appendChild(button); });
+    }
+
     function recordAccountWin(game, winner) {
       const account = getActiveAccount();
       if (!account || !gameState || gameState.accountWinRecorded) return;
-      const participant = gameState.players.find(function (player) { return player.name.toLowerCase() === account.username.toLowerCase(); });
+      const participant = gameState.players.find(function (player) { return player.accountEmail === account.email; });
       const won = participant && (participant.team === winner || (winner === 'village' && participant.team === 'village') || (winner === 'piper' && participant.role === 'piper') || (winner === 'solo' && (participant.role === 'white-wolf' || participant.role === 'lone-wolf')));
       if (!won) return;
       const accounts = getAccounts();
@@ -2712,6 +2839,26 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       });
     }
 
+    function drawCropPreview() {
+      if (!cropImage) return;
+      const canvas = cropPreview; const context = canvas.getContext('2d'); const size = canvas.width;
+      context.clearRect(0, 0, size, size);
+      const scale = Math.max(size / cropImage.width, size / cropImage.height) * Number(cropZoom.value);
+      const width = cropImage.width * scale; const height = cropImage.height * scale;
+      const x = (size - width) / 2 + Number(cropX.value) / 100 * (width - size) / 2;
+      const y = (size - height) / 2 + Number(cropY.value) / 100 * (height - size) / 2;
+      context.save(); context.beginPath(); context.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2); context.clip();
+      context.drawImage(cropImage, x, y, width, height); context.restore();
+    }
+
+    function openCropper(file) {
+      if (!file || !file.type.startsWith('image/')) { accountEditNote.textContent = 'Bitte wähle eine Bilddatei aus.'; return; }
+      const reader = new FileReader();
+      reader.onerror = function () { accountEditNote.textContent = 'Das Bild konnte nicht gelesen werden.'; };
+      reader.onload = function () { cropImage = new Image(); cropImage.onload = function () { cropZoom.value = '1'; cropX.value = '0'; cropY.value = '0'; cropModal.hidden = false; drawCropPreview(); }; cropImage.src = reader.result; };
+      reader.readAsDataURL(file);
+    }
+
     async function saveAccountProfile(event) {
       event.preventDefault();
       accountEditNote.textContent = '';
@@ -2729,18 +2876,18 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
           if (!accountCurrentPassword.value || await hashPassword(accountCurrentPassword.value, storedAccount.salt) !== storedAccount.passwordHash) throw new Error('Das aktuelle Passwort stimmt nicht.');
           storedAccount.passwordHash = await hashPassword(newPassword, storedAccount.salt);
         }
-        const selectedFile = accountEditAvatar.files[0];
-        if (selectedFile) {
-          if (!selectedFile.type.startsWith('image/')) throw new Error('Bitte wähle eine Bilddatei aus.');
-          storedAccount.avatar = await imageFileToDataUrl(selectedFile);
-        }
+        if (pendingAvatar) storedAccount.avatar = pendingAvatar;
         storedAccount.username = username;
+        storedAccount.bio = accountEditBio.value.trim();
         accounts[account.email] = storedAccount;
         saveAccounts(accounts);
+        players.forEach(function (player) { if (player.accountEmail === account.email) player.avatar = storedAccount.avatar || playerAvatarSrc; });
+        savePlayers(); renderPlayers();
         accountEditForm.reset();
+        pendingAvatar = '';
         accountEditUsername.value = username;
-        accountEditNote.textContent = 'Profil gespeichert.';
         renderAccountDashboard(storedAccount);
+        showView('profileScreen');
       } catch (error) { accountEditNote.textContent = error.message || 'Profil konnte nicht gespeichert werden.'; }
     }
 
@@ -2758,7 +2905,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
           if (accounts[email]) throw new Error('Für diese E-Mail gibt es bereits ein Konto.');
           if (Object.keys(accounts).some(function (key) { return accounts[key].username.toLowerCase() === username.toLowerCase(); })) throw new Error('Dieser Nutzername ist bereits vergeben.');
           const salt = new Uint8Array(16); window.crypto.getRandomValues(salt);
-          accounts[email] = { email: email, username: username, salt: bytesToBase64(salt), passwordHash: await hashPassword(password, bytesToBase64(salt)), wins: { werwolf: 0 }, victoryHistory: [0], friends: [] };
+          accounts[email] = { email: email, username: username, salt: bytesToBase64(salt), passwordHash: await hashPassword(password, bytesToBase64(salt)), wins: { werwolf: 0 }, victoryHistory: [0], friends: [], friendRequests: [] };
           saveAccounts(accounts);
         } else {
           const account = accounts[email];
@@ -2766,6 +2913,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
         }
         localStorage.setItem(accountSessionStorageKey, email);
         accountForm.reset();
+        loadAccountScopedState();
         updateAccountView();
         showView('profileScreen');
       } catch (error) { accountFormNote.textContent = error.message || 'Das Konto konnte nicht gespeichert werden.'; }
@@ -2796,7 +2944,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     }
 
     function savePlayers() {
-      localStorage.setItem(playersStorageKey, JSON.stringify(players));
+      localStorage.setItem(accountStorageKey(playersStorageKey), JSON.stringify(players));
     }
 
     function renderPlayers() {
@@ -2811,7 +2959,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     }
 
     function loadSavedPlayers() {
-      const savedPlayers = localStorage.getItem(playersStorageKey);
+      const savedPlayers = localStorage.getItem(accountStorageKey(playersStorageKey));
       const savedCount = Number(savedPlayers);
 
       if (Number.isInteger(savedCount) && savedCount > 0) {
@@ -2834,7 +2982,8 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
 
             return {
               name: name,
-              avatar: avatar
+              avatar: avatar,
+              accountEmail: typeof player.accountEmail === 'string' ? player.accountEmail : ''
             };
           });
         } else {
@@ -2854,11 +3003,27 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
 
     function openPlayerModal(index) {
       editingPlayerIndex = Number.isInteger(index) ? index : null;
+      const player = editingPlayerIndex === null ? null : players[editingPlayerIndex];
       playerModalTitle.textContent = editingPlayerIndex === null ? 'Spieler hinzufügen' : 'Spieler bearbeiten';
-      playerNameInput.value = editingPlayerIndex === null ? '' : players[editingPlayerIndex].name;
+      playerNameInput.value = player ? player.name : '';
+      const assignedElsewhere = players.filter(function (item, playerIndex) { return playerIndex !== editingPlayerIndex && item.accountEmail; }).map(function (item) { return item.accountEmail; });
+      selectedPlayerAccountEmail = player && player.accountEmail ? player.accountEmail : '';
+      friendChoicesOpen = selectedPlayerAccountEmail && selectedPlayerAccountEmail !== (getActiveAccount() || {}).email;
+      renderPlayerAccountOptions(assignedElsewhere);
+      playerNameLabel.textContent = selectedPlayerAccountEmail ? 'Spitzname' : 'Name';
+      playerNameInput.readOnly = false;
       removePlayerFromModalButton.hidden = editingPlayerIndex === null || players.length <= 1;
       playerModal.hidden = false;
       playerNameInput.focus();
+    }
+
+    function renderPlayerAccountOptions(assignedElsewhere) {
+      const accounts = getAccounts(); const active = getActiveAccount(); playerAccountOptions.innerHTML = '';
+      function addChoice(email, username, avatar, kind) { const button = document.createElement('button'); button.type = 'button'; button.className = 'player-account-choice' + (email === selectedPlayerAccountEmail ? ' selected' : '') + (kind === 'guest' ? ' guest' : ''); if (kind === 'friends') { const plus = document.createElement('span'); plus.className = 'player-account-plus'; plus.textContent = '+'; button.appendChild(plus); } else if (avatar) { const image = document.createElement('img'); image.src = avatar; image.alt = ''; button.appendChild(image); } else if (email) { const initial = document.createElement('span'); initial.className = 'player-account-initial'; initial.textContent = username.slice(0, 1).toUpperCase(); button.appendChild(initial); } else { const image = document.createElement('img'); image.src = playerAvatarSrc; image.alt = ''; button.appendChild(image); } const label = document.createElement('span'); label.textContent = username; button.appendChild(label); button.addEventListener('click', function () { if (kind === 'friends') { friendChoicesOpen = !friendChoicesOpen; renderPlayerAccountOptions(assignedElsewhere); return; } selectedPlayerAccountEmail = email; const account = email ? getAccounts()[email] : null; playerNameInput.value = account ? account.username : ''; playerNameLabel.textContent = email ? 'Spitzname' : 'Name'; renderPlayerAccountOptions(assignedElsewhere); }); playerAccountOptions.appendChild(button); }
+      if (active && (!assignedElsewhere.includes(active.email) || active.email === selectedPlayerAccountEmail)) addChoice(active.email, active.username, active.avatar, 'self');
+      addChoice('__friends__', 'Freunde', '', 'friends');
+      if (friendChoicesOpen && active) (active.friends || []).forEach(function (email) { if (accounts[email] && (!assignedElsewhere.includes(email) || email === selectedPlayerAccountEmail)) addChoice(email, accounts[email].username, accounts[email].avatar, 'friend'); });
+      addChoice('', 'Gast', '', 'guest');
     }
 
     function closePlayerModal() {
@@ -2886,6 +3051,8 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     }
 
     function acceptPlayerForm() {
+      const selectedAccount = selectedPlayerAccountEmail;
+      const selectedAccountData = selectedAccount ? getAccounts()[selectedAccount] : null;
       const name = playerNameInput.value.trim();
 
       if (!name) {
@@ -2894,7 +3061,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       }
 
       if (editingPlayerIndex === null) {
-        players.push(createPlayer(name));
+        players.push({ name: name, avatar: selectedAccountData && selectedAccountData.avatar ? selectedAccountData.avatar : playerAvatarSrc, accountEmail: selectedAccount });
         savePlayers();
         renderPlayers();
         resetRoles();
@@ -2902,7 +3069,8 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       } else {
         players[editingPlayerIndex] = {
           name: name,
-          avatar: playerAvatarSrc
+          avatar: selectedAccountData && selectedAccountData.avatar ? selectedAccountData.avatar : playerAvatarSrc,
+          accountEmail: selectedAccount
         };
         savePlayers();
         renderPlayers();
@@ -2940,14 +3108,14 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
 
     function getExtraRuleSettings() {
       try {
-        return Object.assign({ playerCarousel: true, youthFriendly: false, narratorIcons: false, randomRoles: false, randomExcludedRoleIds: [] }, JSON.parse(localStorage.getItem(extraRulesStorageKey)) || {});
+        return Object.assign({ playerCarousel: true, youthFriendly: false, narratorIcons: false, randomRoles: false, randomExcludedRoleIds: [] }, JSON.parse(localStorage.getItem(accountStorageKey(extraRulesStorageKey))) || {});
       } catch (error) {
         return { playerCarousel: true, youthFriendly: false, narratorIcons: false, randomRoles: false, randomExcludedRoleIds: [] };
       }
     }
 
     function saveExtraRuleSettings(settings) {
-      localStorage.setItem(extraRulesStorageKey, JSON.stringify(settings));
+      localStorage.setItem(accountStorageKey(extraRulesStorageKey), JSON.stringify(settings));
     }
 
     function updateRuleSwitch(button, isOn, label) {
@@ -2979,14 +3147,14 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
 
     function getExtraRoleSettings() {
       try {
-        return JSON.parse(localStorage.getItem(extraRolesStorageKey)) || {};
+        return JSON.parse(localStorage.getItem(accountStorageKey(extraRolesStorageKey))) || {};
       } catch (error) {
         return {};
       }
     }
 
     function saveExtraRoleSettings(settings) {
-      localStorage.setItem(extraRolesStorageKey, JSON.stringify(settings));
+      localStorage.setItem(accountStorageKey(extraRolesStorageKey), JSON.stringify(settings));
     }
 
     function updateExtraSwitch(button, isOn, minPlayers, label) {
@@ -3002,11 +3170,11 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
 
     function setMayorEnabled(isOn) {
       updateMayorSwitch(isOn);
-      localStorage.setItem(mayorStorageKey, String(isOn));
+      localStorage.setItem(accountStorageKey(mayorStorageKey), String(isOn));
     }
 
     function loadMayorSetting() {
-      setMayorEnabled(localStorage.getItem(mayorStorageKey) === 'true');
+      setMayorEnabled(localStorage.getItem(accountStorageKey(mayorStorageKey)) === 'true');
     }
 
     function getNarratorRoleCount() {
@@ -3091,11 +3259,11 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
 
     function setDarkModeEnabled(isOn) {
       updateDarkModeSwitch(isOn);
-      localStorage.setItem(darkModeStorageKey, String(isOn));
+      localStorage.setItem(accountStorageKey(darkModeStorageKey), String(isOn));
     }
 
     function loadDarkModeSetting() {
-      updateDarkModeSwitch(localStorage.getItem(darkModeStorageKey) === 'true');
+      updateDarkModeSwitch(localStorage.getItem(accountStorageKey(darkModeStorageKey)) === 'true');
     }
 
     function updateFavoriteWerwolf(isFavorite) {
@@ -3105,7 +3273,10 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     }
 
     function loadFavoriteWerwolf() {
-      updateFavoriteWerwolf(localStorage.getItem(favoriteWerwolfStorageKey) === 'true');
+      const account = getActiveAccount();
+      favoriteWerwolfButton.disabled = !account;
+      favoriteWerwolfButton.setAttribute('aria-disabled', String(!account));
+      updateFavoriteWerwolf(Boolean(account) && localStorage.getItem(accountStorageKey(favoriteWerwolfStorageKey)) === 'true');
     }
 
     function loadCacheVersion() {
@@ -3209,7 +3380,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
         counts[role.id] = role.count;
       });
 
-      localStorage.setItem(rolesStorageKey, JSON.stringify({
+      localStorage.setItem(accountStorageKey(rolesStorageKey), JSON.stringify({
         playerCount: getPlayerCount(),
         narratorEnabled: isNarratorEnabled(),
         counts: counts
@@ -3217,7 +3388,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     }
 
     function loadSavedRoles() {
-      const savedRoles = localStorage.getItem(rolesStorageKey);
+      const savedRoles = localStorage.getItem(accountStorageKey(rolesStorageKey));
 
       if (!savedRoles) {
         resetRoles();
@@ -3454,12 +3625,12 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     const defaultNightOrder = ['thief', 'doppelganger', 'cupid', 'wild-child', 'cook', 'piper', 'healer', 'escort', 'white-wolf', 'werewolf', 'lone-wolf', 'twins', 'triplets', 'sharpshooter', 'witch', 'fox', 'aura', 'seer', 'kamikaze'];
     function getNightOrder() {
       try {
-        const saved = JSON.parse(localStorage.getItem(roleOrderStorageKey));
+        const saved = JSON.parse(localStorage.getItem(accountStorageKey(roleOrderStorageKey)));
         if (Array.isArray(saved)) return defaultNightOrder.slice().sort(function (a, b) { const ai = saved.indexOf(a), bi = saved.indexOf(b); return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi); });
       } catch (error) {}
       return defaultNightOrder.slice();
     }
-    function saveNightOrder(order) { localStorage.setItem(roleOrderStorageKey, JSON.stringify(order)); }
+    function saveNightOrder(order) { localStorage.setItem(accountStorageKey(roleOrderStorageKey), JSON.stringify(order)); }
     function renderRoleOrder() {
       const order = getNightOrder(); roleOrderList.innerHTML = '';
       order.forEach(function (roleId, index) {
@@ -3758,7 +3929,7 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     function startNightTimer() {
       gameState = {
         round: 1, players: revealQueue.map(function (assignment, index) {
-          return { id: index, name: assignment.player.name, role: assignment.role.id, roleName: assignment.role.name,
+          return { id: index, name: assignment.player.name, accountEmail: assignment.player.accountEmail || '', role: assignment.role.id, roleName: assignment.role.name,
             emoji: assignment.role.emoji, alive: assignment.role.id !== 'narrator', lives: assignment.role.id === 'tree' ? 2 : 1,
             team: initialTeamForRole(assignment.role.id),
             lover: null, protected: false, lastHeal: null, blocked: false, copied: false, used: false,
@@ -4017,11 +4188,13 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
     function inviteFriends() { showGameAlert({ title: 'Freunde einladen', message: 'Wie möchtest du den Download-Link teilen?', cancelText: 'Link kopieren', confirmText: 'Teilen', onCancel: function () { navigator.clipboard && navigator.clipboard.writeText(window.location.href); }, onConfirm: function () { if (navigator.share) navigator.share({ title: 'Swish', text: 'Lade Swish herunter und spiel mit uns!', url: window.location.href }); else if (navigator.clipboard) navigator.clipboard.writeText(window.location.href); } }); }
     function chooseLanguage() { const en = document.documentElement.lang !== 'en'; document.documentElement.lang = en ? 'en' : 'de'; languageSettingNote.textContent = en ? 'English' : 'Deutsch'; languageSettingCode.textContent = en ? 'EN' : 'DE'; localStorage.setItem('swishLanguage', en ? 'en' : 'de'); showGameAlert({ title: en ? 'English' : 'Deutsch', message: en ? 'English is enabled. Further screen texts are shown in English where available.' : 'Deutsch ist aktiviert.', confirmText: 'OK', hideCancel: true }); }
     function showView(targetId) {
+      avatarSourcePopup.hidden = true;
+      if (targetId !== 'profileEditScreen') { cropModal.hidden = true; cropImage = null; }
       views.forEach(function (view) {
         view.classList.toggle('active', view.id === targetId);
       });
 
-      phone.classList.toggle('detail-open', targetId === 'gameScreen' || targetId === 'rolesScreen' || targetId === 'advancedScreen' || targetId === 'roleOrderScreen' || targetId === 'roleRevealScreen' || targetId === 'gameReadyScreen' || targetId === 'nightScreen' || targetId === 'playScreen');
+      phone.classList.toggle('detail-open', targetId === 'gameScreen' || targetId === 'rolesScreen' || targetId === 'advancedScreen' || targetId === 'roleOrderScreen' || targetId === 'roleRevealScreen' || targetId === 'gameReadyScreen' || targetId === 'nightScreen' || targetId === 'playScreen' || targetId === 'profileEditScreen');
 
       navButtons.forEach(function (navButton) {
         navButton.classList.toggle('active', navButton.dataset.target === targetId);
@@ -4277,8 +4450,9 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       renderRoles();
     });
     favoriteWerwolfButton.addEventListener('click', function () {
+      if (!getActiveAccount()) return;
       const isFavorite = !favoriteWerwolfButton.classList.contains('is-favorite');
-      localStorage.setItem(favoriteWerwolfStorageKey, String(isFavorite));
+      localStorage.setItem(accountStorageKey(favoriteWerwolfStorageKey), String(isFavorite));
       updateFavoriteWerwolf(isFavorite);
     });
     werwolfHelpButton.addEventListener('click', function () {
@@ -4314,20 +4488,37 @@ button.choice-player:disabled, .action-options button:disabled, .flow-primary-bu
       event.preventDefault();
       acceptPlayerForm();
     });
-
     accountForm.addEventListener('submit', submitAccount);
     accountAvatar.addEventListener('click', function () { accountDetails.classList.toggle('open'); });
     accountEditToggle.addEventListener('click', function () {
-      accountEditForm.hidden = !accountEditForm.hidden;
       accountEditNote.textContent = '';
-      if (!accountEditForm.hidden) accountEditUsername.focus();
+      renderAccountDashboard(getActiveAccount());
+      showView('profileEditScreen');
+      accountEditUsername.focus();
     });
     accountEditForm.addEventListener('submit', saveAccountProfile);
+    closeProfileEdit.addEventListener('click', function () { showView('profileScreen'); });
+    profileAvatarPicker.addEventListener('click', function () { avatarSourcePopup.hidden = false; });
+    closeAvatarSource.addEventListener('click', function () { avatarSourcePopup.hidden = true; });
+    chooseGallery.addEventListener('click', function () { avatarSourcePopup.hidden = true; accountEditAvatar.click(); });
+    chooseCamera.addEventListener('click', function () { avatarSourcePopup.hidden = true; accountEditCamera.click(); });
+    accountEditAvatar.addEventListener('change', function () { openCropper(accountEditAvatar.files[0]); });
+    accountEditCamera.addEventListener('change', function () { openCropper(accountEditCamera.files[0]); });
+    [cropZoom, cropX, cropY].forEach(function (control) { control.addEventListener('input', drawCropPreview); });
+    cancelCrop.addEventListener('click', function () { cropModal.hidden = true; cropImage = null; });
+    applyCrop.addEventListener('click', function () { pendingAvatar = cropPreview.toDataURL('image/jpeg', .9); profileAvatarPicker.style.backgroundImage = 'url("' + pendingAvatar + '")'; profileAvatarPicker.textContent = ''; cropModal.hidden = true; cropImage = null; });
+    openFriendSearch.addEventListener('click', function () { friendSearchInput.value = ''; friendSearchModal.hidden = false; renderFriendSearch(); friendSearchInput.focus(); });
+    closeFriendSearch.addEventListener('click', function () { friendSearchModal.hidden = true; });
+    friendSearchModal.addEventListener('click', function (event) { if (event.target === friendSearchModal) friendSearchModal.hidden = true; });
+    friendSearchInput.addEventListener('input', renderFriendSearch);
+    closeFriendProfile.addEventListener('click', function () { viewedFriendEmail = ''; showView('profileScreen'); });
     accountLogout.addEventListener('click', function () {
       localStorage.removeItem(accountSessionStorageKey);
+      Object.keys(localStorage).filter(function (key) { return key.endsWith(':guest'); }).forEach(function (key) { localStorage.removeItem(key); });
       accountDetails.classList.remove('open');
       accountMode = 'login';
       accountForm.reset();
+      loadAccountScopedState();
       updateAccountView();
     });
 

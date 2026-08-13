@@ -1,7 +1,9 @@
 {
-  "name": "Swish",
+  "name": "Swish – Werwolf",
   "short_name": "Swish",
-  "description": "Deine Beschreibung",
+  "id": "/swish",
+  "lang": "de",
+  "description": "Die Werwolf-App für spannende Spiele mit Freunden. Rollen verteilen, Nachtphasen steuern und herausfinden, wer die Wahrheit sagt.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
